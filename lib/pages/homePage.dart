@@ -1,3 +1,4 @@
+import 'package:app_dos_hermanos/pages/shippingPage.dart';
 import 'package:flutter/material.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -32,7 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 title: Text('Envio numero: $index'),
                 subtitle: Text(_riceType[index]),
                 onTap: (){
-                  
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ShippingPage(index: index)));
                 },
               ),
             );
