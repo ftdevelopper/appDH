@@ -1,16 +1,21 @@
-# app_dos_hermanos
+# App Dos Hermanos
 
-A new Flutter project.
+A Quick porject to show app Posibilities.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## Function
 
-A few resources to get you started if this is your first Flutter project:
+This App show a list of shippings from differenets locations in the HomePage().
+Each shipping can be deleted with a Dismissible.
+Each shipping can show more information in ShippingsPage().
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+---
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Future
+
+In the future this app will be able to:
+- Recive data from FireBase.
+- Accpet new shippings and delte its from DataBase.
+- Recive Data from external devices.
+- Procces and create new shippings bassed on that Data.
