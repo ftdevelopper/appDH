@@ -10,7 +10,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  List<String> _riceType = ['Blanco', 'Integral', 'Yamani', 'Bomba', 'Rojo', 'Salvaje'];
+  List<String> _riceType = ['Doble Carolina', 'Integral', 'Largo Fino', 'No se pasa', 'Aromatico', 'Yamani'];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,27 +19,34 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
       ),
       body: SafeArea(
-        child: ListView.separated(
-          itemCount: 6,
+        child: ListView.builder(
+          itemCount: _riceType.length,
           itemBuilder: (BuildContext context, int index){
             return Dismissible(
-              key: Key('key'),
+              key: UniqueKey(),
               background: Container(
                 color: Colors.red,
                 alignment: Alignment.centerLeft,
                 child: Icon(Icons.delete),
               ),
-              child: ListTile(
-                title: Text('Envio numero: $index'),
-                subtitle: Text(_riceType[index]),
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ShippingPage(index: index)));
-                },
+              child: Column(
+                children: [
+                  ListTile(
+                    title: Text('Envio numero: $index'),
+                    subtitle: Text(_riceType[index]),
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => ShippingPage(index: index)));
+                    },
+                  ),
+                  Divider(),
+                ],
               ),
+              onDismissed: (direction){
+                setState(() {
+                  _riceType.removeAt(index);
+                });
+              },
             );
-          },
-          separatorBuilder: (BuildContext context, int index){
-            return Divider();
           },
         ),
       ),
