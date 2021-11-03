@@ -26,8 +26,10 @@ class ShippingPage extends StatelessWidget {
         child: Center(
           child: Column(
             children: <Widget>[
+              Text('Tipo de Arroz: ${_riceType[index]}', style: TextStyle(
+                fontSize: 30
+              ),),
               Text('Codigo de Producto: ${_producto[index]}'),
-              Text('Tipo de Arroz: ${_riceType[index]}'),
               Text('Peso Bruto: ${_pesoBruto[index]}'),
               Text('Peso Tara: ${_pesoTara[index]}'),
               Text('Peso Neto: ${(_pesoBruto[index] - _pesoTara[index])}'),
