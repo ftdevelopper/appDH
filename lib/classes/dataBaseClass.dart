@@ -1,3 +1,5 @@
+import 'dart:math';
+
 class RiceShip{
 
   late String riceType;
@@ -40,12 +42,13 @@ class RiceShipDB{
   factory RiceShipDB.initialize(){
     List<String> _riceType = ['Doble Carolina', 'Integral', 'Largo Fino', 'No se pasa', 'Aromatico', 'Yamani'];
     List<RiceShip> _shipDB = [];
+    Random r = Random();
     for (var i = 0; i < 6; i++) {
-      _shipDB.add(RiceShip(riceType: _riceType[i], pesoBruto: (i * 42 + 5000), pesoTara: (i * 10 + 912), product: i.toString(), cosecha: '...',
+      _shipDB.add(RiceShip(riceType: _riceType[i], pesoBruto: (r.nextInt(3000) + 10000), pesoTara: (r.nextInt(400) + 2000), product: i.toString(), cosecha: '...',
       contrato: '...', procedencia: 'Campo $i', partidanum: '...',
-      llegada: DateTime.now().add(Duration(minutes: i*32 + 30))));
+      llegada: DateTime.now().add(Duration(minutes: r.nextInt(600)))));
     }
-
+    _shipDB.sort((sort1, sort2) => sort1.llegada.compareTo(sort2.llegada));
     return RiceShipDB(shipsDB: _shipDB);
   }
 }
