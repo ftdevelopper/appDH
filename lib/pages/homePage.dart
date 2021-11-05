@@ -64,7 +64,9 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.red,
         child: Icon(Icons.add, color: Colors.white),
         onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => EntryShipPage(database: _database)));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => EntryShipPage(database: _database))).then((value) => setState((){
+            _database.shipsDB.sort((comp1, comp2) => comp1.llegada.compareTo(comp2.llegada));
+          }));
         },
       ),
     );

@@ -1,14 +1,14 @@
 class RiceShip{
 
-  final String riceType;
-  final String product;
-  final String? cosecha;
-  final String? contrato;
-  final String? procedencia;
-  final String? partidanum;
-  final int pesoBruto;
-  final int pesoTara;
-  DateTime llegada;
+  late String riceType;
+  late String product;
+  late String? cosecha;
+  late String? contrato;
+  late String? procedencia;
+  late String? partidanum;
+  late int pesoBruto;
+  late int pesoTara;
+  late DateTime llegada;
 
   RiceShip({required this.riceType, required this.product, this.cosecha, this.contrato, this.procedencia, this.partidanum, required this.pesoBruto, required this.pesoTara, required this.llegada});
 
@@ -16,6 +16,20 @@ class RiceShip{
     return pesoBruto - pesoTara;
   }
 
+  factory RiceShip.emptyEntry(){
+    RiceShip _ship = RiceShip(
+      llegada: DateTime.now(),
+      pesoTara: 0,
+      pesoBruto: 0,
+      partidanum: '...',
+      procedencia: '...',
+      contrato: '...',
+      cosecha: '...',
+      product: '...',
+      riceType: '...',
+    );
+    return _ship;
+  }
 }
 
 class RiceShipDB{
