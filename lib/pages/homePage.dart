@@ -1,4 +1,5 @@
 import 'package:app_dos_hermanos/classes/dataBaseClass.dart';
+import 'package:app_dos_hermanos/pages/entryShipPage.dart';
 import 'package:app_dos_hermanos/pages/shippingPage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -58,6 +59,13 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.red,
+        child: Icon(Icons.add, color: Colors.white),
+        onPressed: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => EntryShipPage(database: _database)));
+        },
       ),
     );
   }
