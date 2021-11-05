@@ -1,5 +1,6 @@
 import 'package:app_dos_hermanos/pages/homePage.dart';
 import 'package:flutter/material.dart';
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,7 +15,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.red,
       ),
-      home: MyHomePage(),
+      home: AnimatedSplashScreen(
+        splash: Image.asset('assets/logo.png'),
+        splashTransition: SplashTransition.fadeTransition,
+        nextScreen: MyHomePage(),
+        duration: 1000,
+      ),
     );
   }
 }
