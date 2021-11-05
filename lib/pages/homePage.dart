@@ -1,3 +1,4 @@
+import 'package:app_dos_hermanos/classes/dataBaseClass.dart';
 import 'package:app_dos_hermanos/pages/shippingPage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -11,7 +12,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  List<String> _riceType = ['Doble Carolina', 'Integral', 'Largo Fino', 'No se pasa', 'Aromatico', 'Yamani'];
+  RiceShipDB _database = RiceShipDB.initialize();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +26,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: _riceType.length,
+                itemCount: _database.shipsDB.length,
                 itemBuilder: (BuildContext context, int index){
                   return Dismissible(
                     key: UniqueKey(),
@@ -37,10 +38,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Column(
                       children: [
                         ListTile(
-                          title: Text('Envio numero: $index (${index * 312 + 1231}kg)'),
-                          subtitle: Text('${_riceType[index]}          Hola de Llegada: ${DateFormat().add_jm().format(DateTime.now().add(Duration(minutes: index*32 + 30)))}'),
+                          title: Text('Envio numero: $index (${_database.shipsDB[index].pesoNeto}kg)'),
+                          subtitle: Text('${_database.shipsDB[index].riceType}          Hola de Llegada: ${DateFormat().add_jm().format(_database.shipsDB[index].llegada)}'),
                           onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => ShippingPage(index: index)));
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => ShippingPage(index: index, database: _database)));
                           },
                         ),
                         Divider(),
@@ -48,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     onDismissed: (direction){
                       setState(() {
-                        _riceType.removeAt(index);
+                        _database.shipsDB.removeAt(index);
                       });
                     },
                   );
