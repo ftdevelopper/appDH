@@ -1,5 +1,6 @@
 import 'package:app_dos_hermanos/pages/shippingPage.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key}) : super(key: key);
@@ -14,40 +15,47 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Dos Hermanos',style:TextStyle(color: Colors.white)),
-        centerTitle: true,
-      ),
       body: SafeArea(
-        child: ListView.builder(
-          itemCount: _riceType.length,
-          itemBuilder: (BuildContext context, int index){
-            return Dismissible(
-              key: UniqueKey(),
-              background: Container(
-                color: Colors.red,
-                alignment: Alignment.centerLeft,
-                child: Icon(Icons.delete),
-              ),
-              child: Column(
-                children: [
-                  ListTile(
-                    title: Text('Envio numero: $index'),
-                    subtitle: Text(_riceType[index]),
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => ShippingPage(index: index)));
+        child: Column(
+          children: <Widget>[
+            Image(
+              image: AssetImage('assets/logo.png'),
+              width: 150,
+              height: 150,
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _riceType.length,
+                itemBuilder: (BuildContext context, int index){
+                  return Dismissible(
+                    key: UniqueKey(),
+                    background: Container(
+                      color: Colors.red,
+                      alignment: Alignment.centerLeft,
+                      child: Icon(Icons.delete),
+                    ),
+                    child: Column(
+                      children: [
+                        ListTile(
+                          title: Text('Envio numero: $index (${index * 312 + 1231}kg)'),
+                          subtitle: Text('${_riceType[index]}          Hola de Llegada: ${DateFormat().add_jm().format(DateTime.now().add(Duration(minutes: index*32 + 30)))}'),
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => ShippingPage(index: index)));
+                          },
+                        ),
+                        Divider(),
+                      ],
+                    ),
+                    onDismissed: (direction){
+                      setState(() {
+                        _riceType.removeAt(index);
+                      });
                     },
-                  ),
-                  Divider(),
-                ],
+                  );
+                },
               ),
-              onDismissed: (direction){
-                setState(() {
-                  _riceType.removeAt(index);
-                });
-              },
-            );
-          },
+            ),
+          ],
         ),
       ),
     );

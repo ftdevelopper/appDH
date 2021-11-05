@@ -19,24 +19,32 @@ class ShippingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dos Hermanos'),
+        title: Text('Especificaciones', style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
       body: SafeArea(
         child: Center(
           child: Column(
             children: <Widget>[
+              Image(
+              image: AssetImage('assets/logo.png'),
+              width: 150,
+              height: 150,
+            ),
               Text('Tipo de Arroz: ${_riceType[index]}', style: TextStyle(
-                fontSize: 30
+                fontSize: 25
               ),),
+              Divider(),
               Text('Codigo de Producto: ${_producto[index]}'),
               Text('Peso Bruto: ${_pesoBruto[index]}'),
               Text('Peso Tara: ${_pesoTara[index]}'),
-              Text('Peso Neto: ${(_pesoBruto[index] - _pesoTara[index])}'),
+              Text('Peso Neto: ${(_pesoBruto[index] - _pesoTara[index])}', style: TextStyle(fontWeight: FontWeight.bold),),
+              Divider(),
               Text('Procedencia: ${_procedencia[0]}'),
               Text('Cosecha: $_cosecha'),
               Text('Contrato: $_contrato'),
               Text('Nuemro de Partida: $_partidaNumero'),
+              Divider(),
               Text('Fecha de Envio: ${DateFormat.yMd().add_jm().format(DateTime.now().subtract(Duration(hours: index)))}'),
             ]
           ),
