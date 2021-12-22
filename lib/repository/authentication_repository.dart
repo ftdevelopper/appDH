@@ -1,10 +1,7 @@
 import 'dart:async';
-import 'package:app_dos_hermanos/blocs/authBloc/authbloc_bloc.dart';
 import 'package:app_dos_hermanos/classes/user.dart';
-import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:meta/meta.dart';
 
 //Cuando ocurre error al registrarse
 class SignUpFailure implements Exception {}
@@ -41,7 +38,6 @@ class AuthenticationRepository {
     required String email,
     required String password
   }) async {
-    assert(email !=null && password != null);
     try {
       await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
     } on Exception {
