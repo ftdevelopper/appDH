@@ -7,6 +7,10 @@ import 'package:intl/intl.dart';
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key}) : super(key: key);
 
+  static Route route(){
+    return MaterialPageRoute(builder: (_) => MyHomePage());
+  }
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
