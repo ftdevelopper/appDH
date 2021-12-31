@@ -1,3 +1,4 @@
+import 'package:app_dos_hermanos/blocs/login_bloc/login_bloc.dart';
 import 'package:app_dos_hermanos/pages/homePage.dart';
 import 'package:app_dos_hermanos/pages/login.dart';
 import 'package:app_dos_hermanos/pages/splash.dart';
@@ -20,32 +21,23 @@ void main() async {
   EquatableConfig.stringify = kDebugMode;
   BlocOverrides.runZoned(() {
     runApp(MyApp(authenticationRepository: AuthenticationRepository()));
-  },
-  blocObserver: SimpleBlocObserver()
-  );
+  }, blocObserver: SimpleBlocObserver());
 }
 
 class MyApp extends StatelessWidget {
-
   MyApp({Key? key, required this.authenticationRepository}) : super(key: key);
-  
+
   final AuthenticationRepository authenticationRepository;
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider.value(
-      value: authenticationRepository,
-      child: BlocProvider(
-        create: (_) => AuthenticationBloc(authenticationRepository: authenticationRepository),
-        child: AppView(),
-      ),
-    );
+    return AppView(authenticationRepository: authenticationRepository);
   }
 }
 
-
 class AppView extends StatefulWidget {
-  AppView({Key? key}) : super(key: key);
+  final AuthenticationRepository authenticationRepository;
+  AppView({Key? key, required this.authenticationRepository}) : super(key: key);
 
   @override
   _AppViewState createState() => _AppViewState();
@@ -53,38 +45,44 @@ class AppView extends StatefulWidget {
 
 class _AppViewState extends State<AppView> {
   final _navigatorKey = GlobalKey<NavigatorState>();
+  // ignore: unused_element
   NavigatorState? get _navigator => _navigatorKey.currentState;
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => AuthenticationBloc(authenticationRepository: AuthenticationRepository()))
+        BlocProvider(create: (context) => AuthenticationBloc(authenticationRepository: widget.authenticationRepository)),
+        BlocProvider(create: (context) => LoginBloc(authenticationRepository: widget.authenticationRepository))
       ],
       child: MaterialApp(
-        theme: theme,
-        navigatorKey: _navigatorKey,
-        builder: (context, child){
-          return BlocBuilder<AuthenticationBloc, AuthenticationState>(builder: (_, state){
-            switch (state.status){
-              case AuthenticationStatus.authenticated:
-                return MyHomePage();
-              
-              case AuthenticationStatus.unknown:
-                return LoginPage();
-              
-              case AuthenticationStatus.unaunthenticated:
-                return LoginPage();
-               
-              default: 
-                return MyHomePage();
-              
-            }
+          theme: theme,
+          navigatorKey: _navigatorKey,
+          debugShowCheckedModeBanner: false,
+          builder: (context, child) {
+            return BlocBuilder<AuthenticationBloc, AuthenticationState>(
+              builder: (_, state) {
+                switch (state.status) {
+                  case AuthenticationStatus.authenticated:
+                    return MyHomePage();
+
+                  case AuthenticationStatus.unknown:
+                    return LoginPage(
+                      authenticationRepository: widget.authenticationRepository,
+                    );
+
+                  case AuthenticationStatus.unaunthenticated:
+                    return LoginPage(
+                      authenticationRepository: widget.authenticationRepository,
+                    );
+
+                  default:
+                    return MyHomePage();
+                }
+              },
+            );
           },
-          );
-        },
-        onGenerateRoute: (_) => SplashPage.route()
-      ),
+          onGenerateRoute: (_) => SplashPage.route()),
     );
   }
 }

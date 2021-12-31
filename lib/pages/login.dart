@@ -1,6 +1,4 @@
-import 'package:app_dos_hermanos/blocs/authentication_bloc/authenticaiton_bloc.dart';
 import 'package:app_dos_hermanos/blocs/login_bloc/login_bloc.dart';
-import 'package:app_dos_hermanos/classes/user.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,11 +11,11 @@ class LoginPage extends StatelessWidget {
   const LoginPage({Key? key, required this.authenticationRepository}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build( BuildContext context1 ) {
     return Scaffold(
       appBar: AppBar(title: const Text('Login'), centerTitle: true),
       body: BlocProvider<LoginBloc>(
-        create: (context) => LoginBloc(authenticationRepository: authenticationRepository),
+        create: (context1) => LoginBloc(authenticationRepository: authenticationRepository),
         child: LoginForm(authenticationRepository: authenticationRepository),
       )
     );

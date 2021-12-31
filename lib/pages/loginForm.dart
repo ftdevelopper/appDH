@@ -40,8 +40,8 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return BlocListener(
+  Widget build( _ ) {
+    return BlocListener<LoginBloc,LoginState>(
       listener: (context, state){
         if (state is FailLogin){
           ScaffoldMessenger.of(context)
@@ -94,6 +94,7 @@ class _LoginFormState extends State<LoginForm> {
                       return !state.isEmailValid? 'Invalid Email' : '';
                     },
                   ),
+                  SizedBox(height: 20),
                   TextFormField(
                     controller: _passwordController,
                     decoration: InputDecoration(
