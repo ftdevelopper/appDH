@@ -2,6 +2,9 @@ import 'package:app_dos_hermanos/blocs/authentication_bloc/authenticaiton_bloc.d
 import 'package:app_dos_hermanos/blocs/login_bloc/login_bloc.dart';
 import 'package:app_dos_hermanos/classes/user.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
+import 'package:app_dos_hermanos/widgets/create_account_button.dart';
+import 'package:app_dos_hermanos/widgets/google_login_button.dart';
+import 'package:app_dos_hermanos/widgets/login_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -109,7 +112,13 @@ class _LoginFormState extends State<LoginForm> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                        
+                        LoginButton(
+                          onPressed: isLoginButtonEnabled(state)
+                          ? _onFormSubmitted
+                          : null
+                        ),
+                        GoogleLoginButton(),
+                        CreateAccountButton(authenticationRepository: _authenticationRepository),
                       ],
                     ),
                   ),
@@ -135,5 +144,11 @@ class _LoginFormState extends State<LoginForm> {
 
   void _onPasswordChanged(){
     _loginBloc.add(PasswordChanged(password: _passwordController.text));
+  }
+
+  void _onFormSubmitted(){
+    _loginBloc.add(
+      LoginWithCredentialPressed(email: _emailController.text, password: _passwordController.text)
+    );
   }
 }
