@@ -55,8 +55,6 @@ class LoginState extends Equatable {
   List<Object> get props => [];
 }
 
-class LoginInitial extends LoginState {}
-
 class EmptyLogin extends LoginState {
   EmptyLogin() : super (
     isEmailValid: true,
