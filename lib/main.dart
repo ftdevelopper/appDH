@@ -31,7 +31,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppView(authenticationRepository: authenticationRepository);
+    return RepositoryProvider.value(
+      value: authenticationRepository,
+      child:AppView(authenticationRepository: authenticationRepository),
+    );
   }
 }
 
@@ -60,29 +63,44 @@ class _AppViewState extends State<AppView> {
           navigatorKey: _navigatorKey,
           debugShowCheckedModeBanner: false,
           builder: (context, child) {
-            return BlocBuilder<AuthenticationBloc, AuthenticationState>(
-              builder: (_, state) {
+            print('hola ');
+            return BlocListener<AuthenticationBloc, AuthenticationState>(
+              bloc: AuthenticationBloc(authenticationRepository: widget.authenticationRepository),
+              listenWhen: (previous, actual){
+                if(previous is AuthenticationInitialState || actual is AuthenticationInitialState){
+                  return true;
+                } else {return true;}
+              },
+              listener: (context, state) {
+                print('${state.status}');
                 switch (state.status) {
                   case AuthenticationStatus.authenticated:
-                    return MyHomePage();
-
+                    _navigator!.pushAndRemoveUntil<void>(MyHomePage.route(), (route) => false);
+                    //return Builder(builder: (BuildContext context) => MyHomePage());
+                  break;
                   case AuthenticationStatus.unknown:
-                    return LoginPage(
-                      authenticationRepository: widget.authenticationRepository,
-                    );
-
+                  _navigator!.pushAndRemoveUntil<void>(MaterialPageRoute(builder: (_) => LoginPage(authenticationRepository: widget.authenticationRepository,)), (route) => false);
+                    /*return Builder(
+                      builder: (BuildContext context) => LoginPage(
+                        authenticationRepository: widget.authenticationRepository,
+                      ),
+                    )*/
+                  break;
                   case AuthenticationStatus.unaunthenticated:
-                    return LoginPage(
-                      authenticationRepository: widget.authenticationRepository,
-                    );
-
-                  default:
-                    return MyHomePage();
+                  _navigator!.pushAndRemoveUntil<void>(MaterialPageRoute(builder: (_) => LoginPage(authenticationRepository: widget.authenticationRepository)), (route) => false);
+                    /*return Builder(
+                      builder: (BuildContext context) => LoginPage(
+                        authenticationRepository: widget.authenticationRepository,
+                      ),
+                    );*/
+                    break;
+                  default: break;
                 }
               },
+              child: child,
             );
           },
-          onGenerateRoute: (_) => SplashPage.route()),
-    );
+          onGenerateRoute: (_) => MaterialPageRoute(builder: (_) => MyHomePage())
+    ));
   }
 }

@@ -11,20 +11,18 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   final AuthenticationRepository _authenticationRepository;
   
   AuthenticationBloc({ required AuthenticationRepository authenticationRepository})
-      : _authenticationRepository = authenticationRepository,
-      super (AuthenticationInitialState()){
+    : _authenticationRepository = authenticationRepository,
+    super (AuthenticationInitialState()){
         
-        on<AuthenticationEvent>((event, emit){
-          if (event is AuthenticationUserChanged){
-            event.user != User.empty
-            ? emit(AuthenticatedUser(user: event.user))
-            : emit (UnknownUser());
-          }
+      on<AuthenticationUserChanged>((event, emit){
 
-          if (event is AuthenticationLogoutRequested){
-            _authenticationRepository.logOut();
-          }
-        }
-    );
+        event.user != User.empty
+        ? emit(AuthenticatedUser(user: event.user))
+        : emit (UnknownUser());
+      });
+
+      on<AuthenticationLogoutRequested>((event, emit){
+        _authenticationRepository.logOut();
+      });
   }
 }

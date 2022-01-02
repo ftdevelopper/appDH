@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "668093293936",
+    "project_id": "dos-hermanos",
+    "storage_bucket": "dos-hermanos.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:668093293936:android:ca910e160bf213ba52dbb5",
+        "android_client_info": {
+          "package_name": "com.example.app_dos_hermanos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "668093293936-k4ig0unb78dbtn6f9va8j9fgt1e089uk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.app_dos_hermanos",
+            "certificate_hash": "a7da598b340260654078eeb6f10ec94886362213"
+          }
+        },
+        {
+          "client_id": "668093293936-mfr057chppbcll9s1e5gkogodcecqt9g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDD618G2IZhZOcsVEyOAPEvuEjDlB-jpRo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "668093293936-mfr057chppbcll9s1e5gkogodcecqt9g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

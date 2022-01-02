@@ -67,6 +67,16 @@ class _LoginFormState extends State<LoginForm> {
         if (state is SuccesLogin){
           BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationUserChanged(User(email: _emailController.text,id: '',photo: '',name: '')));
         }
+        if (state is LoadingLogin){
+          ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(SnackBar(
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[Text('Logging in...'), CircularProgressIndicator()],
+            ),
+          ));
+        }
       },
       child: BlocBuilder<LoginBloc, LoginState>(
         builder: (context, state){

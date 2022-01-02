@@ -11,11 +11,11 @@ class LoginPage extends StatelessWidget {
   const LoginPage({Key? key, required this.authenticationRepository}) : super(key: key);
 
   @override
-  Widget build( BuildContext context1 ) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Login'), centerTitle: true),
       body: BlocProvider<LoginBloc>(
-        create: (context1) => LoginBloc(authenticationRepository: authenticationRepository),
+        create: (context) => LoginBloc(authenticationRepository: authenticationRepository),
         child: LoginForm(authenticationRepository: authenticationRepository),
       )
     );
