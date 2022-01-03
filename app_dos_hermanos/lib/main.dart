@@ -1,7 +1,7 @@
 import 'package:app_dos_hermanos/blocs/login_bloc/login_bloc.dart';
 import 'package:app_dos_hermanos/pages/homePage.dart';
-import 'package:app_dos_hermanos/pages/login.dart';
-import 'package:app_dos_hermanos/pages/splash.dart';
+import 'package:app_dos_hermanos/pages/login/login.dart';
+import 'package:app_dos_hermanos/pages/login/splash.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:app_dos_hermanos/theme.dart';
 //import 'package:bloc/bloc.dart';

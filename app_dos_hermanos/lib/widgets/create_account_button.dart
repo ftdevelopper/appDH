@@ -1,3 +1,4 @@
+import 'package:app_dos_hermanos/pages/register/register_screen.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,7 @@ class CreateAccountButton extends StatelessWidget {
       onPressed: (){
         Navigator.of(context).push(
           MaterialPageRoute(builder: (context){
-            return Container();
+            return RegisterScreen(authenticationRepository: authenticationRepository);
           })
         );
       },

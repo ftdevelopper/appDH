@@ -1,5 +1,5 @@
 import 'package:app_dos_hermanos/blocs/register_bloc/register_bloc.dart';
-import 'package:app_dos_hermanos/pages/register_form.dart';
+import 'package:app_dos_hermanos/pages/register/register_form.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
