@@ -12,14 +12,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc({required this.authenticationRepository})
   : super(EmptyLogin()){
     on<EmailChanged>((event, emit) {
-      emit(state.update(
-        isEmailvalid: Validators.isValidEmail(event.email)
+      emit(new UpdateLogin(
+        isEmailValid: Validators.isValidEmail(event.email),
+        isPasswordValid: state.isPasswordValid
       ));
     });
 
     on<PasswordChanged>((event,emit){
-      emit(state.update(
-        isPasswordBalid: Validators.isValidPassword(event.password)
+      emit(new UpdateLogin(
+        isEmailValid: state.isEmailValid,
+        isPasswordValid: Validators.isValidPassword(event.password)
       ));
     });
 
