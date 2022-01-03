@@ -100,6 +100,7 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                     keyboardType: TextInputType.emailAddress,
                     autocorrect: false,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (_){
                       return !state.isEmailValid? 'Invalid Email' : '';
                     },
@@ -108,12 +109,13 @@ class _LoginFormState extends State<LoginForm> {
                   TextFormField(
                     controller: _passwordController,
                     decoration: InputDecoration(
-                      icon: Icon(Icons.password),
+                      icon: Icon(Icons.lock),
                       labelText: 'Password',
                     ),
                     obscureText: true,
                     keyboardType: TextInputType.emailAddress,
                     autocorrect: false,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (_){
                       return !state.isPasswordValid? 'Invalid Password' : '';
                     },

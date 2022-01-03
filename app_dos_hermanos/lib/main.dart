@@ -1,4 +1,5 @@
 import 'package:app_dos_hermanos/blocs/login_bloc/login_bloc.dart';
+import 'package:app_dos_hermanos/blocs/register_bloc/register_bloc.dart';
 import 'package:app_dos_hermanos/pages/homePage.dart';
 import 'package:app_dos_hermanos/pages/login/login.dart';
 import 'package:app_dos_hermanos/pages/login/splash.dart';
@@ -56,7 +57,8 @@ class _AppViewState extends State<AppView> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => AuthenticationBloc(authenticationRepository: widget.authenticationRepository)),
-        BlocProvider(create: (context) => LoginBloc(authenticationRepository: widget.authenticationRepository))
+        BlocProvider(create: (context) => LoginBloc(authenticationRepository: widget.authenticationRepository)),
+        BlocProvider(create: (context) => RegisterBloc(authenticationRepository: widget.authenticationRepository))
       ],
       child: MaterialApp(
           theme: theme,

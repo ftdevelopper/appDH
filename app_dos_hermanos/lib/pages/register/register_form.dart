@@ -34,7 +34,7 @@ class _RegisterFormState extends State<RegisterForm> {
   }
   @override
   Widget build(BuildContext context) {
-    return BlocListener(
+    return BlocListener<RegisterBloc,RegisterState>(
       listener: (context, state){
         if (state is FailRegister){
           ScaffoldMessenger.of(context)
@@ -86,21 +86,21 @@ class _RegisterFormState extends State<RegisterForm> {
                   ),
                   keyboardType: TextInputType.emailAddress,
                   autocorrect: false,
-                  autovalidateMode: AutovalidateMode.always,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (_){
                     return !state.isEmailValid? 'Invalid Email' : '';
                   },
                 ),
                 SizedBox(height: 20,),
                 TextFormField(
-                  controller: _emailController,
+                  controller: _passwordController,
                   decoration: InputDecoration(
                     icon: Icon(Icons.lock),
                     labelText: 'Password',
                   ),
                   keyboardType: TextInputType.emailAddress,
                   autocorrect: false,
-                  autovalidateMode: AutovalidateMode.always,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (_){
                     return !state.isPasswordValid? 'Invalid Password' : '';
                   },
