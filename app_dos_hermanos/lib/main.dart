@@ -47,7 +47,7 @@ class AppView extends StatefulWidget {
 }
 
 class _AppViewState extends State<AppView> {
-  final _navigatorKey = GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   // ignore: unused_element
   NavigatorState? get _navigator => _navigatorKey.currentState;
 
@@ -63,36 +63,17 @@ class _AppViewState extends State<AppView> {
           navigatorKey: _navigatorKey,
           debugShowCheckedModeBanner: false,
           builder: (context, child) {
-            print('hola ');
             return BlocListener<AuthenticationBloc, AuthenticationState>(
-              bloc: AuthenticationBloc(authenticationRepository: widget.authenticationRepository),
-              listenWhen: (previous, actual){
-                if(previous is AuthenticationInitialState || actual is AuthenticationInitialState){
-                  return true;
-                } else {return true;}
-              },
               listener: (context, state) {
-                print('${state.status}');
                 switch (state.status) {
                   case AuthenticationStatus.authenticated:
                     _navigator!.pushAndRemoveUntil<void>(MyHomePage.route(), (route) => false);
-                    //return Builder(builder: (BuildContext context) => MyHomePage());
                   break;
                   case AuthenticationStatus.unknown:
-                  _navigator!.pushAndRemoveUntil<void>(MaterialPageRoute(builder: (_) => LoginPage(authenticationRepository: widget.authenticationRepository,)), (route) => false);
-                    /*return Builder(
-                      builder: (BuildContext context) => LoginPage(
-                        authenticationRepository: widget.authenticationRepository,
-                      ),
-                    )*/
+                    _navigator!.pushAndRemoveUntil<void>(MaterialPageRoute(builder: (_) => LoginPage(authenticationRepository: widget.authenticationRepository,)), (route) => false);
                   break;
                   case AuthenticationStatus.unaunthenticated:
-                  _navigator!.pushAndRemoveUntil<void>(MaterialPageRoute(builder: (_) => LoginPage(authenticationRepository: widget.authenticationRepository)), (route) => false);
-                    /*return Builder(
-                      builder: (BuildContext context) => LoginPage(
-                        authenticationRepository: widget.authenticationRepository,
-                      ),
-                    );*/
+                    _navigator!.pushAndRemoveUntil<void>(MaterialPageRoute(builder: (_) => LoginPage(authenticationRepository: widget.authenticationRepository)), (route) => false);
                     break;
                   default: break;
                 }
@@ -100,7 +81,7 @@ class _AppViewState extends State<AppView> {
               child: child,
             );
           },
-          onGenerateRoute: (_) => MaterialPageRoute(builder: (_) => MyHomePage())
+          onGenerateRoute: (_) => MaterialPageRoute(builder: (_) => SplashPage())
     ));
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app_dos_hermanos/blocs/authentication_bloc/authenticaiton_bloc.dart';
 import 'package:app_dos_hermanos/classes/user.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +14,9 @@ class SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationUserChanged(User.empty));
+
+    _navigateToLogin(context);
+    
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -26,5 +30,12 @@ class SplashPage extends StatelessWidget {
         ],
       ),
     );
+  }
+  _navigateToLogin(context){
+
+    Timer(Duration(seconds: 1),(){
+      BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationUserChanged(User.empty));
+    });
+    
   }
 }

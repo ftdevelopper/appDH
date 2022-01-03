@@ -19,10 +19,13 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         event.user != User.empty
         ? emit(AuthenticatedUser(user: event.user))
         : emit (UnknownUser());
+
       });
 
       on<AuthenticationLogoutRequested>((event, emit){
+
         _authenticationRepository.logOut();
+        
       });
   }
 }
