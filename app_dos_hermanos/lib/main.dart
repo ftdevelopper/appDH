@@ -1,9 +1,11 @@
 import 'package:app_dos_hermanos/blocs/login_bloc/login_bloc.dart';
 import 'package:app_dos_hermanos/blocs/register_bloc/register_bloc.dart';
+import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
 import 'package:app_dos_hermanos/pages/homePage.dart';
 import 'package:app_dos_hermanos/pages/login/login.dart';
 import 'package:app_dos_hermanos/pages/login/splash.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
+import 'package:app_dos_hermanos/repository/shipping_repository.dart';
 import 'package:app_dos_hermanos/theme.dart';
 //import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -29,19 +31,21 @@ class MyApp extends StatelessWidget {
   MyApp({Key? key, required this.authenticationRepository}) : super(key: key);
 
   final AuthenticationRepository authenticationRepository;
+  final ShippingRepository shippingsRepository = ShippingRepository();
 
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider.value(
       value: authenticationRepository,
-      child:AppView(authenticationRepository: authenticationRepository),
+      child:AppView(authenticationRepository: authenticationRepository, shippingRepository: shippingsRepository),
     );
   }
 }
 
 class AppView extends StatefulWidget {
   final AuthenticationRepository authenticationRepository;
-  AppView({Key? key, required this.authenticationRepository}) : super(key: key);
+  final ShippingRepository shippingRepository;
+  AppView({Key? key, required this.authenticationRepository, required this.shippingRepository}) : super(key: key);
 
   @override
   _AppViewState createState() => _AppViewState();
@@ -58,7 +62,8 @@ class _AppViewState extends State<AppView> {
       providers: [
         BlocProvider(create: (context) => AuthenticationBloc(authenticationRepository: widget.authenticationRepository)),
         BlocProvider(create: (context) => LoginBloc(authenticationRepository: widget.authenticationRepository)),
-        BlocProvider(create: (context) => RegisterBloc(authenticationRepository: widget.authenticationRepository))
+        BlocProvider(create: (context) => RegisterBloc(authenticationRepository: widget.authenticationRepository)),
+        BlocProvider(create: (context) => ShippingsBloc(shippingRepository: widget.shippingRepository)),
       ],
       child: MaterialApp(
           theme: theme,
@@ -69,7 +74,7 @@ class _AppViewState extends State<AppView> {
               listener: (context, state) {
                 switch (state.status) {
                   case AuthenticationStatus.authenticated:
-                    _navigator!.pushAndRemoveUntil<void>(MyHomePage.route(), (route) => false);
+                    _navigator!.pushAndRemoveUntil<void>(ShippingsPage.route(), (route) => false);
                   break;
                   case AuthenticationStatus.unknown:
                     _navigator!.pushAndRemoveUntil<void>(MaterialPageRoute(builder: (_) => LoginPage(authenticationRepository: widget.authenticationRepository,)), (route) => false);
