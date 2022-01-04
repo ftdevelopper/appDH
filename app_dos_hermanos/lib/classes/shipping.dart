@@ -21,7 +21,22 @@ class Shipping {
     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
     return Shipping(
       patent: data['patent'],
-      id: snapshot.id
+      id: snapshot.id,
+      remiterFullWeight: data['remiterFullWeight'],
+      remiterFullWeightTime: data['remiterFullWeightTime'],
+      remiterFullWeightUser: data['remiterFullWeightUser'],
+      remiterLocation: data['remiterLocation'],
+      remiterTara: data['remiterTara'],
+      remiterTaraTime: data['remiterTaraTime'],
+      remiterTaraUser: data['remiterTaraUser'],
+      reciverFullWeight: data['reciverFullWeight'],
+      reciverFullWeightTime: data['reciverFullWeight'],
+      reciverFullWeightUser: data['reciverFullWeightUser'],
+      reciverLocation: data['reciverLocation'],
+      reciverTara: data['reciverTara'],
+      reciverTaraTime: data['reciverTaraTime'],
+      reciverTaraUser: data['reciverTaraUser'],
+      riceType: data['riceType']
     );
   }
 }
