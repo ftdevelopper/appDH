@@ -4,6 +4,7 @@ import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
 import 'package:app_dos_hermanos/pages/homePage.dart';
 import 'package:app_dos_hermanos/pages/login/login.dart';
 import 'package:app_dos_hermanos/pages/login/splash.dart';
+import 'package:app_dos_hermanos/pages/shippings/shippings_page.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:app_dos_hermanos/repository/shipping_repository.dart';
 import 'package:app_dos_hermanos/theme.dart';
@@ -74,7 +75,7 @@ class _AppViewState extends State<AppView> {
               listener: (context, state) {
                 switch (state.status) {
                   case AuthenticationStatus.authenticated:
-                    _navigator!.pushAndRemoveUntil<void>(ShippingsPage.route(), (route) => false);
+                    _navigator!.pushAndRemoveUntil<void>(MaterialPageRoute(builder: (_) => ShippingsPage()), (route) => false);
                   break;
                   case AuthenticationStatus.unknown:
                     _navigator!.pushAndRemoveUntil<void>(MaterialPageRoute(builder: (_) => LoginPage(authenticationRepository: widget.authenticationRepository,)), (route) => false);
