@@ -12,40 +12,64 @@ class ShippingsPage extends StatefulWidget {
 
 class _ShippingsPageState extends State<ShippingsPage> {
   List<Shipping> shippingList = [];
+  
   @override
   Widget build(BuildContext context) {
     BlocProvider.of<ShippingsBloc>(context).add(LoadShippings());
-    return BlocBuilder<ShippingsBloc, ShippingsState>(
-      builder: (context, state){
-        if (state is ShippingsLoading){
-          return Center(child: CircularProgressIndicator(),);
+    return Scaffold(
+      appBar: AppBar(title: Text('Shippings'),centerTitle: true,),
+      body: BlocBuilder<ShippingsBloc, ShippingsState>(
+        builder: (context, state){
+          if (state is ShippingsLoading){
+            return Center(child: CircularProgressIndicator(),);
+          }
+          if (state is ShippingsNotLoaded){
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(Icons.error),
+                  Text('Cannot load shippings'),
+                  ElevatedButton(
+                    onPressed: (){
+                      BlocProvider.of<ShippingsBloc>(context).add(LoadShippings());
+                    },
+                    child: Text('Reload'),
+                  ),
+                ],
+              ),
+            );
+          }
+          if (state is ShippingsLoaded){
+            shippingList = state.shippings;
+            return Container(
+              child: shippingList.length == 0
+              ? Center(
+                child: Column(
+                  children: [
+                    Text('No Shipings Avaliable'),
+                    ElevatedButton(
+                    onPressed: (){
+                      BlocProvider.of<ShippingsBloc>(context).add(LoadShippings());
+                    },
+                    child: Text('Reload'),
+                  ),
+                  ]
+                )
+              )
+              : ListView.builder(
+                itemCount: shippingList.length,
+                itemBuilder: (_, index){
+                  return shippingsUI(shippingList[index]);
+                },
+              )
+            );
+          }
+          else {
+            return Container();
+          }
         }
-        if (state is ShippingsNotLoaded){
-          return Center(
-            child: Column(
-              children: <Widget>[
-                Icon(Icons.error),
-                Text('Cannot load shippings'),
-              ],
-            ),
-          );
-        }
-        if (state is ShippingsLoaded){
-          return Container(
-            child: shippingList.length == 0
-            ? Center(child: Text('No Shipings Avaliable'))
-            : ListView.builder(
-              itemCount: shippingList.length,
-              itemBuilder: (_, index){
-                return shippingsUI(shippingList[index]);
-              },
-            )
-          );
-        }
-        else {
-          return Container();
-        }
-      }
+      ),
     );
   }
 

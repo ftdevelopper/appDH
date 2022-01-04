@@ -11,10 +11,13 @@ class ShippingsBloc extends Bloc<ShippingsEvent, ShippingsState> {
   final ShippingRepository shippingRepository;
   ShippingsBloc({required this.shippingRepository}) : super(ShippingsLoading()) {
     on<LoadShippings>((event, emit) async {
+      emit(ShippingsLoading());
       try {
         final List<Shipping> shippings = await shippingRepository.getSippings().first;
         emit(ShippingsLoaded(shippings: shippings));
-      } catch (_) {
+        print('Shipping recived: ${shippings.toString()}');
+      } catch (e) {
+        print('Error recived: $e');
         emit(ShippingsNotLoaded());
       }
     });
