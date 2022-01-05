@@ -30,7 +30,7 @@ class _NewShippingState extends State<NewShipping> {
   void initState() {
     _patentController = TextEditingController();
     _locationController = TextEditingController();
-    _shipping = widget.shipping ?? Shipping(patent: '', shippingState: ShippingState.newShipping);
+    _shipping = widget.shipping ?? Shipping(patent: '', shippingState: ShippingStatus.newShipping);
     _actualUser().then((value) => _user = value);
     super.initState();
   }
@@ -62,7 +62,7 @@ class _NewShippingState extends State<NewShipping> {
               children: <Widget>[
                 FutureBuilder(
                   future: _actualUser(),
-                  initialData: '',
+                  initialData: User.empty,
                   builder: (context, AsyncSnapshot snapshot){
                     return Text(snapshot.data.id);
                   },

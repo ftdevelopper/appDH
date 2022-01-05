@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-enum ShippingState{newShipping, loadingShipping, inTravelShiping, downloadedShipping}
+enum ShippingStatus{newShipping, loadingShipping, inTravelShipping, downloadedShipping, unknownStatus, deletedShipping}
 
 class Shipping {
   String patent;
-  ShippingState shippingState;
-  String? id;
+  ShippingStatus shippingState;
   String? remiterTara, remiterFullWeight, reciverTara, reciverFullWeight;
   String? remiterTaraTime, remiterFullWeightTime, reciverTaraTime, reciverFullWeightTime;
   String? remiterTaraUser, remiterFullWeightUser, reciverTaraUser, reciverFullWeightUser;
@@ -14,7 +13,7 @@ class Shipping {
 
   Shipping({
     required this.shippingState,
-    required this.patent, this.id,
+    required this.patent,
     this.remiterTara, this.remiterFullWeight, this.reciverTara, this.reciverFullWeight, 
     this.remiterTaraTime, this.remiterFullWeightTime, this.reciverTaraTime, this.reciverFullWeightTime, 
     this.remiterTaraUser, this.remiterFullWeightUser, this.reciverTaraUser, this.reciverFullWeightUser, 
@@ -25,9 +24,8 @@ class Shipping {
   static Shipping fromSnapShot(DocumentSnapshot snapshot) {
     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
     return Shipping(
-      shippingState: data['shippingState'],
+      shippingState: statusFromString(data['shippingState']),
       patent: data['patent'],
-      id: snapshot.id,
       remiterFullWeight: data['remiterFullWeight'],
       remiterFullWeightTime: data['remiterFullWeightTime'],
       remiterFullWeightUser: data['remiterFullWeightUser'],
@@ -45,4 +43,40 @@ class Shipping {
       riceType: data['riceType']
     );
   }
+
+  String getStatus (ShippingStatus status){
+    switch (status){
+      case ShippingStatus.newShipping:
+        return 'newShipping';
+      case ShippingStatus.loadingShipping:
+        return 'loadingShipping';
+      case ShippingStatus.inTravelShipping:
+        return 'inTravelShipping';
+      case ShippingStatus.downloadedShipping:
+        return 'sownloadedShipping';
+      case ShippingStatus.unknownStatus:
+        return 'unknownStatus';
+      case ShippingStatus.deletedShipping:
+        return 'deletedShipping';
+    }
+  }
 }
+
+ShippingStatus statusFromString(String string){
+    switch (string){
+      case 'newShipping':
+        return ShippingStatus.newShipping;
+      case 'loadingShipping':
+        return ShippingStatus.loadingShipping;
+      case 'inTravelShipping':
+        return ShippingStatus.inTravelShipping;
+      case 'downloadedShipping':
+        return ShippingStatus.downloadedShipping;
+      case 'unknownStatus':
+        return ShippingStatus.unknownStatus;
+      case 'deletedShiping': 
+        return ShippingStatus.unknownStatus;
+      default:
+        return ShippingStatus.unknownStatus;
+    }
+  }
