@@ -19,8 +19,9 @@ class ShippingRepository {
 
   Map<String, String>_mapShipping(Shipping shipping){
     Map<String, String> _shippingMap = {
+      'shippingState': shipping.shippingState.toString(),
       'patent': shipping.patent,
-      'id': shipping.id,
+      'id': shipping.id ?? '',
       'remiterFullWeight': shipping.remiterFullWeight ?? '',
       'remiterFullWeightTime': shipping.remiterFullWeightTime ?? '',
       'remiterFullWeightUser': shipping.remiterFullWeightUser ?? '',

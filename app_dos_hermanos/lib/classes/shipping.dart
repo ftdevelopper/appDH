@@ -1,7 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+enum ShippingState{newShipping, loadingShipping, inTravelShiping, downloadedShipping}
+
 class Shipping {
-  final String patent, id;
+  final String patent;
+  final ShippingState shippingState;
+  final String? id;
   final String? remiterTara, remiterFullWeight, reciverTara, reciverFullWeight;
   final String? remiterTaraTime, remiterFullWeightTime, reciverTaraTime, reciverFullWeightTime;
   final String? remiterTaraUser, remiterFullWeightUser, reciverTaraUser, reciverFullWeightUser;
@@ -9,7 +13,8 @@ class Shipping {
   final String? riceType;
 
   Shipping({
-    required this.patent, required this.id,
+    required this.shippingState,
+    required this.patent, this.id,
     this.remiterTara, this.remiterFullWeight, this.reciverTara, this.reciverFullWeight, 
     this.remiterTaraTime, this.remiterFullWeightTime, this.reciverTaraTime, this.reciverFullWeightTime, 
     this.remiterTaraUser, this.remiterFullWeightUser, this.reciverTaraUser, this.reciverFullWeightUser, 
@@ -20,6 +25,7 @@ class Shipping {
   static Shipping fromSnapShot(DocumentSnapshot snapshot) {
     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
     return Shipping(
+      shippingState: data['shippingState'],
       patent: data['patent'],
       id: snapshot.id,
       remiterFullWeight: data['remiterFullWeight'],
