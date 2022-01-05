@@ -1,14 +1,12 @@
 import 'package:app_dos_hermanos/blocs/login_bloc/login_bloc.dart';
 import 'package:app_dos_hermanos/blocs/register_bloc/register_bloc.dart';
 import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
-import 'package:app_dos_hermanos/pages/homePage.dart';
 import 'package:app_dos_hermanos/pages/login/login.dart';
 import 'package:app_dos_hermanos/pages/login/splash.dart';
 import 'package:app_dos_hermanos/pages/shippings/shippings_page.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:app_dos_hermanos/repository/shipping_repository.dart';
 import 'package:app_dos_hermanos/theme.dart';
-//import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -17,7 +15,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'blocs/authentication_bloc/authenticaiton_bloc.dart';
 import 'blocs/simple_bloc_observer.dart';
-//import 'blocs/simple_bloc_observer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,7 +51,7 @@ class AppView extends StatefulWidget {
 
 class _AppViewState extends State<AppView> {
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
-  // ignore: unused_element
+
   NavigatorState? get _navigator => _navigatorKey.currentState;
 
   @override
