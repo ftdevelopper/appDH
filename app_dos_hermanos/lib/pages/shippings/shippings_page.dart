@@ -1,16 +1,21 @@
 import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
 import 'package:app_dos_hermanos/classes/shipping.dart';
+import 'package:app_dos_hermanos/pages/shippings/new_shipping.dart';
+import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ShippingsPage extends StatefulWidget {
-  ShippingsPage({Key? key}) : super(key: key);
+  final AuthenticationRepository authenticationRepository;
+
+  ShippingsPage({Key? key, required this.authenticationRepository}) : super(key: key);
 
   @override
   _ShippingsPageState createState() => _ShippingsPageState();
 }
 
 class _ShippingsPageState extends State<ShippingsPage> {
+
   List<Shipping> shippingList = [];
   
   @override
@@ -70,6 +75,12 @@ class _ShippingsPageState extends State<ShippingsPage> {
           }
         }
       ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add_box_outlined),
+        onPressed: (){
+          Navigator.of(context).push<void>(MaterialPageRoute(builder: (_) => NewShipping(authenticationRepository: widget.authenticationRepository,)));
+        },
+      ),
     );
   }
 
@@ -82,7 +93,7 @@ class _ShippingsPageState extends State<ShippingsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(shipping.id)
+            Text(shipping.patent)
           ],
         ),
       ),

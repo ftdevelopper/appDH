@@ -17,7 +17,6 @@ class ShippingsBloc extends Bloc<ShippingsEvent, ShippingsState> {
 
     on<LoadShippings>((event, emit) async {
       emit(ShippingsLoading());
-      _shippingsSubscription.cancel();
       try {
         _shippingsSubscription = shippingRepository.getSippings().listen((event){
           (shippings) => add(ShippingsUpdated(shippingList: shippings));

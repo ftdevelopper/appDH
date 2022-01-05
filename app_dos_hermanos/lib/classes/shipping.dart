@@ -3,14 +3,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 enum ShippingState{newShipping, loadingShipping, inTravelShiping, downloadedShipping}
 
 class Shipping {
-  final String patent;
-  final ShippingState shippingState;
-  final String? id;
-  final String? remiterTara, remiterFullWeight, reciverTara, reciverFullWeight;
-  final String? remiterTaraTime, remiterFullWeightTime, reciverTaraTime, reciverFullWeightTime;
-  final String? remiterTaraUser, remiterFullWeightUser, reciverTaraUser, reciverFullWeightUser;
-  final String? remiterLocation, reciverLocation;
-  final String? riceType;
+  String patent;
+  ShippingState shippingState;
+  String? id;
+  String? remiterTara, remiterFullWeight, reciverTara, reciverFullWeight;
+  String? remiterTaraTime, remiterFullWeightTime, reciverTaraTime, reciverFullWeightTime;
+  String? remiterTaraUser, remiterFullWeightUser, reciverTaraUser, reciverFullWeightUser;
+  String? remiterLocation, reciverLocation;
+  String? riceType;
 
   Shipping({
     required this.shippingState,
