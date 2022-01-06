@@ -11,15 +11,19 @@ part 'shippings_state.dart';
 
 class ShippingsBloc extends Bloc<ShippingsEvent, ShippingsState> {
   final ShippingRepository shippingRepository;
-  late StreamSubscription _shippingsSubscription;
+  late StreamSubscription? _shippingsSubscription;
 
   ShippingsBloc({required this.shippingRepository}) : super(ShippingsLoading()) {
 
+    _shippingsSubscription = shippingRepository.getSippings().listen((event) {});
+
     on<LoadShippings>((event, emit) async {
       emit(ShippingsLoading());
+      _shippingsSubscription?.cancel();
       try {
-        final List<Shipping>_shippingsSubscription = await shippingRepository.getSippings().first;
-        add(ShippingsUpdated(shippingList: _shippingsSubscription));
+        _shippingsSubscription = shippingRepository.getSippings().listen(
+          (shippings) => add(ShippingsUpdated(shippingList: shippings))
+        );
       } catch (e) {
         print('Error recived: $e');
         emit(ShippingsNotLoaded());
@@ -37,7 +41,7 @@ class ShippingsBloc extends Bloc<ShippingsEvent, ShippingsState> {
 
   @override
   Future<void> close() {
-    _shippingsSubscription.cancel();
+    _shippingsSubscription?.cancel();
     return super.close();
   }
 }
