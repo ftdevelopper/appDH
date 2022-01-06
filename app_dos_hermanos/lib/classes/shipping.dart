@@ -45,8 +45,8 @@ class Shipping {
     );
   }
 
-  String getStatus (ShippingStatus status){
-    switch (status){
+  String get getStatus {
+    switch (shippingState){
       case ShippingStatus.newShipping:
         return 'newShipping';
       case ShippingStatus.completedShipping:
