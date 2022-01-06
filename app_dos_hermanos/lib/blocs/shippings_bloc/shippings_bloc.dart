@@ -18,9 +18,8 @@ class ShippingsBloc extends Bloc<ShippingsEvent, ShippingsState> {
     on<LoadShippings>((event, emit) async {
       emit(ShippingsLoading());
       try {
-        _shippingsSubscription = shippingRepository.getSippings().listen((event){
-          (shippings) => add(ShippingsUpdated(shippingList: shippings));
-        });
+        final List<Shipping>_shippingsSubscription = await shippingRepository.getSippings().first;
+        add(ShippingsUpdated(shippingList: _shippingsSubscription));
       } catch (e) {
         print('Error recived: $e');
         emit(ShippingsNotLoaded());
