@@ -92,7 +92,7 @@ class _NewShippingState extends State<NewShipping> {
                   builder: (context, AsyncSnapshot<String> snapshot){
                     _shipping.remiterTara = snapshot.data.toString();
                     return Text(snapshot.data.toString());
-                  }
+                  },
                 ),
                 ElevatedButton(
                   child: Text('Add new shipping'),
