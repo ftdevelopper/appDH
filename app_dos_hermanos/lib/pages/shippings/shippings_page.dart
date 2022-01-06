@@ -14,9 +14,16 @@ class ShippingsPage extends StatefulWidget {
   _ShippingsPageState createState() => _ShippingsPageState();
 }
 
-class _ShippingsPageState extends State<ShippingsPage> {
+class _ShippingsPageState extends State<ShippingsPage> with SingleTickerProviderStateMixin {
 
   List<Shipping> shippingList = [];
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 5, initialIndex: 0, vsync: this);
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -29,6 +36,7 @@ class _ShippingsPageState extends State<ShippingsPage> {
           title: Text('Shippings'),
           centerTitle: true,
           bottom: TabBar(
+            controller: _tabController,
             tabs: <Widget>[
               Tab(text: 'All', icon: Icon(Icons.home)),
               Tab(text: 'New', icon: Icon(Icons.fiber_new_outlined)),
@@ -63,6 +71,7 @@ class _ShippingsPageState extends State<ShippingsPage> {
             if (state is ShippingsLoaded){
               shippingList = state.shippings;
               return TabBarView(
+                controller: _tabController,
                 children: [
                   Container(
                   child: shippingList.length == 0
@@ -159,8 +168,11 @@ class _ShippingsPageState extends State<ShippingsPage> {
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add_box_outlined),
           onPressed: (){
-            Navigator.of(context).push<void>(MaterialPageRoute(builder: (_) => NewShipping(authenticationRepository: widget.authenticationRepository,)));
+            _tabController.index == 0
+            ? Navigator.of(context).push<void>(MaterialPageRoute(builder: (_) => NewShipping(authenticationRepository: widget.authenticationRepository,)))
+            : null;
           },
+          tooltip: 'Add a new Shipping',
         ),
       ),
     );
@@ -184,5 +196,11 @@ class _ShippingsPageState extends State<ShippingsPage> {
 
   List<Shipping> filterShippings(ShippingStatus status){
     return shippingList.where((element) => element.shippingState == status).toList();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 }
