@@ -90,14 +90,14 @@ class _NewShippingState extends State<NewShipping> {
                   initialData: 'Weight',
                   stream: _weightStream,
                   builder: (context, AsyncSnapshot<String> snapshot){
-                    _shipping.reciverTara = snapshot.data.toString();
+                    _shipping.remiterTara = snapshot.data.toString();
                     return Text(snapshot.data.toString());
                   }
                 ),
                 ElevatedButton(
                   child: Text('Add new shipping'),
                   onPressed: (){
-                    uploadShipping();
+                    _showConfirmationAlert();
                   },
                 ),
               ],
@@ -105,6 +105,42 @@ class _NewShippingState extends State<NewShipping> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _showConfirmationAlert() async {
+    return showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Shipping Confirmation', textAlign: TextAlign.center,),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text('Are you sure you want to send upload this Shipping?', textAlign: TextAlign.center,),
+                Text('Location: ${_locationController.text}', textAlign: TextAlign.center,),
+                Text('Patent: ${_patentController.text}', textAlign: TextAlign.center,),
+                Text('Tara: ${_shipping.remiterTara}', textAlign: TextAlign.center,),
+                ElevatedButton(
+                  child: Text('Confirmar'),
+                  onPressed: (){
+                    uploadShipping();
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            
+          ],
+          actionsPadding: EdgeInsets.symmetric(),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+          
+        );
+      },
     );
   }
 
