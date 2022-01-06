@@ -21,65 +21,147 @@ class _ShippingsPageState extends State<ShippingsPage> {
   @override
   Widget build(BuildContext context) {
     BlocProvider.of<ShippingsBloc>(context).add(LoadShippings());
-    return Scaffold(
-      appBar: AppBar(title: Text('Shippings'),centerTitle: true,),
-      body: BlocBuilder<ShippingsBloc, ShippingsState>(
-        builder: (context, state){
-          if (state is ShippingsLoading){
-            return Center(child: CircularProgressIndicator(),);
-          }
-          if (state is ShippingsNotLoaded){
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(Icons.error),
-                  Text('Cannot load shippings'),
-                  ElevatedButton(
-                    onPressed: (){
-                      BlocProvider.of<ShippingsBloc>(context).add(LoadShippings());
-                    },
-                    child: Text('Reload'),
-                  ),
-                ],
-              ),
-            );
-          }
-          if (state is ShippingsLoaded){
-            shippingList = state.shippings;
-            return Container(
-              child: shippingList.length == 0
-              ? Center(
+    return DefaultTabController(
+      length: 5,
+      initialIndex: 0,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Shippings'),
+          centerTitle: true,
+          bottom: TabBar(
+            tabs: <Widget>[
+              Tab(text: 'All', icon: Icon(Icons.home)),
+              Tab(text: 'New', icon: Icon(Icons.fiber_new_outlined)),
+              Tab(text: 'Sending', icon: Icon(Icons.send)),
+              Tab(text: 'Recived', icon: Icon(Icons.call_received)),
+              Tab(text: 'Conpleted', icon: Icon(Icons.done))
+            ],
+          ),
+        ),
+        body: BlocBuilder<ShippingsBloc, ShippingsState>(
+          builder: (context, state){
+            if (state is ShippingsLoading){
+              return Center(child: CircularProgressIndicator(),);
+            }
+            if (state is ShippingsNotLoaded){
+              return Center(
                 child: Column(
-                  children: [
-                    Text('No Shipings Avaliable'),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(Icons.error),
+                    Text('Cannot load shippings'),
                     ElevatedButton(
-                    onPressed: (){
-                      BlocProvider.of<ShippingsBloc>(context).add(LoadShippings());
+                      onPressed: (){
+                        BlocProvider.of<ShippingsBloc>(context).add(LoadShippings());
+                      },
+                      child: Text('Reload'),
+                    ),
+                  ],
+                ),
+              );
+            }
+            if (state is ShippingsLoaded){
+              shippingList = state.shippings;
+              return TabBarView(
+                children: [
+                  Container(
+                  child: shippingList.length == 0
+                  ? Center(
+                    child: Column(
+                      children: [
+                        Text('No Shipings Avaliable'),
+                      ]
+                    )
+                  )
+                  : ListView.builder(
+                    itemCount: shippingList.length,
+                    itemBuilder: (_, index){
+                      return shippingsUI(shippingList[index]);
                     },
-                    child: Text('Reload'),
-                  ),
-                  ]
-                )
-              )
-              : ListView.builder(
-                itemCount: shippingList.length,
-                itemBuilder: (_, index){
-                  return shippingsUI(shippingList[index]);
-                },
-              )
-            );
+                  )
+                ),
+                Container(
+                  child: filterShippings(ShippingStatus.newShipping).length == 0
+                  ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('No New Shipings Avaliable'),
+                      ]
+                    )
+                  )
+                  : ListView.builder(
+                    itemCount: filterShippings(ShippingStatus.newShipping).length,
+                    itemBuilder: (_, index){
+                      return shippingsUI(filterShippings(ShippingStatus.newShipping)[index]);
+                    },
+                  )
+                ),
+                Container(
+                  child: filterShippings(ShippingStatus.inTravelShipping).length == 0
+                  ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('No Shipings in Travel'),
+                      ]
+                    )
+                  )
+                  : ListView.builder(
+                    itemCount: filterShippings(ShippingStatus.inTravelShipping).length,
+                    itemBuilder: (_, index){
+                      return shippingsUI(filterShippings(ShippingStatus.inTravelShipping)[index]);
+                    },
+                  )
+                ),
+                Container(
+                  child: filterShippings(ShippingStatus.downloadedShipping).length == 0
+                  ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('No Shipings Recived'),
+                      ]
+                    )
+                  )
+                  : ListView.builder(
+                    itemCount: filterShippings(ShippingStatus.downloadedShipping).length,
+                    itemBuilder: (_, index){
+                      return shippingsUI(filterShippings(ShippingStatus.downloadedShipping)[index]);
+                    },
+                  )
+                ),
+                Container(
+                  child: filterShippings(ShippingStatus.completedShipping).length == 0
+                  ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('No Complete Shippings'),
+                      ]
+                    )
+                  )
+                  : ListView.builder(
+                    itemCount: filterShippings(ShippingStatus.completedShipping).length,
+                    itemBuilder: (_, index){
+                      return shippingsUI(filterShippings(ShippingStatus.completedShipping)[index]);
+                    },
+                  )
+                ),
+                ]
+              );
+            }
+            else {
+              return Container();
+            }
           }
-          else {
-            return Container();
-          }
-        }
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add_box_outlined),
-        onPressed: (){
-          Navigator.of(context).push<void>(MaterialPageRoute(builder: (_) => NewShipping(authenticationRepository: widget.authenticationRepository,)));
-        },
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add_box_outlined),
+          onPressed: (){
+            Navigator.of(context).push<void>(MaterialPageRoute(builder: (_) => NewShipping(authenticationRepository: widget.authenticationRepository,)));
+          },
+        ),
       ),
     );
   }
@@ -98,5 +180,9 @@ class _ShippingsPageState extends State<ShippingsPage> {
         ),
       ),
     );
+  }
+
+  List<Shipping> filterShippings(ShippingStatus status){
+    return shippingList.where((element) => element.shippingState == status).toList();
   }
 }

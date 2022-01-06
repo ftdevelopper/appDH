@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-enum ShippingStatus{newShipping, loadingShipping, inTravelShipping, downloadedShipping, unknownStatus, deletedShipping}
+enum ShippingStatus{newShipping, completedShipping, inTravelShipping, downloadedShipping, unknownStatus, deletedShipping}
 
 class Shipping {
   String patent;
@@ -48,8 +48,8 @@ class Shipping {
     switch (status){
       case ShippingStatus.newShipping:
         return 'newShipping';
-      case ShippingStatus.loadingShipping:
-        return 'loadingShipping';
+      case ShippingStatus.completedShipping:
+        return 'completedShipping';
       case ShippingStatus.inTravelShipping:
         return 'inTravelShipping';
       case ShippingStatus.downloadedShipping:
@@ -66,8 +66,8 @@ ShippingStatus statusFromString(String string){
     switch (string){
       case 'newShipping':
         return ShippingStatus.newShipping;
-      case 'loadingShipping':
-        return ShippingStatus.loadingShipping;
+      case 'completedShipping':
+        return ShippingStatus.completedShipping;
       case 'inTravelShipping':
         return ShippingStatus.inTravelShipping;
       case 'downloadedShipping':
