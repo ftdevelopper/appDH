@@ -17,6 +17,12 @@ class ShippingRepository {
     );
   }
 
+  Future<void> updateParameter({required String id, required String parameter, required String value}) async {
+    databaseReference.doc(id).update({
+      parameter:value
+    });
+  }
+
   Map<String, String>_mapShipping(Shipping shipping){
     Map<String, String> _shippingMap = {
       'shippingState': shipping.getStatus(shipping.shippingState),

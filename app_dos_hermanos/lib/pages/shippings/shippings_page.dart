@@ -5,6 +5,8 @@ import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'edit_shipping.dart';
+
 class ShippingsPage extends StatefulWidget {
   final AuthenticationRepository authenticationRepository;
 
@@ -179,17 +181,27 @@ class _ShippingsPageState extends State<ShippingsPage> with SingleTickerProvider
   }
 
   Widget shippingsUI(Shipping shipping){
-    return Card(
-      elevation: 10.0,
-      margin: EdgeInsets.all(14.0),
-      child: Container(
-        padding: EdgeInsets.all(14.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(shipping.patent)
-          ],
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: Colors.white70,
+          textStyle: TextStyle(color: Colors.black),
+          elevation: 2.0
         ),
+        child: Container(
+          padding: EdgeInsets.all(15),
+          child: Row(
+            children: <Widget>[
+              shipping.statusIcon,
+              SizedBox(width: 80,),
+              Text('patent: ${shipping.patent}', style: TextStyle(color: Colors.black),)
+            ],
+          ),
+        ),
+        onPressed: (){
+          Navigator.of(context).push<void>(MaterialPageRoute(builder: (_) => EditShipping(authenticationRepository: widget.authenticationRepository, shipping: shipping)));
+        },
       ),
     );
   }
