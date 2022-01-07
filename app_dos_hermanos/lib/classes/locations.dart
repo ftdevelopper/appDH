@@ -11,4 +11,8 @@ class Location {
       name: data['name']
     );
   }
+
+  factory Location.fromName(String newname){
+    return Location(name: newname);
+  }
 }

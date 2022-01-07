@@ -26,7 +26,7 @@ class _RegisterFormState extends State<RegisterForm> {
   final LocationRepository _locationRepository = LocationRepository();
   List<Location> _locations = [Location(name: 'campo default')];
 
-  bool get isPopulated => _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
+  bool get isPopulated => (_emailController.text.isNotEmpty && _passwordController.text.isNotEmpty && _nameController.text.isNotEmpty);
 
   bool isRegisterButtonEnabled(RegisterState state) {
     return state.isFormValid && isPopulated && !state.isSumbiting;
@@ -37,7 +37,7 @@ class _RegisterFormState extends State<RegisterForm> {
     _registerBloc = BlocProvider.of<RegisterBloc>(context);
     _emailController.addListener(_onEmailChanged);
     _passwordController.addListener(_onPasswordChanged);
-    _nameController.addListener(_onNameChanged);
+    _nameController.addListener(_onPasswordChanged);
     super.initState();
   }
   @override
@@ -180,6 +180,7 @@ class _RegisterFormState extends State<RegisterForm> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _nameController.dispose();
     super.dispose();
   }
 
@@ -191,13 +192,18 @@ class _RegisterFormState extends State<RegisterForm> {
     _registerBloc.add(PasswordChanged(password: _passwordController.text));
   }
 
-  void _onNameChanged(){
-
-  }
-
   void _onFormSubmitted(){
     _registerBloc.add(
-      Sumbitted(email: _emailController.text, password: _passwordController.text)
+      Sumbitted(
+        password: _passwordController.text, 
+        user: User(
+          id: '',
+          email: _emailController.text,
+          location: Location.fromName(_location),
+          name: _nameController.text,
+          photo: '',
+        )
+      )
     );
   }
 

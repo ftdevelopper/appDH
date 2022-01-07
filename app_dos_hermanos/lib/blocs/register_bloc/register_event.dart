@@ -31,14 +31,14 @@ class PasswordChanged extends RegisterEvent {
 }
 
 class Sumbitted extends RegisterEvent {
-  final String email;
   final String password;
+  final User user;
 
-  Sumbitted({required this.email, required this.password});
-
-  @override
-  List<Object> get props => [email, password];
+  Sumbitted({required this.password, required this.user});
 
   @override
-  String toString() => 'Sumbbited: {email: $email, password: $password}';
+  List<Object> get props => [password, user];
+
+  @override
+  String toString() => 'Sumbbited: {password: $password, user: $user}';
 }
