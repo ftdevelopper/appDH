@@ -1,5 +1,6 @@
 import 'package:app_dos_hermanos/blocs/authentication_bloc/authenticaiton_bloc.dart';
 import 'package:app_dos_hermanos/blocs/login_bloc/login_bloc.dart';
+import 'package:app_dos_hermanos/classes/locations.dart';
 import 'package:app_dos_hermanos/classes/user.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:app_dos_hermanos/widgets/create_account_button.dart';
@@ -65,7 +66,7 @@ class _LoginFormState extends State<LoginForm> {
           ));
         }
         if (state is SuccesLogin){
-          BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationUserChanged(User(email: _emailController.text,id: '',photo: '',name: '')));
+          BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationUserChanged(User(email: _emailController.text,id: '',photo: '',name: '', location: Location(name: ''))));
         }
         if (state is LoadingLogin){
           ScaffoldMessenger.of(context)

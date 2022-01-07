@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:app_dos_hermanos/classes/locations.dart';
 import 'package:app_dos_hermanos/classes/user.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:google_sign_in/google_sign_in.dart';
@@ -30,7 +31,7 @@ class AuthenticationRepository {
 
   Stream<User> get user {
     return _firebaseAuth.authStateChanges().map((firebaseUser) {
-      return firebaseUser == null ? User.empty : firebaseUser.toUser;
+      return firebaseUser == null ? User.empty() : firebaseUser.toUser;
     });
   }
 
@@ -86,6 +87,6 @@ class AuthenticationRepository {
 
 extension on firebase_auth.User {
   User get toUser {
-    return User(id: uid, email: email ?? '', name: displayName ?? '', photo: photoURL ?? '');
+    return User(id: uid, email: email ?? '', name: displayName ?? '', photo: photoURL ?? '', location: Location(name: ''));
   }
 }

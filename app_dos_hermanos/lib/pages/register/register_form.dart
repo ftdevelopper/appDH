@@ -1,5 +1,6 @@
 import 'package:app_dos_hermanos/blocs/authentication_bloc/authenticaiton_bloc.dart';
 import 'package:app_dos_hermanos/blocs/register_bloc/register_bloc.dart';
+import 'package:app_dos_hermanos/classes/locations.dart';
 import 'package:app_dos_hermanos/classes/user.dart';
 import 'package:app_dos_hermanos/widgets/register_button.dart';
 import 'package:flutter/material.dart';
@@ -58,7 +59,7 @@ class _RegisterFormState extends State<RegisterForm> {
           ));
         }
         if (state is SuccesRegister){
-          BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationUserChanged(User(email: _emailController.text,id: '',photo: '',name: '')));
+          BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationUserChanged(User(email: _emailController.text,id: '',photo: '',name: '',location: Location(name: ''))));
           Navigator.of(context).pop();
         }
         if (state is LoadingRegister){

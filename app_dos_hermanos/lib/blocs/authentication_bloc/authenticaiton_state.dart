@@ -18,7 +18,7 @@ abstract class AuthenticationState extends Equatable {
 
 class AuthenticationInitialState extends AuthenticationState{
 
-  AuthenticationInitialState() : super(status: AuthenticationStatus.unknown, user: User.empty);
+  AuthenticationInitialState() : super(status: AuthenticationStatus.unknown, user: User.empty());
 
   @override
   List<Object> get props => [this.status, this.user];
@@ -26,7 +26,7 @@ class AuthenticationInitialState extends AuthenticationState{
 
 class UnknownUser extends AuthenticationState{
 
-  UnknownUser() : super(status:AuthenticationStatus.unknown, user: User.empty);
+  UnknownUser() : super(status:AuthenticationStatus.unknown, user: User.empty());
 
   @override
   List<Object> get props => [this.status, this.user];
@@ -34,7 +34,7 @@ class UnknownUser extends AuthenticationState{
 
 class UnaunthenticatedUser extends AuthenticationState{
 
-  UnaunthenticatedUser() : super(status: AuthenticationStatus.unaunthenticated, user: User.empty);
+  UnaunthenticatedUser() : super(status: AuthenticationStatus.unaunthenticated, user: User.empty());
 
   @override
   List<Object> get props => [this.status, this.user];

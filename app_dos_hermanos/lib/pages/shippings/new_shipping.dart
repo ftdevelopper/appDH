@@ -25,7 +25,7 @@ class _NewShippingState extends State<NewShipping> {
   late TextEditingController _locationController;
 
   // ignore: unused_field
-  User _user = User.empty;
+  User _user = User.empty();
 
   @override
   void initState() {
@@ -63,7 +63,7 @@ class _NewShippingState extends State<NewShipping> {
               children: <Widget>[
                 FutureBuilder(
                   future: _actualUser(),
-                  initialData: User.empty,
+                  initialData: User.empty(),
                   builder: (context, AsyncSnapshot snapshot){
                     return Text(snapshot.data.id);
                   },

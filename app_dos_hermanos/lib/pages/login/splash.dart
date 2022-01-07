@@ -34,7 +34,7 @@ class SplashPage extends StatelessWidget {
   _navigateToLogin(context){
 
     Timer(Duration(seconds: 1),(){
-      BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationUserChanged(User.empty));
+      BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationUserChanged(User.empty()));
     });
     
   }
