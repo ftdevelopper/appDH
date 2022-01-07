@@ -24,6 +24,7 @@ class _NewShippingState extends State<NewShipping> {
   late TextEditingController _patentController;
   late TextEditingController _locationController;
 
+  // ignore: unused_field
   User _user = User.empty;
 
   @override

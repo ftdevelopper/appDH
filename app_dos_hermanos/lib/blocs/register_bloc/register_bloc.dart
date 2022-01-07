@@ -26,11 +26,14 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     });
 
     on<Sumbitted>((event, state) async {
+      // ignore: invalid_use_of_visible_for_testing_member
       emit(new LoadingRegister());
       try {
         await authenticationRepository.signUp(email: event.email, password: event.password);
+        // ignore: invalid_use_of_visible_for_testing_member
         emit(SuccesRegister());
       } catch (_) {
+        // ignore: invalid_use_of_visible_for_testing_member
         emit(FailRegister());
       }
     });
