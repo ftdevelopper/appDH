@@ -17,6 +17,7 @@ class _RegisterFormState extends State<RegisterForm> {
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
 
   late RegisterBloc _registerBloc;
 
@@ -31,6 +32,7 @@ class _RegisterFormState extends State<RegisterForm> {
     _registerBloc = BlocProvider.of<RegisterBloc>(context);
     _emailController.addListener(_onEmailChanged);
     _passwordController.addListener(_onPasswordChanged);
+    _nameController.addListener(_onNameChanged);
     super.initState();
   }
   @override
@@ -79,6 +81,21 @@ class _RegisterFormState extends State<RegisterForm> {
             padding: EdgeInsets.all(20),
             child: ListView(
               children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GestureDetector(
+
+                    child: Container(
+                      height: 120,
+                      width: 120,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(image: AssetImage('assets/default_profile_pic.jpg'))
+                      ),
+                    ),
+                    onTap: (){},
+                  ),
+                ),
                 TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
@@ -98,6 +115,20 @@ class _RegisterFormState extends State<RegisterForm> {
                   decoration: InputDecoration(
                     icon: Icon(Icons.lock),
                     labelText: 'Password',
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                  autocorrect: false,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (_){
+                    return !state.isPasswordValid? 'Invalid Password' : '';
+                  },
+                ),
+                SizedBox(height: 20,),
+                TextFormField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    icon: Icon(Icons.person),
+                    labelText: 'Name',
                   ),
                   keyboardType: TextInputType.emailAddress,
                   autocorrect: false,
@@ -132,6 +163,10 @@ class _RegisterFormState extends State<RegisterForm> {
 
   void _onPasswordChanged(){
     _registerBloc.add(PasswordChanged(password: _passwordController.text));
+  }
+
+  void _onNameChanged(){
+
   }
 
   void _onFormSubmitted(){
