@@ -12,18 +12,20 @@ class ShippingRepository {
   }
 
   Future<void> putShipping(Shipping shipping) async {
-    databaseReference.doc().set(
-      _mapShipping(shipping)
-    );
-  }
-
-  Future<void> updateParameter({required String id, required String parameter, required String value}) async {
-    databaseReference.doc(id).update({
-      parameter:value
+    await databaseReference.add(
+      _mapShipping(shipping, this.databaseReference.id)
+    ).then((value) {
+      databaseReference.doc(value.id).update({'id':value.id});
     });
   }
 
-  Map<String, String>_mapShipping(Shipping shipping){
+  Future<void> updateParameter({required Shipping shipping}) async {
+    databaseReference.doc(shipping.id).update(
+      _mapShipping(shipping, shipping.id!)
+    );
+  }
+
+  Map<String, String>_mapShipping(Shipping shipping, String id){
     Map<String, String> _shippingMap = {
       'shippingState': shipping.getStatus,
       'patent': shipping.patent,
@@ -41,7 +43,8 @@ class ShippingRepository {
       'reciverTara': shipping.reciverTara ?? '',
       'reciverTaraTime': shipping.reciverTaraTime ?? '',
       'reciverTaraUser': shipping.reciverTaraUser ?? '',
-      'riceType': shipping.riceType ?? ''
+      'riceType': shipping.riceType ?? '',
+      'id': id,
     };
     return _shippingMap;
   }

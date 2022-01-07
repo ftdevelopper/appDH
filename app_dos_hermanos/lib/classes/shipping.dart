@@ -10,7 +10,7 @@ class Shipping {
   String? remiterTaraTime, remiterFullWeightTime, reciverTaraTime, reciverFullWeightTime;
   String? remiterTaraUser, remiterFullWeightUser, reciverTaraUser, reciverFullWeightUser;
   String? remiterLocation, reciverLocation;
-  String? riceType;
+  String? riceType, id;
 
   Shipping({
     required this.shippingState,
@@ -19,7 +19,7 @@ class Shipping {
     this.remiterTaraTime, this.remiterFullWeightTime, this.reciverTaraTime, this.reciverFullWeightTime, 
     this.remiterTaraUser, this.remiterFullWeightUser, this.reciverTaraUser, this.reciverFullWeightUser, 
     this.remiterLocation, this.reciverLocation, 
-    this.riceType
+    this.riceType, this.id
   });
 
   static Shipping fromSnapShot(DocumentSnapshot snapshot) {
@@ -41,7 +41,8 @@ class Shipping {
       reciverTara: data['reciverTara'],
       reciverTaraTime: data['reciverTaraTime'],
       reciverTaraUser: data['reciverTaraUser'],
-      riceType: data['riceType']
+      riceType: data['riceType'],
+      id: data['id'],
     );
   }
 
@@ -54,7 +55,7 @@ class Shipping {
       case ShippingStatus.inTravelShipping:
         return 'inTravelShipping';
       case ShippingStatus.downloadedShipping:
-        return 'sownloadedShipping';
+        return 'downloadedShipping';
       case ShippingStatus.unknownStatus:
         return 'unknownStatus';
       case ShippingStatus.deletedShipping:
@@ -78,6 +79,29 @@ class Shipping {
         return Icon(Icons.not_interested_sharp, color: Colors.redAccent);
       default: 
         return Icon(Icons.new_releases_outlined, color: Colors.red);
+    }
+  }
+
+  void nextStatus (){
+    switch (shippingState){
+      case ShippingStatus.newShipping:
+        shippingState = ShippingStatus.inTravelShipping;
+      break;
+      case ShippingStatus.inTravelShipping:
+        shippingState = ShippingStatus.downloadedShipping;
+      break;
+      case ShippingStatus.downloadedShipping:
+        shippingState = ShippingStatus.completedShipping;
+      break;
+      case ShippingStatus.completedShipping:
+        shippingState = ShippingStatus.completedShipping;
+      break;
+      case ShippingStatus.unknownStatus:
+        shippingState = ShippingStatus.unknownStatus;
+      break;
+      case ShippingStatus.deletedShipping:
+        shippingState = ShippingStatus.deletedShipping;
+      break;
     }
   }
 }

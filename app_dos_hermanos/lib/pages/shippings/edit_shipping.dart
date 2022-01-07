@@ -2,8 +2,10 @@ import 'dart:math';
 
 import 'package:app_dos_hermanos/classes/shipping.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
+import 'package:app_dos_hermanos/repository/shipping_repository.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class EditShipping extends StatefulWidget {
 
   AuthenticationRepository authenticationRepository;
@@ -49,7 +51,6 @@ class _EditShippingState extends State<EditShipping> {
                   builder: (context, AsyncSnapshot<String> snapshot){
                     _shipping.remiterFullWeight = snapshot.data.toString();
                     return Text('Remiter Bruto: ${snapshot.data}kg'); 
-                    
                   }
                 )
                 :Text('Remiter Bruto: ${_shipping.remiterFullWeight}kg'),
@@ -59,8 +60,8 @@ class _EditShippingState extends State<EditShipping> {
                   initialData: 'Weight',
                   stream: _weightStream,
                   builder: (context, AsyncSnapshot<String> snapshot){
-                      _shipping.reciverFullWeight = snapshot.data.toString();
-                      return Text('Reciver Bruto: ${snapshot.data}kg');
+                    _shipping.reciverFullWeight = snapshot.data.toString();
+                    return Text('Reciver Bruto: ${snapshot.data}kg');
                   }
                 )
                 : Text('Reciver Bruto :${_shipping.reciverFullWeight}kg'),
@@ -70,31 +71,72 @@ class _EditShippingState extends State<EditShipping> {
                   initialData: 'Weight',
                   stream: _weightStream,
                   builder: (context, AsyncSnapshot<String> snapshot){
-                    
-                      _shipping.reciverTara = snapshot.data.toString();
-                      return Text('Reciver Tara: ${snapshot.data}kg');
-                    
+                    _shipping.reciverTara = snapshot.data.toString();
+                    return Text('Reciver Tara: ${snapshot.data}kg');
                   }
                 )
                 : Text('Reciver Tara: ${_shipping.reciverTara}kg'),
 
-                _shipping.shippingState == ShippingStatus.newShipping
-                ? StreamBuilder(
-                  initialData: 'Weight',
-                  stream: _weightStream,
-                  builder: (context, AsyncSnapshot<String> snapshot){
-                    
-                      _shipping.remiterTara = snapshot.data.toString();
-                      return Text('Remiter Tara: ${snapshot.data}');
-                        
-                  }
-                )
-                : Text('Remiter Tara:${_shipping.remiterTara}')
+                ElevatedButton(
+                  child: Text('Update Shipping'),
+                  onPressed: (){
+                    _showConfirmationAlert();
+                  },
+                ),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+  Future<void> _showConfirmationAlert() async {
+    return showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Shipping Confirmation', textAlign: TextAlign.center,),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+
+                Text('Are you sure you want to send upload this Shipping?', textAlign: TextAlign.center,),
+                Text('Remiter Tara: ${_shipping.remiterTara}kg', textAlign: TextAlign.center),
+                Text('Remiter Bruto:${_shipping.remiterFullWeight}kg', textAlign: TextAlign.center),
+                Text('Reciver Bruto:${_shipping.reciverFullWeight}kg', textAlign: TextAlign.center),
+                Text('Reciver Tara:${_shipping.reciverTara}kg', textAlign: TextAlign.center),
+                ElevatedButton(
+                  child: Text('Confirmar'),
+                  onPressed: (){
+                    uploadShipping();
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            
+          ],
+          actionsPadding: EdgeInsets.symmetric(),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+          
+        );
+      },
+    );
+  }
+
+  void uploadShipping() async {
+    _shipping.nextStatus();
+    await ShippingRepository().updateParameter(shipping: _shipping);
+    Navigator.pop(context);
+  }
+
+  @override
+  void dispose() {
+    
+    super.dispose();
   }
 }
