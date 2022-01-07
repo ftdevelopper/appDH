@@ -16,7 +16,11 @@ class UserRepository {
 
   Map<String, String> _mapUser(User user){
     Map<String, String> _map ={
-      'hol':user.id
+      'email':user.email,
+      'uid':user.id,
+      'name':user.name,
+      'photo':user.photo,
+      'location':user.location.name
     };
     return _map;
   }

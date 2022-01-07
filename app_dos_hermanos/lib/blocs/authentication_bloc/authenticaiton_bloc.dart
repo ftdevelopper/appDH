@@ -25,6 +25,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       on<AuthenticationLogoutRequested>((event, emit){
 
         _authenticationRepository.logOut();
+        emit(UnaunthenticatedUser());
         
       });
   }

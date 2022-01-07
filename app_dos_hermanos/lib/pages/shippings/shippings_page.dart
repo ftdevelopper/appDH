@@ -1,3 +1,4 @@
+import 'package:app_dos_hermanos/blocs/authentication_bloc/authenticaiton_bloc.dart';
 import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
 import 'package:app_dos_hermanos/classes/shipping.dart';
 import 'package:app_dos_hermanos/pages/shippings/new_shipping.dart';
@@ -37,6 +38,14 @@ class _ShippingsPageState extends State<ShippingsPage> with SingleTickerProvider
         appBar: AppBar(
           title: Text('Shippings'),
           centerTitle: true,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.logout_outlined),
+              onPressed: (){
+                BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationLogoutRequested());
+              },
+            ),
+          ],
           bottom: TabBar(
             controller: _tabController,
             tabs: <Widget>[
