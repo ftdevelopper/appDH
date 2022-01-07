@@ -2,6 +2,7 @@ import 'package:app_dos_hermanos/blocs/authentication_bloc/authenticaiton_bloc.d
 import 'package:app_dos_hermanos/blocs/register_bloc/register_bloc.dart';
 import 'package:app_dos_hermanos/classes/locations.dart';
 import 'package:app_dos_hermanos/classes/user.dart';
+import 'package:app_dos_hermanos/repository/location_repository.dart';
 import 'package:app_dos_hermanos/widgets/register_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,8 +19,12 @@ class _RegisterFormState extends State<RegisterForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
+  String _location = 'campo default';
 
   late RegisterBloc _registerBloc;
+
+  final LocationRepository _locationRepository = LocationRepository();
+  List<Location> _locations = [Location(name: 'campo default')];
 
   bool get isPopulated => _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
 
@@ -36,7 +41,7 @@ class _RegisterFormState extends State<RegisterForm> {
     super.initState();
   }
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     return BlocListener<RegisterBloc,RegisterState>(
       listener: (context, state){
         if (state is FailRegister){
@@ -130,13 +135,34 @@ class _RegisterFormState extends State<RegisterForm> {
                     icon: Icon(Icons.person),
                     labelText: 'Name',
                   ),
-                  keyboardType: TextInputType.emailAddress,
-                  autocorrect: false,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (_){
-                    return !state.isPasswordValid? 'Invalid Password' : '';
-                  },
                 ),
+                SizedBox(height: 20,),
+                Row(
+                  children: [
+                    Icon(Icons.map, color: Colors.grey.shade600,),
+                    SizedBox(width: 100,),
+                    FutureBuilder(
+                      future: _loadLocations(),
+                      builder:(context, AsyncSnapshot snapshot){ 
+                        return DropdownButton(
+                          
+                          items: _locations.map((Location location) {
+                            return DropdownMenuItem<String>(
+                              value: location.name,
+                              child: Text(location.name)
+                            );
+                          }).toList(),
+                          value: _location,
+                          onChanged: (String? newlocation){
+                            setState(() {
+                              _location = newlocation ?? '';
+                            });
+                          },
+                        );
+                      }),
+                  ],
+                ),
+                SizedBox(height: 20,),
                 RegisterButton(
                   onPressed: isRegisterButtonEnabled(state)
                   ? _onFormSubmitted
@@ -173,5 +199,9 @@ class _RegisterFormState extends State<RegisterForm> {
     _registerBloc.add(
       Sumbitted(email: _emailController.text, password: _passwordController.text)
     );
+  }
+
+  Future _loadLocations() async {
+    _locations = await _locationRepository.getLocations();
   }
 }
