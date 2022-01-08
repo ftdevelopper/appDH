@@ -2,12 +2,13 @@ import 'package:equatable/equatable.dart';
 
 import 'locations.dart';
 
+// ignore: must_be_immutable
 class User extends Equatable {
-  final String email;
-  final String id;
-  final String name;
-  final String photo;
-  final Location location;
+  String email;
+  String id;
+  String name;
+  String photo;
+  Location location;
 
   User({
     required this.email,

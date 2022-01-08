@@ -1,7 +1,5 @@
-import 'package:app_dos_hermanos/classes/user.dart';
 import 'package:app_dos_hermanos/classes/validators.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
-import 'package:app_dos_hermanos/repository/users_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -31,9 +29,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       // ignore: invalid_use_of_visible_for_testing_member
       emit(new LoadingRegister());
       try {
-        await authenticationRepository.signUp(email: event.user.email, password: event.password);
-        final User _newuser = await authenticationRepository.user.first;
-        await UserRepository(uid: _newuser.id).updateUserData(User(id: _newuser.id,location: event.user.location, name: event.user.name, email: event.user.email, photo: event.user.photo));
+        await authenticationRepository.signUp(password: event.password);
         // ignore: invalid_use_of_visible_for_testing_member
         emit(SuccesRegister());
       } catch (_) {

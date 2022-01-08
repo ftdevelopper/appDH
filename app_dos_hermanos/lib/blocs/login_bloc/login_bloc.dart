@@ -37,7 +37,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginWithCredentialPressed>((event, emit) async {
       emit(LoadingLogin());
       try {
-        await authenticationRepository.logInWithEmailAndPassword(email: event.email, password: event.password);
+        await authenticationRepository.logInWithEmailAndPassword(password: event.password);
         emit(SuccesLogin());
       } catch (_) {
         emit(FailLogin());

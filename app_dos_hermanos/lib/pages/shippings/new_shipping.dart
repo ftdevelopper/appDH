@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:math';
-
 import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
 import 'package:app_dos_hermanos/classes/shipping.dart';
-import 'package:app_dos_hermanos/classes/user.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,21 +22,12 @@ class _NewShippingState extends State<NewShipping> {
   late TextEditingController _patentController;
   late TextEditingController _locationController;
 
-  // ignore: unused_field
-  User _user = User.empty();
-
   @override
   void initState() {
     _patentController = TextEditingController();
     _locationController = TextEditingController();
     _shipping = widget.shipping ?? Shipping(patent: '', shippingState: ShippingStatus.newShipping);
-    _actualUser().then((value) => _user = value);
     super.initState();
-  }
-
-  Future<User> _actualUser() async {
-    User user = await widget.authenticationRepository.user.first;
-    return user;
   }
 
   final Stream<String> _weightStream = Stream.periodic(
@@ -61,13 +50,7 @@ class _NewShippingState extends State<NewShipping> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                FutureBuilder(
-                  future: _actualUser(),
-                  initialData: User.empty(),
-                  builder: (context, AsyncSnapshot snapshot){
-                    return Text(snapshot.data.id);
-                  },
-                ),
+                Text(widget.authenticationRepository.user.name),
                 SizedBox(height: 20,),
                 TextFormField(
                   controller: _locationController,

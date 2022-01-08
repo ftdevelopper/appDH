@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:app_dos_hermanos/classes/locations.dart';
 import 'package:app_dos_hermanos/classes/user.dart';
+import 'package:app_dos_hermanos/repository/users_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -18,10 +18,14 @@ class LogOutFailure implements Exception {}
 
 class AuthenticationRepository {
   
+  User user;
+  UserRepository userRepository = UserRepository();
+
   final firebase_auth.FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
 
   AuthenticationRepository({
+    required this.user,
     firebase_auth.FirebaseAuth? firebaseAuth,
     GoogleSignIn? googleSignIn
   }) : _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance,
@@ -29,18 +33,27 @@ class AuthenticationRepository {
 
   // Stream User -> actual usuario cuando el estado de autanticacion cambia
 
-  Stream<User> get user {
+  Stream<String> get getUserID {
     return _firebaseAuth.authStateChanges().map((firebaseUser) {
-      return firebaseUser == null ? User.empty() : firebaseUser.toUser;
+      return firebaseUser == null ? '' : firebaseUser.uid;
     });
   }
 
+  Future<User> get getUser async {
+    String _id;
+    _id = await getUserID.first;
+    if (_id != ''){
+      user = await userRepository.getUserData(_id);
+    }
+    return user;
+  }
+
   Future<void> signUp({
-    required String email,
     required String password
   }) async {
     try {
-      await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+      await _firebaseAuth.createUserWithEmailAndPassword(email: user.email, password: password).then((value) => user.id = value.user!.uid);
+      user = await UserRepository().updateUserData(user);
     } on Exception {
       throw SignUpFailure();
     }
@@ -62,11 +75,11 @@ class AuthenticationRepository {
 
   // Login con email y password
   Future<void> logInWithEmailAndPassword({
-    required String email,
     required String password,
   }) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+      await _firebaseAuth.signInWithEmailAndPassword(email: user.email, password: password);
+      user = await this.getUser;
     } on Exception {
       throw LogInWithEmailAndPasswordFailure();
     }
@@ -79,14 +92,9 @@ class AuthenticationRepository {
         _firebaseAuth.signOut(),
         _googleSignIn.signOut()
       ]);
+      user = User.empty();
     } on Exception {
     }
   }
 
-}
-
-extension on firebase_auth.User {
-  User get toUser {
-    return User(id: uid, email: email ?? '', name: displayName ?? '', photo: photoURL ?? '', location: Location(name: ''));
-  }
 }

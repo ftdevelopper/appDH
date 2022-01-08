@@ -161,8 +161,9 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   void _onFormSubmitted(){
+    _authenticationRepository.user.email = _emailController.text;
     _loginBloc.add(
-      LoginWithCredentialPressed(email: _emailController.text, password: _passwordController.text)
+      LoginWithCredentialPressed(password: _passwordController.text)
     );
   }
 }

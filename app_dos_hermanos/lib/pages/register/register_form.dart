@@ -2,13 +2,16 @@ import 'package:app_dos_hermanos/blocs/authentication_bloc/authenticaiton_bloc.d
 import 'package:app_dos_hermanos/blocs/register_bloc/register_bloc.dart';
 import 'package:app_dos_hermanos/classes/locations.dart';
 import 'package:app_dos_hermanos/classes/user.dart';
+import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:app_dos_hermanos/repository/location_repository.dart';
 import 'package:app_dos_hermanos/widgets/register_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RegisterForm extends StatefulWidget {
-  RegisterForm({Key? key}) : super(key: key);
+
+  final AuthenticationRepository authenticationRepository;
+  RegisterForm({Key? key, required this.authenticationRepository}) : super(key: key);
 
   @override
   _RegisterFormState createState() => _RegisterFormState();
@@ -193,17 +196,12 @@ class _RegisterFormState extends State<RegisterForm> {
   }
 
   void _onFormSubmitted(){
-    _registerBloc.add(
-      Sumbitted(
-        password: _passwordController.text, 
-        user: User(
-          id: '',
-          email: _emailController.text,
-          location: Location.fromName(_location),
-          name: _nameController.text,
-          photo: '',
-        )
-      )
+    widget.authenticationRepository.user
+    ..email = _emailController.text
+    ..name = _nameController.text
+    ..photo = ''
+    ..location = Location.fromName(_location);
+    _registerBloc.add(Sumbitted(password: _passwordController.text)
     );
   }
 

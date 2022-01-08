@@ -1,6 +1,7 @@
 import 'package:app_dos_hermanos/blocs/login_bloc/login_bloc.dart';
 import 'package:app_dos_hermanos/blocs/register_bloc/register_bloc.dart';
 import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
+import 'package:app_dos_hermanos/classes/user.dart';
 import 'package:app_dos_hermanos/pages/login/login.dart';
 import 'package:app_dos_hermanos/pages/login/splash.dart';
 import 'package:app_dos_hermanos/pages/shippings/shippings_page.dart';
@@ -21,7 +22,7 @@ void main() async {
   await Firebase.initializeApp();
   EquatableConfig.stringify = kDebugMode;
   BlocOverrides.runZoned(() {
-    runApp(MyApp(authenticationRepository: AuthenticationRepository()));
+    runApp(MyApp(authenticationRepository: AuthenticationRepository(user: User.empty())));
   }, blocObserver: SimpleBlocObserver());
 }
 
