@@ -66,7 +66,7 @@ class _LoginFormState extends State<LoginForm> {
           ));
         }
         if (state is SuccesLogin){
-          BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationUserChanged(User(email: _emailController.text,id: '',photo: '',name: '', location: Location(name: ''))));
+          BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationUserChanged(User(email: _emailController.text,id: '',photoURL: '',name: '', location: Location(name: ''), profilePhoto: Image.asset('assets/default_profile_pic.jpg'))));
         }
         if (state is LoadingLogin){
           ScaffoldMessenger.of(context)

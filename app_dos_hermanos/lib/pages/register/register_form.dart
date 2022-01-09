@@ -69,7 +69,7 @@ class _RegisterFormState extends State<RegisterForm> {
           ));
         }
         if (state is SuccesRegister){
-          BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationUserChanged(User(email: _emailController.text,id: '',photo: '',name: '',location: Location(name: ''))));
+          BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationUserChanged(User(email: _emailController.text,id: '',photoURL: '',name: '',location: Location(name: ''), profilePhoto: Image.asset('assets/default_profile_pic.jpg'))));
           Navigator.of(context).pop();
         }
         if (state is LoadingRegister){
@@ -199,7 +199,7 @@ class _RegisterFormState extends State<RegisterForm> {
     widget.authenticationRepository.user
     ..email = _emailController.text
     ..name = _nameController.text
-    ..photo = ''
+    ..photoURL = ''
     ..location = Location.fromName(_location);
     _registerBloc.add(Sumbitted(password: _passwordController.text)
     );
