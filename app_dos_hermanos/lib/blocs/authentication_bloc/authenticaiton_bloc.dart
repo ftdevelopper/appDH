@@ -16,7 +16,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         
       on<AuthenticationUserChanged>((event, emit){
 
-        event.user != User.empty()
+        event.user.id != ''
         ? emit(AuthenticatedUser(user: event.user))
         : emit (UnknownUser());
 

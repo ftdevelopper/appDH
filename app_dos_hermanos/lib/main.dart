@@ -87,7 +87,7 @@ class _AppViewState extends State<AppView> {
               child: child,
             );
           },
-          onGenerateRoute: (_) => MaterialPageRoute(builder: (_) => SplashPage())
+          onGenerateRoute: (_) => MaterialPageRoute(builder: (_) => SplashPage(authenticationRepository: widget.authenticationRepository))
     ));
   }
 }
