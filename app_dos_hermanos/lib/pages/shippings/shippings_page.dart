@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:app_dos_hermanos/blocs/authentication_bloc/authenticaiton_bloc.dart';
 import 'package:app_dos_hermanos/blocs/drawer_bloc/drawer_bloc.dart';
 import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
+import 'package:app_dos_hermanos/classes/locations.dart';
 import 'package:app_dos_hermanos/classes/shipping.dart';
 import 'package:app_dos_hermanos/classes/user.dart';
 import 'package:app_dos_hermanos/pages/shippings/new_shipping.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
+import 'package:app_dos_hermanos/repository/location_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -205,12 +207,12 @@ class _ShippingsPageState extends State<ShippingsPage> with SingleTickerProvider
                           ),
                         ),
                         Positioned(
-                          bottom: -20,
+                          bottom: -10,
                           right: 50,
                           child: IconButton(
                             iconSize: 50,
                             color: Colors.grey,
-                            icon: Icon(Icons.photo_camera),
+                            icon: Icon(Icons.add_a_photo),
                             onPressed: () async {
                               try {
                                 XFile? newImage = (await ImagePicker().pickImage(source: ImageSource.camera));
@@ -239,8 +241,8 @@ class _ShippingsPageState extends State<ShippingsPage> with SingleTickerProvider
                       title: Text('Location: '),
                       subtitle: Text(_user.location.name),
                       leading: Icon(Icons.map_rounded),
-                      onTap: (){
-                        
+                      onTap: () async {
+                        await _showlocationsDrawer();
                       },
                     ),
                     ListTile(
@@ -304,9 +306,39 @@ class _ShippingsPageState extends State<ShippingsPage> with SingleTickerProvider
     return shippingList.where((element) => element.shippingState == status).toList();
   }
 
+  Future<void> _showlocationsDrawer() async {
+    final List<Location> locations = await LocationRepository().getLocations();
+    return showDialog<void>(
+      context: context,
+      builder: (context){
+        return AlertDialog(
+          title: Text('Locations', textAlign: TextAlign.center,),
+          content: Container(
+            width: 70,
+            height: 230,
+            child: ListView.builder(
+              itemCount: locations.length,
+              itemBuilder: (_,index){
+                return ListTile(
+                  leading: Icon(Icons.location_on),
+                  title: Text(locations[index].name),
+                  onTap: (){
+                    BlocProvider.of<DrawerBloc>(context).add(ChangeLocation(locationName: locations[index].name));
+                    Navigator.of(context).pop();
+                  }
+                );
+              },
+            ),
+          ),
+        );
+      }
+    );
+  }
+
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
   }
 }
+
