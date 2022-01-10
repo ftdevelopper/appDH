@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'blocs/authentication_bloc/authenticaiton_bloc.dart';
+import 'blocs/drawer_bloc/drawer_bloc.dart';
 import 'blocs/simple_bloc_observer.dart';
 
 void main() async {
@@ -63,6 +64,7 @@ class _AppViewState extends State<AppView> {
         BlocProvider(create: (context) => LoginBloc(authenticationRepository: widget.authenticationRepository)),
         BlocProvider(create: (context) => RegisterBloc(authenticationRepository: widget.authenticationRepository)),
         BlocProvider(create: (context) => ShippingsBloc(shippingRepository: widget.shippingRepository)),
+        BlocProvider(create: (context) => DrawerBloc(authenticationRepository: widget.authenticationRepository))
       ],
       child: MaterialApp(
           theme: theme,

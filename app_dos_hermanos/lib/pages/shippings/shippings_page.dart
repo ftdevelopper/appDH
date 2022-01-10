@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:app_dos_hermanos/blocs/authentication_bloc/authenticaiton_bloc.dart';
+import 'package:app_dos_hermanos/blocs/drawer_bloc/drawer_bloc.dart';
 import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
 import 'package:app_dos_hermanos/classes/shipping.dart';
 import 'package:app_dos_hermanos/classes/user.dart';
@@ -6,6 +9,7 @@ import 'package:app_dos_hermanos/pages/shippings/new_shipping.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'edit_shipping.dart';
 
@@ -188,13 +192,43 @@ class _ShippingsPageState extends State<ShippingsPage> with SingleTickerProvider
                 child: ListView(
                   children: <Widget>[
                     SizedBox(height: 20),
-                    Container(
-                      height: 200,
-                      width: 200,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(image: _user.profilePhoto.image)
-                      ),
+                    Stack(
+                      alignment: AlignmentDirectional.center,
+                      fit: StackFit.passthrough,
+                      children: <Widget>[
+                        Container(
+                          height: 200,
+                          width: 200,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(image: _user.profilePhoto.image)
+                          ),
+                        ),
+                        Positioned(
+                          bottom: -20,
+                          right: 50,
+                          child: IconButton(
+                            iconSize: 50,
+                            color: Colors.grey,
+                            icon: Icon(Icons.photo_camera),
+                            onPressed: () async {
+                              try {
+                                XFile? newImage = (await ImagePicker().pickImage(source: ImageSource.camera));
+                                if (newImage != null){
+                                  File profilePhotoFile = File(newImage.path);
+                                  final bytes = await profilePhotoFile.readAsBytes();
+                                  final image = (await Image.memory(bytes));
+                                  BlocProvider.of<DrawerBloc>(context).add(ChangeProfilePhoto(newphoto: image, newphotoFile: profilePhotoFile));
+                                } else {
+                                  print('newImage = null');
+                                }
+                              } catch (e) {
+                                print(e);
+                              }
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                     ListTile(
                       title: Text('Name:'),
@@ -206,7 +240,7 @@ class _ShippingsPageState extends State<ShippingsPage> with SingleTickerProvider
                       subtitle: Text(_user.location.name),
                       leading: Icon(Icons.map_rounded),
                       onTap: (){
-              
+                        
                       },
                     ),
                     ListTile(
