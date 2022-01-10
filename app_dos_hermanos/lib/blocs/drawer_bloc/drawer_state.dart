@@ -4,3 +4,7 @@ part of 'drawer_bloc.dart';
 abstract class DrawerState {}
 
 class DrawerInitial extends DrawerState {}
+
+class LoadingDrawer extends DrawerState{}
+
+class LoadedDrawer extends DrawerState{}
