@@ -26,3 +26,9 @@ class ChangeLocation extends DrawerEvent{
   @override
   List<Object?> get props => [];
 }
+
+class LoadLocations extends DrawerEvent {
+  
+  @override
+  List<Object?> get props => [];
+}

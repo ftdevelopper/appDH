@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:app_dos_hermanos/classes/locations.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
+import 'package:app_dos_hermanos/repository/location_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
@@ -38,6 +39,15 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
         print('Error in uploading location: $e');
         emit(LoadedDrawer());
       }
+    });
+
+    on<LoadLocations>((event, emit) async {
+      emit(LoadingLocations());
+      try {
+        List<Location> locations = await LocationRepository().getLocations();
+        emit(LoadedLocations(locations: locations));
+      } catch (e) {
+      } 
     });
   }
 }
