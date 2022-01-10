@@ -1,6 +1,7 @@
 import 'package:app_dos_hermanos/blocs/authentication_bloc/authenticaiton_bloc.dart';
 import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
 import 'package:app_dos_hermanos/classes/shipping.dart';
+import 'package:app_dos_hermanos/classes/user.dart';
 import 'package:app_dos_hermanos/pages/shippings/new_shipping.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
@@ -22,10 +23,13 @@ class _ShippingsPageState extends State<ShippingsPage> with SingleTickerProvider
   List<Shipping> shippingList = [];
   late TabController _tabController;
 
+  late User _user;
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, initialIndex: 0, vsync: this);
+    _user = widget.authenticationRepository.user;
   }
   
   @override
@@ -38,14 +42,6 @@ class _ShippingsPageState extends State<ShippingsPage> with SingleTickerProvider
         appBar: AppBar(
           title: Text('Shippings'),
           centerTitle: true,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.logout_outlined),
-              onPressed: (){
-                BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationLogoutRequested());
-              },
-            ),
-          ],
           bottom: TabBar(
             controller: _tabController,
             tabs: <Widget>[
@@ -184,6 +180,61 @@ class _ShippingsPageState extends State<ShippingsPage> with SingleTickerProvider
             : null;
           },
           tooltip: 'Add a new Shipping',
+        ),
+        drawer: Drawer(
+          child: Column(
+            children: [
+              Flexible(
+                child: ListView(
+                  children: <Widget>[
+                    SizedBox(height: 20),
+                    Container(
+                      height: 200,
+                      width: 200,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(image: _user.profilePhoto.image)
+                      ),
+                    ),
+                    ListTile(
+                      title: Text('Name:'),
+                      subtitle: Text(_user.name),
+                      leading: Icon(Icons.verified),
+                    ),
+                    ListTile(
+                      title: Text('Location: '),
+                      subtitle: Text(_user.location.name),
+                      leading: Icon(Icons.map_rounded),
+                      onTap: (){
+              
+                      },
+                    ),
+                    ListTile(
+                      title: Text('Emai:'),
+                      subtitle: Text(_user.email),
+                      leading: Icon(Icons.email),
+                    ),
+                    ListTile(
+                      title: Text('User ID:'),
+                      subtitle: Text(_user.id),
+                      leading: Icon(Icons.person),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                child: ListTile(
+                  title: Text('LogOut'),
+                  subtitle: Text('Press to Logout'),
+                  leading: Icon(Icons.login_outlined),
+                  onTap: (){
+                    BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationLogoutRequested());
+                  },
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
