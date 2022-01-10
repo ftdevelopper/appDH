@@ -15,9 +15,10 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     super (AuthenticationInitialState()){
         
       on<AuthenticationUserChanged>((event, emit){
-
-        event.user.id != ''
-        ? emit(AuthenticatedUser(user: event.user))
+        print('Authenticaiton User Changed with the following parameters:');
+        print('ID: ${authenticationRepository.user.id}, Name: ${authenticationRepository.user.name}, email: ${authenticationRepository.user.email}, photoURL ${authenticationRepository.user.photoURL}');
+        authenticationRepository.user.id != ''
+        ? emit(AuthenticatedUser(user: authenticationRepository.user))
         : emit (UnknownUser());
 
       });

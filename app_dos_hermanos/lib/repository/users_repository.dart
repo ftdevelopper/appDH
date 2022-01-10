@@ -9,8 +9,8 @@ class UserRepository {
 
   final CollectionReference userReference = FirebaseFirestore.instance.collection('users');
 
-  Future updateUserData(User user) async {
-    return await userReference.doc(user.id).set(
+  Future<void> updateUserData(User user) async {
+    await userReference.doc(user.id).set(
       _mapUser(user)
     );
   }
@@ -26,8 +26,9 @@ class UserRepository {
     .child('Profile Images');
 
     final firebase_storage.UploadTask uploadTask = profileImage.child(name + ".jpg").putFile(image);
-    firebase_storage.TaskSnapshot snapshot = await uploadTask.snapshot;
+    firebase_storage.TaskSnapshot snapshot = await uploadTask.whenComplete(() {});
     String imageURL = await snapshot.ref.getDownloadURL();
+    print('Image Uploaded, download URL: $imageURL');
     return imageURL;
   }
 

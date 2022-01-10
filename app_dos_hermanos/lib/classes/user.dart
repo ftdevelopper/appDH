@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
-
 import 'locations.dart';
 
 // ignore: must_be_immutable
@@ -21,17 +20,17 @@ class User extends Equatable {
     required this.profilePhoto
   });
 
-  factory User.empty(){
+  factory User.empty() {
     return User(
       id: '',
       email: '',
       location: Location(name: ''),
       name: '',
       photoURL: '',
-      profilePhoto: Image.asset('assets/default_profile/pic.jpg')
+      profilePhoto: Image.asset('assets/default_profile_pic.jpg')
     );
   }
 
   @override
-  List<Object> get props => [email, id, name, photoURL, location, profilePhoto];
+  List<Object> get props => [this.email, this.id, this.name, this.photoURL, this.location, this.profilePhoto];
 } 

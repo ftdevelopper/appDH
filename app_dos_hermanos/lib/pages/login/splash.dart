@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:app_dos_hermanos/blocs/authentication_bloc/authenticaiton_bloc.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +35,7 @@ class SplashPage extends StatelessWidget {
   _navigateToLogin(context){
 
     Timer(Duration(seconds: 1),(){
-      BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationUserChanged(authenticationRepository.user));
+      BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationUserChanged());
     });
     
   }

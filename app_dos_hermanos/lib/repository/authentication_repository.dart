@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:app_dos_hermanos/classes/user.dart';
 import 'package:app_dos_hermanos/repository/users_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
@@ -48,12 +49,15 @@ class AuthenticationRepository {
     return user;
   }
 
-  Future<void> signUp({
-    required String password
+  Future<User> signUp({
+    required String password,
+    required File photoFile
   }) async {
     try {
       await _firebaseAuth.createUserWithEmailAndPassword(email: user.email, password: password).then((value) => user.id = value.user!.uid);
-      user = await UserRepository().updateUserData(user);
+      user.photoURL = await userRepository.putProfileImage(image: photoFile, name: user.name);
+      await userRepository.updateUserData(user);
+      return user;
     } on Exception {
       throw SignUpFailure();
     }

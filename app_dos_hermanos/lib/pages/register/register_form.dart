@@ -1,11 +1,12 @@
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import 'package:app_dos_hermanos/blocs/authentication_bloc/authenticaiton_bloc.dart';
 import 'package:app_dos_hermanos/blocs/register_bloc/register_bloc.dart';
 import 'package:app_dos_hermanos/classes/locations.dart';
-import 'package:app_dos_hermanos/classes/user.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:app_dos_hermanos/repository/location_repository.dart';
 import 'package:app_dos_hermanos/widgets/register_button.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RegisterForm extends StatefulWidget {
@@ -23,6 +24,9 @@ class _RegisterFormState extends State<RegisterForm> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   String _location = 'campo default';
+
+  Image profilePhoto = Image.asset('assets/default_profile_pic.jpg');
+  late File profilePhotoFile = File('assets/default_profile_pic.jpg');
 
   late RegisterBloc _registerBloc;
 
@@ -69,7 +73,7 @@ class _RegisterFormState extends State<RegisterForm> {
           ));
         }
         if (state is SuccesRegister){
-          BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationUserChanged(User(email: _emailController.text,id: '',photoURL: '',name: '',location: Location(name: ''), profilePhoto: Image.asset('assets/default_profile_pic.jpg'))));
+          BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationUserChanged());
           Navigator.of(context).pop();
         }
         if (state is LoadingRegister){
@@ -98,10 +102,27 @@ class _RegisterFormState extends State<RegisterForm> {
                       width: 120,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        image: DecorationImage(image: AssetImage('assets/default_profile_pic.jpg'))
+                        image: DecorationImage(image: profilePhoto.image,fit: BoxFit.scaleDown)
                       ),
                     ),
-                    onTap: (){},
+                    onTap: () async {
+                      try {
+                        XFile? newImage = (await ImagePicker().pickImage(source: ImageSource.camera));
+                        if (newImage != null){
+                          profilePhotoFile = File(newImage.path);
+                          final bytes = await profilePhotoFile.readAsBytes();
+                          final image = (await Image.memory(bytes));
+
+                          setState(() {
+                            profilePhoto = image;
+                          });
+                        }else{
+                          print('newImage = null');
+                        }
+                      } catch (e) {
+                        print(e);
+                      }
+                    },
                   ),
                 ),
                 TextFormField(
@@ -195,13 +216,14 @@ class _RegisterFormState extends State<RegisterForm> {
     _registerBloc.add(PasswordChanged(password: _passwordController.text));
   }
 
-  void _onFormSubmitted(){
+  void _onFormSubmitted() async {
     widget.authenticationRepository.user
     ..email = _emailController.text
     ..name = _nameController.text
     ..photoURL = ''
-    ..location = Location.fromName(_location);
-    _registerBloc.add(Sumbitted(password: _passwordController.text)
+    ..location = Location.fromName(_location)
+    ..profilePhoto = profilePhoto;
+    _registerBloc.add(Sumbitted(password: _passwordController.text, photoFile: profilePhotoFile)
     );
   }
 
