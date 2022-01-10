@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:app_dos_hermanos/blocs/authentication_bloc/authenticaiton_bloc.dart';
 import 'package:app_dos_hermanos/blocs/drawer_bloc/drawer_bloc.dart';
 import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
@@ -98,7 +97,7 @@ class _ShippingsPageState extends State<ShippingsPage> with SingleTickerProvider
                   : ListView.builder(
                     itemCount: shippingList.length,
                     itemBuilder: (_, index){
-                      return shippingsUI(shippingList[index]);
+                      return shippingsUI(shippingList[index], context);
                     },
                   )
                 ),
@@ -115,7 +114,7 @@ class _ShippingsPageState extends State<ShippingsPage> with SingleTickerProvider
                   : ListView.builder(
                     itemCount: filterShippings(ShippingStatus.newShipping).length,
                     itemBuilder: (_, index){
-                      return shippingsUI(filterShippings(ShippingStatus.newShipping)[index]);
+                      return shippingsUI(filterShippings(ShippingStatus.newShipping)[index], context);
                     },
                   )
                 ),
@@ -132,7 +131,7 @@ class _ShippingsPageState extends State<ShippingsPage> with SingleTickerProvider
                   : ListView.builder(
                     itemCount: filterShippings(ShippingStatus.inTravelShipping).length,
                     itemBuilder: (_, index){
-                      return shippingsUI(filterShippings(ShippingStatus.inTravelShipping)[index]);
+                      return shippingsUI(filterShippings(ShippingStatus.inTravelShipping)[index], context);
                     },
                   )
                 ),
@@ -149,7 +148,7 @@ class _ShippingsPageState extends State<ShippingsPage> with SingleTickerProvider
                   : ListView.builder(
                     itemCount: filterShippings(ShippingStatus.downloadedShipping).length,
                     itemBuilder: (_, index){
-                      return shippingsUI(filterShippings(ShippingStatus.downloadedShipping)[index]);
+                      return shippingsUI(filterShippings(ShippingStatus.downloadedShipping)[index], context);
                     },
                   )
                 ),
@@ -166,7 +165,7 @@ class _ShippingsPageState extends State<ShippingsPage> with SingleTickerProvider
                   : ListView.builder(
                     itemCount: filterShippings(ShippingStatus.completedShipping).length,
                     itemBuilder: (_, index){
-                      return shippingsUI(filterShippings(ShippingStatus.completedShipping)[index]);
+                      return shippingsUI(filterShippings(ShippingStatus.completedShipping)[index], context);
                     },
                   )
                 ),
@@ -187,96 +186,108 @@ class _ShippingsPageState extends State<ShippingsPage> with SingleTickerProvider
           },
           tooltip: 'Add a new Shipping',
         ),
-        drawer: Drawer(
-          child: Column(
-            children: [
-              Flexible(
-                child: ListView(
-                  children: <Widget>[
-                    SizedBox(height: 20),
-                    Stack(
-                      alignment: AlignmentDirectional.center,
-                      fit: StackFit.passthrough,
-                      children: <Widget>[
-                        Container(
-                          height: 200,
-                          width: 200,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(image: _user.profilePhoto.image)
-                          ),
-                        ),
-                        Positioned(
-                          bottom: -10,
-                          right: 50,
-                          child: IconButton(
-                            iconSize: 50,
-                            color: Colors.grey,
-                            icon: Icon(Icons.add_a_photo),
-                            onPressed: () async {
-                              try {
-                                XFile? newImage = (await ImagePicker().pickImage(source: ImageSource.camera));
-                                if (newImage != null){
-                                  File profilePhotoFile = File(newImage.path);
-                                  final bytes = await profilePhotoFile.readAsBytes();
-                                  final image = (await Image.memory(bytes));
-                                  BlocProvider.of<DrawerBloc>(context).add(ChangeProfilePhoto(newphoto: image, newphotoFile: profilePhotoFile));
-                                } else {
-                                  print('newImage = null');
-                                }
-                              } catch (e) {
-                                print(e);
-                              }
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    ListTile(
-                      title: Text('Name:'),
-                      subtitle: Text(_user.name),
-                      leading: Icon(Icons.verified),
-                    ),
-                    ListTile(
-                      title: Text('Location: '),
-                      subtitle: Text(_user.location.name),
-                      leading: Icon(Icons.map_rounded),
-                      onTap: () async {
-                        await _showlocationsDrawer();
-                      },
-                    ),
-                    ListTile(
-                      title: Text('Emai:'),
-                      subtitle: Text(_user.email),
-                      leading: Icon(Icons.email),
-                    ),
-                    ListTile(
-                      title: Text('User ID:'),
-                      subtitle: Text(_user.id),
-                      leading: Icon(Icons.person),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                child: ListTile(
-                  title: Text('LogOut'),
-                  subtitle: Text('Press to Logout'),
-                  leading: Icon(Icons.login_outlined),
-                  onTap: (){
-                    BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationLogoutRequested());
-                  },
-                ),
-              )
-            ],
-          ),
-        ),
+        drawer: BlocBuilder<DrawerBloc,DrawerState>(
+          builder:(context, state){
+            if (state is LoadingDrawer){
+              return Drawer(child: Center(child: CircularProgressIndicator()),);
+            } else {
+              return LoadedDrawer(context);
+            }
+          }
+        )
       ),
     );
   }
 
-  Widget shippingsUI(Shipping shipping){
+  Drawer LoadedDrawer(BuildContext context) {
+    return Drawer(
+        child: Column(
+          children: [
+            Flexible(
+              child: ListView(
+                children: <Widget>[
+                  SizedBox(height: 20),
+                  Stack(
+                    alignment: AlignmentDirectional.center,
+                    fit: StackFit.passthrough,
+                    children: <Widget>[
+                      Container(
+                        height: 200,
+                        width: 200,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(image: _user.profilePhoto.image)
+                        ),
+                      ),
+                      Positioned(
+                        bottom: -10,
+                        right: 50,
+                        child: IconButton(
+                          iconSize: 50,
+                          color: Colors.grey,
+                          icon: Icon(Icons.add_a_photo),
+                          onPressed: () async {
+                            try {
+                              XFile? newImage = (await ImagePicker().pickImage(source: ImageSource.camera));
+                              if (newImage != null){
+                                File profilePhotoFile = File(newImage.path);
+                                final bytes = await profilePhotoFile.readAsBytes();
+                                final image = (await Image.memory(bytes));
+                                BlocProvider.of<DrawerBloc>(context).add(ChangeProfilePhoto(newphoto: image, newphotoFile: profilePhotoFile));
+                              } else {
+                                print('newImage = null');
+                              }
+                            } catch (e) {
+                              print(e);
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  ListTile(
+                    title: Text('Name:'),
+                    subtitle: Text(_user.name),
+                    leading: Icon(Icons.verified),
+                  ),
+                  ListTile(
+                    title: Text('Location: '),
+                    subtitle: Text(_user.location.name),
+                    leading: Icon(Icons.map_rounded),
+                    onTap: () async {
+                      await _showlocationsDrawer(context);
+                    },
+                  ),
+                  ListTile(
+                    title: Text('Emai:'),
+                    subtitle: Text(_user.email),
+                    leading: Icon(Icons.email),
+                  ),
+                  ListTile(
+                    title: Text('User ID:'),
+                    subtitle: Text(_user.id),
+                    leading: Icon(Icons.person),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+              child: ListTile(
+                title: Text('LogOut'),
+                subtitle: Text('Press to Logout'),
+                leading: Icon(Icons.login_outlined),
+                onTap: (){
+                  BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationLogoutRequested());
+                },
+              ),
+            )
+          ],
+        ),
+      );
+  }
+
+  Widget shippingsUI(Shipping shipping, BuildContext context){
     return Padding(
       padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
       child: ElevatedButton(
@@ -306,7 +317,7 @@ class _ShippingsPageState extends State<ShippingsPage> with SingleTickerProvider
     return shippingList.where((element) => element.shippingState == status).toList();
   }
 
-  Future<void> _showlocationsDrawer() async {
+  Future<void> _showlocationsDrawer(BuildContext context) async {
     final List<Location> locations = await LocationRepository().getLocations();
     return showDialog<void>(
       context: context,
