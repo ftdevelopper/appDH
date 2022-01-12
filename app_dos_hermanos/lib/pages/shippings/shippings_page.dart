@@ -84,103 +84,94 @@ class _ShippingsPageState extends State<ShippingsPage>
             }
             if (state is ShippingsLoaded) {
               shippingList = state.shippings;
-              return TabBarView(controller: _tabController, children: [
-                Container(
+              return TabBarView(controller: _tabController, 
+                children: <Widget>[
+                  Container(
                     child: shippingList.length == 0
-                        ? Center(
-                            child: Column(children: [
+                    ? Center(
+                        child: Column(
+                          children: [
                             Text('No Shipings Avaliable'),
-                          ]))
-                        : ListView.builder(
-                            itemCount: shippingList.length,
-                            itemBuilder: (_, index) {
-                              return shippingsUI(shippingList[index], context);
-                            },
-                          )),
-                Container(
-                    child:
-                        filterShippings(ShippingStatus.newShipping).length == 0
-                            ? Center(
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                    Text('No New Shipings Avaliable'),
-                                  ]))
-                            : ListView.builder(
-                                itemCount:
-                                    filterShippings(ShippingStatus.newShipping)
-                                        .length,
-                                itemBuilder: (_, index) {
-                                  return shippingsUI(
-                                      filterShippings(
-                                          ShippingStatus.newShipping)[index],
-                                      context);
-                                },
-                              )),
-                Container(
-                    child: filterShippings(ShippingStatus.inTravelShipping)
-                                .length ==
-                            0
-                        ? Center(
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                Text('No Shipings in Travel'),
-                              ]))
-                        : ListView.builder(
-                            itemCount:
-                                filterShippings(ShippingStatus.inTravelShipping)
-                                    .length,
-                            itemBuilder: (_, index) {
-                              return shippingsUI(
-                                  filterShippings(
-                                      ShippingStatus.inTravelShipping)[index],
-                                  context);
-                            },
-                          )),
-                Container(
-                    child: filterShippings(ShippingStatus.downloadedShipping)
-                                .length ==
-                            0
-                        ? Center(
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                Text('No Shipings Recived'),
-                              ]))
-                        : ListView.builder(
-                            itemCount: filterShippings(
-                                    ShippingStatus.downloadedShipping)
-                                .length,
-                            itemBuilder: (_, index) {
-                              return shippingsUI(
-                                  filterShippings(
-                                      ShippingStatus.downloadedShipping)[index],
-                                  context);
-                            },
-                          )),
-                Container(
-                    child: filterShippings(ShippingStatus.completedShipping)
-                                .length ==
-                            0
-                        ? Center(
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                Text('No Complete Shippings'),
-                              ]))
-                        : ListView.builder(
-                            itemCount: filterShippings(
-                                    ShippingStatus.completedShipping)
-                                .length,
-                            itemBuilder: (_, index) {
-                              return shippingsUI(
-                                  filterShippings(
-                                      ShippingStatus.completedShipping)[index],
-                                  context);
-                            },
-                          )),
-              ]);
+                          ]
+                        )
+                      )
+                    : ListView.builder(
+                      itemCount: shippingList.length,
+                      itemBuilder: (_, index) {
+                        return shippingsUI(shippingList[index], context);
+                      },
+                    )
+                  ),
+                  Container(
+                    child: filterShippings(ShippingStatus.newShipping).length == 0
+                    ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text('No New Shipings Avaliable'),
+                        ]
+                      )
+                    )
+                    : ListView.builder(
+                      itemCount: filterShippings(ShippingStatus.newShipping).length,
+                      itemBuilder: (_, index) {
+                        return shippingsUI(filterShippings(ShippingStatus.newShipping)[index],context);
+                      },
+                    )
+                  ),
+                  Container(
+                    child: filterShippings(ShippingStatus.inTravelShipping).length == 0
+                    ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget> [
+                            Text('No Shipings in Travel'),
+                          ]
+                        )
+                      )
+                    : ListView.builder(
+                      itemCount: filterShippings(ShippingStatus.inTravelShipping).length,
+                      itemBuilder: (_, index) {
+                        return shippingsUI(filterShippings(ShippingStatus.inTravelShipping)[index],context);
+                      },
+                    )
+                  ),
+                  Container(
+                    child: filterShippings(ShippingStatus.downloadedShipping).length == 0
+                    ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget> [
+                          Text('No Shipings Recived'),
+                        ]
+                      )
+                    )
+                    : ListView.builder(
+                      itemCount: filterShippings(ShippingStatus.downloadedShipping).length,
+                      itemBuilder: (_, index) {
+                        return shippingsUI(filterShippings(ShippingStatus.downloadedShipping)[index],context);
+                      },
+                    )
+                  ),
+                  Container(
+                    child: filterShippings(ShippingStatus.completedShipping).length == 0
+                    ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text('No Complete Shippings'),
+                        ]
+                      )
+                    )
+                    : ListView.builder(
+                      itemCount: filterShippings(ShippingStatus.completedShipping).length,
+                      itemBuilder: (_, index) {
+                        return shippingsUI(filterShippings(ShippingStatus.completedShipping)[index],context);
+                      },
+                    )
+                  ),
+                ]
+              );
             } else {
               return Container();
             }
