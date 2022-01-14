@@ -313,7 +313,7 @@ class _ShippingsPageState extends State<ShippingsPage>
                 width: 80,
               ),
               Text(
-                'patent: ${shipping.patent}',
+                'patent: ${shipping.truckPatent}',
                 style: TextStyle(color: Colors.black),
               )
             ],

@@ -26,7 +26,7 @@ class _NewShippingState extends State<NewShipping> {
   void initState() {
     _patentController = TextEditingController();
     _locationController = TextEditingController();
-    _shipping = widget.shipping ?? Shipping(patent: '', shippingState: ShippingStatus.newShipping);
+    _shipping = widget.shipping ?? Shipping(driverName: '', truckPatent: '', chasisPatent: '', shippingState: ShippingStatus.newShipping);
     super.initState();
   }
 
@@ -130,7 +130,7 @@ class _NewShippingState extends State<NewShipping> {
 
   void uploadShipping(){
     setState(() {
-      _shipping.patent = _patentController.text;
+      _shipping.truckPatent = _patentController.text;
       _shipping.remiterLocation = _locationController.text;
     });
     BlocProvider.of<ShippingsBloc>(context).add(AddShipping(shipping: _shipping));

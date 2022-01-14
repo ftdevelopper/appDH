@@ -41,7 +41,7 @@ class _EditShippingState extends State<EditShipping> {
             child: Column(
               children: <Widget>[
 
-                Text('patente: ${_shipping.patent}'),
+                Text('patente: ${_shipping.truckPatent}'),
                 Text('Remiter Tara: ${_shipping.remiterTara}kg'),
 
                 _shipping.shippingState == ShippingStatus.newShipping
