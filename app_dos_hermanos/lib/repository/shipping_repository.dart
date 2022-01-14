@@ -28,7 +28,9 @@ class ShippingRepository {
   Map<String, String>_mapShipping(Shipping shipping, String id){
     Map<String, String> _shippingMap = {
       'shippingState': shipping.getStatus,
-      'patent': shipping.patent,
+      'driverName': shipping.driverName,
+      'truckPatent': shipping.truckPatent,
+      'chasisPatent': shipping.chasisPatent,
       'remiterFullWeight': shipping.remiterFullWeight ?? '',
       'remiterFullWeightTime': shipping.remiterFullWeightTime ?? '',
       'remiterFullWeightUser': shipping.remiterFullWeightUser ?? '',
@@ -45,6 +47,9 @@ class ShippingRepository {
       'reciverTaraUser': shipping.reciverTaraUser ?? '',
       'riceType': shipping.riceType ?? '',
       'id': id,
+      'crop': shipping.crop ?? '',
+      'departure': shipping.departure ?? '',
+      'humidity': shipping.humidity ?? '',
     };
     return _shippingMap;
   }
