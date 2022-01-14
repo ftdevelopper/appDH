@@ -4,22 +4,24 @@ import 'package:flutter/material.dart';
 enum ShippingStatus{newShipping, completedShipping, inTravelShipping, downloadedShipping, unknownStatus, deletedShipping}
 
 class Shipping {
-  String patent;
+  String truckPatent, chasisPatent, driverName;
   ShippingStatus shippingState;
   String? remiterTara, remiterFullWeight, reciverTara, reciverFullWeight;
   String? remiterTaraTime, remiterFullWeightTime, reciverTaraTime, reciverFullWeightTime;
   String? remiterTaraUser, remiterFullWeightUser, reciverTaraUser, reciverFullWeightUser;
   String? remiterLocation, reciverLocation;
-  String? riceType, id;
+  String? riceType, id, crop, departure, humidity;
 
   Shipping({
+    required this.driverName,
     required this.shippingState,
-    required this.patent,
+    required this.truckPatent,
+    required this.chasisPatent,
     this.remiterTara, this.remiterFullWeight, this.reciverTara, this.reciverFullWeight, 
     this.remiterTaraTime, this.remiterFullWeightTime, this.reciverTaraTime, this.reciverFullWeightTime, 
     this.remiterTaraUser, this.remiterFullWeightUser, this.reciverTaraUser, this.reciverFullWeightUser, 
     this.remiterLocation, this.reciverLocation, 
-    this.riceType, this.id
+    this.riceType, this.id, this.crop, this.departure, this.humidity
   });
 
   List<String> rice = [
@@ -37,7 +39,9 @@ class Shipping {
     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
     return Shipping(
       shippingState: statusFromString(data['shippingState']),
-      patent: data['patent'],
+      truckPatent: data['truckPatent'],
+      driverName: data['driverName'],
+      chasisPatent: data['chasisPatent'],
       remiterFullWeight: data['remiterFullWeight'],
       remiterFullWeightTime: data['remiterFullWeightTime'],
       remiterFullWeightUser: data['remiterFullWeightUser'],
@@ -54,6 +58,9 @@ class Shipping {
       reciverTaraUser: data['reciverTaraUser'],
       riceType: data['riceType'],
       id: data['id'],
+      crop: data['crop'],
+      departure: data['departure'],
+      humidity: data['humidity']
     );
   }
 
