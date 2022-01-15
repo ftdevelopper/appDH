@@ -30,7 +30,7 @@ class DriverRepository {
   Map<String, dynamic>_mapDriver(Driver driver, String did){
     Map<String, dynamic> _drivergMap = {
       'did': did,
-      'name': driver.name,
+      'name': driver.name,  
       'cuil': driver.cuil,
       'truckPatents': driver.truckPatents,
       'chasisPatents': driver.chasisPatents,
