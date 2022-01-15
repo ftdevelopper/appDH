@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:app_dos_hermanos/classes/validators.dart';
+import 'package:app_dos_hermanos/validations/login_validators.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
