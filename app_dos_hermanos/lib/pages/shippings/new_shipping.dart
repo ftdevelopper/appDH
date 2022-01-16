@@ -6,6 +6,7 @@ import 'package:app_dos_hermanos/classes/shipping.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:app_dos_hermanos/repository/drivers_repository.dart';
 import 'package:app_dos_hermanos/validations/new_shipping_validators.dart';
+import 'package:app_dos_hermanos/widgets/shipping_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -417,34 +418,5 @@ class _NewShippingState extends State<NewShipping> {
     _locationController.dispose();
     _truckPatentController.dispose();
     super.dispose();
-  }
-}
-
-class ShippingData extends StatelessWidget {
-  const ShippingData({
-    Key? key,
-    required this.title,
-    required this.data
-  }) : super(key: key);
-
-  final String title;
-  final String data;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        SizedBox(width: 20,),
-        Container(
-          width: MediaQuery.of(context).size.width * 0.2,
-          child: Text(title + ':')
-        ),
-        Container(
-          width: MediaQuery.of(context).size.width * 0.4,
-          child: Text(data, softWrap: true, overflow: TextOverflow.ellipsis, maxLines: 1,)
-        ),
-      ],
-    );
   }
 }

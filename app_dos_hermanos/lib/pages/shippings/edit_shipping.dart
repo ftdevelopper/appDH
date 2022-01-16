@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:app_dos_hermanos/classes/shipping.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:app_dos_hermanos/repository/shipping_repository.dart';
+import 'package:app_dos_hermanos/widgets/shipping_data.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -30,6 +31,7 @@ class _EditShippingState extends State<EditShipping> {
       return _weight.toString();
     }
   );
+  
   @override
   void initState() {
     _shipping = widget.shipping;
@@ -134,7 +136,7 @@ class _EditShippingState extends State<EditShipping> {
                 ),
                 
 
-                if(_shipping.shippingState == ShippingStatus.inTravelShipping)
+                if(_shipping.shippingState == ShippingStatus.downloadedShipping)
                 Column(
                   children: [
                     TextField(
@@ -193,12 +195,19 @@ class _EditShippingState extends State<EditShipping> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-
-                Text('Are you sure you want to send upload this Shipping?', textAlign: TextAlign.center,),
-                Text('Remiter Tara: ${_shipping.remiterTara}kg', textAlign: TextAlign.center),
-                Text('Remiter Bruto:${_shipping.remiterFullWeight}kg', textAlign: TextAlign.center),
-                Text('Reciver Bruto:${_shipping.reciverFullWeight}kg', textAlign: TextAlign.center),
-                Text('Reciver Tara:${_shipping.reciverTara}kg', textAlign: TextAlign.center),
+                ShippingData(title: 'Fecha', data: DateFormat('dd-MM-yyyy').format(_date)),
+                ShippingData(title: 'Hora', data: DateFormat.Hm().format(_date)),
+                ShippingData(title: 'Usuario', data: widget.authenticationRepository.user.name),
+                ShippingData(title: 'Ubicacion', data: widget.authenticationRepository.user.location.name),
+                ShippingData(title: 'Chofer', data: _shipping.driverName),
+                ShippingData(title: 'Camion', data: _shipping.truckPatent),
+                ShippingData(title: 'Chasis', data: _shipping.chasisPatent),
+                if (_shipping.shippingState == ShippingStatus.newShipping)
+                  ShippingData(title: 'Peso Bruto', data: _shipping.remiterFullWeight.toString()),
+                if (_shipping.shippingState == ShippingStatus.inTravelShipping)
+                  ShippingData(title: 'Peso Bruto', data: _shipping.reciverFullWeight.toString()),
+                if (_shipping.shippingState == ShippingStatus.downloadedShipping)
+                  ShippingData(title: 'Peso Bruto', data: _shipping.reciverTara.toString()),
                 ElevatedButton(
                   child: Text('Confirmar'),
                   onPressed: (){
@@ -222,6 +231,21 @@ class _EditShippingState extends State<EditShipping> {
   }
 
   void uploadShipping() async {
+    switch (_shipping.shippingState) {
+      case ShippingStatus.newShipping:
+        _shipping.remiterFullWeightTime = _date.toString();
+        _shipping.remiterFullWeightUser = widget.authenticationRepository.user.id;
+      break;
+      case ShippingStatus.inTravelShipping:
+        _shipping.reciverFullWeightTime = _date.toString();
+        _shipping.reciverFullWeightUser = widget.authenticationRepository.user.id;
+      break;
+      case ShippingStatus.downloadedShipping:
+        _shipping.reciverTaraTime = _date.toString();
+        _shipping.reciverTaraUser = widget.authenticationRepository.user.id;
+      break;
+      default:
+    }
     _shipping.nextStatus();
     await ShippingRepository().updateParameter(shipping: _shipping);
     Navigator.pop(context);
@@ -229,7 +253,7 @@ class _EditShippingState extends State<EditShipping> {
 
   @override
   void dispose() {
-    
+
     super.dispose();
   }
 }
