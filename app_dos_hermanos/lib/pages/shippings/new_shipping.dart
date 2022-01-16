@@ -2,9 +2,11 @@ import 'dart:async';
 import 'dart:math';
 import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
 import 'package:app_dos_hermanos/classes/driver.dart';
+import 'package:app_dos_hermanos/classes/locations.dart';
 import 'package:app_dos_hermanos/classes/shipping.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:app_dos_hermanos/repository/drivers_repository.dart';
+import 'package:app_dos_hermanos/repository/location_repository.dart';
 import 'package:app_dos_hermanos/validations/new_shipping_validators.dart';
 import 'package:app_dos_hermanos/widgets/shipping_data.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +27,9 @@ class _NewShippingState extends State<NewShipping> {
   late final Shipping _shipping;
   final formKey = GlobalKey<FormState>();
 
+  LocationRepository locationRepository = LocationRepository();
+  late List<Location> locations = [];
+
   late TextEditingController _truckPatentController;
   late TextEditingController _chasisPatentController;
   late TextEditingController _locationController;
@@ -38,16 +43,17 @@ class _NewShippingState extends State<NewShipping> {
   String cosechaValue = 'CAMPAÑA 20-21';
   String partidaValue = 'CAMPAÑA 20-21';
   late String riceValue = 'Tipo de Arroz';
+  Location destination = Location(name: 'SELECCIONAR');
 
   List<Driver> driver = [
     Driver(name: 'tomi', cuil: '1234', chasisPatents: ['asd123', 'asd234'], driverShippings: [''],truckPatents: ['dfg345', '234dfdg'],did: '12341234'),
     Driver(name: 'tadeo', cuil: '1234', chasisPatents: ['1234sd'], truckPatents: ['asdfwre'], did: 'qwer', driverShippings: ['']),
-    Driver(name: 'fede', cuil: '', chasisPatents: [''], truckPatents: ['sdf234'], driverShippings: [''], did: ''),
+    Driver(name: 'fede', cuil: '', chasisPatents: ['12341'], truckPatents: ['sdf234'], driverShippings: [''], did: ''),
     Driver(name: 'fernando', cuil: '', chasisPatents: ['asdf2'], truckPatents: ['asdf'], driverShippings: [''], did: '')
   ];
 
   @override
-  void initState() {
+  void initState(){
     _truckPatentController = TextEditingController();
     _chasisPatentController = TextEditingController();
     _humidityController = TextEditingController();
@@ -72,7 +78,9 @@ class _NewShippingState extends State<NewShipping> {
   );
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
+    //TODO: Encontrar una mejor manera de hacer esto
+    _loadLocation();
     return Scaffold(
       appBar: AppBar(title: Text('New Shipping'), centerTitle: true),
       body: SafeArea(
@@ -179,6 +187,42 @@ class _NewShippingState extends State<NewShipping> {
                   },
                 ),
                 Divider(),
+
+                DropdownButtonFormField<String>(
+                  value: destination.name,
+                  decoration: InputDecoration(labelText: 'Destino', border: InputBorder.none, icon: Icon(Icons.location_on)),
+                  style: TextStyle(fontSize: 14, color: Colors.black),
+                  //autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (_){
+                    //TODO: Implement this validation
+                  },
+                  onChanged: (dynamic newValue ){
+                    setState(() {
+                      destination = Location.fromName(newValue);
+                    });
+                  },
+                  items: locations.map<DropdownMenuItem<String>>((value) {
+                    return DropdownMenuItem<String>(
+                      value: value.name,
+                      child: Text(value.name ,overflow: TextOverflow.visible,),
+                    );
+                  }).toList(),
+                  selectedItemBuilder: (context){
+                    return locations
+                    .map((value) => Container(
+                      child: Text(
+                        value.name, 
+                        overflow: TextOverflow.ellipsis, 
+                        maxLines: 1, 
+                        softWrap: true
+                      ),
+                      width: MediaQuery.of(context).size.width*0.7,
+                    )
+                    ).toList();
+                  },
+                ),
+                Divider(),
+
 
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Humedad', border: InputBorder.none, icon: Icon(Icons.water_sharp)),
@@ -359,6 +403,7 @@ class _NewShippingState extends State<NewShipping> {
                 ShippingData(title: 'Partida', data: partidaValue),
                 ShippingData(title: 'Cosecha', data: cosechaValue),
                 ShippingData(title: 'Arroz', data: riceValue),
+                ShippingData(title: 'Destino', data: destination.name),
                 ShippingData(title: 'Humedad', data: _humidityController.text),
                 ShippingData(title: 'Chofer', data: _driverNameController.text),
                 ShippingData(title: 'Camion', data: _truckPatentController.text),
@@ -390,6 +435,7 @@ class _NewShippingState extends State<NewShipping> {
     _shipping.crop = cosechaValue;
     _shipping.departure = partidaValue;
     _shipping.riceType = riceValue;
+    _shipping.reciverLocation = destination.name;
     _shipping.humidity = _humidityController.text;
     _shipping.driverName = _driverNameController.text;
     _shipping.truckPatent = _truckPatentController.text;
@@ -418,5 +464,9 @@ class _NewShippingState extends State<NewShipping> {
     _locationController.dispose();
     _truckPatentController.dispose();
     super.dispose();
+  }
+
+  void _loadLocation() async {
+    locations = await locationRepository.getLocations();
   }
 }
