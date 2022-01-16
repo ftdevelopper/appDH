@@ -386,10 +386,18 @@ class _NewShippingState extends State<NewShipping> {
   }
 
   void uploadShipping(){
-    setState(() {
-      _shipping.truckPatent = _truckPatentController.text;
-      _shipping.remiterLocation = _locationController.text;
-    });
+    _shipping.crop = cosechaValue;
+    _shipping.departure = partidaValue;
+    _shipping.riceType = riceValue;
+    _shipping.humidity = _humidityController.text;
+    _shipping.driverName = _driverNameController.text;
+    _shipping.truckPatent = _truckPatentController.text;
+    _shipping.chasisPatent = _chasisPatentController.text;
+    _shipping.remiterTaraUser = widget.authenticationRepository.user.id;
+    _shipping.remiterTaraTime = _date.toString();
+    _shipping.truckPatent = _truckPatentController.text;
+    _shipping.remiterLocation = _locationController.text;
+
     BlocProvider.of<ShippingsBloc>(context).add(AddShipping(shipping: _shipping));
     Navigator.pop(context);
   }
