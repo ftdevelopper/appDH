@@ -347,15 +347,22 @@ class _NewShippingState extends State<NewShipping> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Shipping Confirmation', textAlign: TextAlign.center,),
+          title: const Text('Confimacion Nuevo Envio', textAlign: TextAlign.center,),
           content: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text('Are you sure you want to send upload this Shipping?', textAlign: TextAlign.center,),
-                Text('Location: ${_locationController.text}', textAlign: TextAlign.center,),
-                Text('Patent: ${_truckPatentController.text}', textAlign: TextAlign.center,),
-                Text('Tara: ${_shipping.remiterTara}', textAlign: TextAlign.center,),
+                ShippingData(title: 'Fecha', data: DateFormat('dd-MM-yyyy').format(_date)),
+                ShippingData(title: 'Hora', data: DateFormat.Hm().format(_date)),
+                ShippingData(title: 'Ubicacion', data: _locationController.text),
+                ShippingData(title: 'Partida', data: partidaValue),
+                ShippingData(title: 'Cosecha', data: cosechaValue),
+                ShippingData(title: 'Arroz', data: riceValue),
+                ShippingData(title: 'Humedad', data: _humidityController.text),
+                ShippingData(title: 'Chofer', data: _driverNameController.text),
+                ShippingData(title: 'Camion', data: _truckPatentController.text),
+                ShippingData(title: 'Chasis', data: _chasisPatentController.text),
+                ShippingData(title: 'Peso Tara', data: _shipping.remiterTara.toString()),
                 ElevatedButton(
                   child: Text('Confirmar'),
                   onPressed: (){
@@ -402,5 +409,34 @@ class _NewShippingState extends State<NewShipping> {
     _locationController.dispose();
     _truckPatentController.dispose();
     super.dispose();
+  }
+}
+
+class ShippingData extends StatelessWidget {
+  const ShippingData({
+    Key? key,
+    required this.title,
+    required this.data
+  }) : super(key: key);
+
+  final String title;
+  final String data;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        SizedBox(width: 20,),
+        Container(
+          width: MediaQuery.of(context).size.width * 0.2,
+          child: Text(title + ':')
+        ),
+        Container(
+          width: MediaQuery.of(context).size.width * 0.4,
+          child: Text(data, softWrap: true, overflow: TextOverflow.ellipsis, maxLines: 1,)
+        ),
+      ],
+    );
   }
 }
