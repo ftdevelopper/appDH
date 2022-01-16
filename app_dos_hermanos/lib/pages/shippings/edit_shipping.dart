@@ -4,6 +4,7 @@ import 'package:app_dos_hermanos/classes/shipping.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:app_dos_hermanos/repository/shipping_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 // ignore: must_be_immutable
 class EditShipping extends StatefulWidget {
@@ -20,6 +21,7 @@ class EditShipping extends StatefulWidget {
 class _EditShippingState extends State<EditShipping> {
 
   late Shipping _shipping;
+  late DateTime _date;
 
   final Stream<String> _weightStream = Stream.periodic(
     Duration(seconds: 1),
@@ -28,55 +30,146 @@ class _EditShippingState extends State<EditShipping> {
       return _weight.toString();
     }
   );
+  @override
+  void initState() {
+    _shipping = widget.shipping;
+    _date = DateTime.now();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    _shipping = widget.shipping;
-
-    return Scaffold(
-      appBar: AppBar(title: Text(_shipping.getStatus), centerTitle: true,),
-      body: SafeArea(
-        child: Center(
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: Text(_shipping.getStatus), centerTitle: true,),
+        body: Center(
           child: SingleChildScrollView(
+            padding: EdgeInsets.all(25),
             child: Column(
               children: <Widget>[
 
-                Text('patente: ${_shipping.truckPatent}'),
-                Text('Remiter Tara: ${_shipping.remiterTara}kg'),
 
-                _shipping.shippingState == ShippingStatus.newShipping
-                ? StreamBuilder(
-                  initialData: 'Weight',
-                  stream: _weightStream,
-                  builder: (context, AsyncSnapshot<String> snapshot){
-                    _shipping.remiterFullWeight = snapshot.data.toString();
-                    return Text('Remiter Bruto: ${snapshot.data}kg'); 
-                  }
-                )
-                :Text('Remiter Bruto: ${_shipping.remiterFullWeight}kg'),
+                TextField(
+                  controller: TextEditingController()..text = DateFormat('dd-MM-yyyy').format(_date),
+                  enabled: false,
+                  decoration: InputDecoration(labelText: 'Fecha', icon: Icon(Icons.calendar_today_outlined)),
+                ),
+                Divider(),
 
-                _shipping.shippingState == ShippingStatus.inTravelShipping
-                ? StreamBuilder(
-                  initialData: 'Weight',
-                  stream: _weightStream,
-                  builder: (context, AsyncSnapshot<String> snapshot){
-                    _shipping.reciverFullWeight = snapshot.data.toString();
-                    return Text('Reciver Bruto: ${snapshot.data}kg');
-                  }
-                )
-                : Text('Reciver Bruto :${_shipping.reciverFullWeight}kg'),
+                TextField(
+                  controller: TextEditingController()..text = _shipping.driverName,
+                  enabled: false,
+                  decoration: InputDecoration(labelText: 'Chofer', icon: Icon(Icons.contacts_outlined)),
+                ),
+                Divider(),
 
-                _shipping.shippingState == ShippingStatus.downloadedShipping
-                ? StreamBuilder(
-                  initialData: 'Weight',
-                  stream: _weightStream,
-                  builder: (context, AsyncSnapshot<String> snapshot){
-                    _shipping.reciverTara = snapshot.data.toString();
-                    return Text('Reciver Tara: ${snapshot.data}kg');
-                  }
-                )
-                : Text('Reciver Tara: ${_shipping.reciverTara}kg'),
+                TextField(
+                  controller: TextEditingController()..text = _shipping.truckPatent,
+                  enabled: false,
+                  decoration: InputDecoration(labelText: 'Patente del Camion', icon: Icon(Icons.local_shipping_rounded)),
+                ),
+                Divider(),
+    
+                TextField(
+                  controller: TextEditingController()..text = _shipping.chasisPatent,
+                  enabled: false,
+                  decoration: InputDecoration(labelText: 'Patente del Chasis', icon: Icon(Icons.local_shipping_rounded)),
+                ),
+                Divider(),
 
+
+                if(_shipping.shippingState == ShippingStatus.newShipping)
+                Column(
+                  children: [
+                    TextField(
+                      controller: TextEditingController()..text = _shipping.remiterTara.toString(),
+                      enabled: false,
+                      decoration: InputDecoration(labelText: 'Peso Neto - Procedencia', icon: Icon(Icons.filter_1)),
+                    ),
+                    Divider(),  
+                    StreamBuilder(
+                      initialData: 'Weight',
+                      stream: _weightStream,
+                      builder: (context, AsyncSnapshot<String> snapshot){
+                        _shipping.remiterFullWeight = snapshot.data.toString();
+                        return TextField(
+                          controller: TextEditingController()..text = snapshot.data!,
+                          enabled: false,
+                          decoration: InputDecoration(labelText: 'Peso Bruto - Procedencia', icon: Icon(Icons.filter_2)),
+                        );
+                      }
+                    ),
+                  ],
+                ),
+
+
+                if(_shipping.shippingState == ShippingStatus.inTravelShipping)
+                Column(
+                  children: [
+                    TextField(
+                      controller: TextEditingController()..text = _shipping.remiterTara.toString(),
+                      enabled: false,
+                      decoration: InputDecoration(labelText: 'Peso Tara - Procedencia', icon: Icon(Icons.filter_1)),
+                    ),
+                    Divider(),
+                    TextField(
+                      controller: TextEditingController()..text = _shipping.remiterFullWeight.toString(),
+                      enabled: false,
+                      decoration: InputDecoration(labelText: 'Peso Bruto - Procedencia', icon: Icon(Icons.filter_2)),
+                    ),
+                    Divider(),
+                    StreamBuilder(
+                      initialData: 'Weight',
+                      stream: _weightStream,
+                      builder: (context, AsyncSnapshot<String> snapshot){
+                        _shipping.reciverFullWeight = snapshot.data.toString();
+                        return TextField(
+                          controller: TextEditingController()..text = snapshot.data!,
+                          enabled: false,
+                          decoration: InputDecoration(labelText: 'Peso Bruto - Destino', icon: Icon(Icons.filter_3)),
+                        );
+                      }
+                    ),
+                  ],
+                ),
+                
+
+                if(_shipping.shippingState == ShippingStatus.inTravelShipping)
+                Column(
+                  children: [
+                    TextField(
+                      controller: TextEditingController()..text = _shipping.remiterTara.toString(),
+                      enabled: false,
+                      decoration: InputDecoration(labelText: 'Peso Tara - Procedencia', icon: Icon(Icons.filter_1)),
+                    ),
+                    Divider(),
+                    TextField(
+                      controller: TextEditingController()..text = _shipping.remiterFullWeight.toString(),
+                      enabled: false,
+                      decoration: InputDecoration(labelText: 'Peso Bruto - Procedencia', icon: Icon(Icons.filter_2)),
+                    ),
+                    Divider(),
+                    TextField(
+                      controller: TextEditingController()..text = _shipping.reciverFullWeight.toString(),
+                      enabled: false,
+                      decoration: InputDecoration(labelText: 'Peso Bruto - Destino', icon: Icon(Icons.filter_3)),
+                    ),
+                    Divider(),
+                    StreamBuilder(
+                      initialData: 'Weight',
+                      stream: _weightStream,
+                      builder: (context, AsyncSnapshot<String> snapshot){
+                        _shipping.reciverTara = snapshot.data.toString();
+                        return TextField(
+                          controller: TextEditingController()..text = snapshot.data!,
+                          enabled: false,
+                          decoration: InputDecoration(labelText: 'Peso Tara - Destino', icon: Icon(Icons.filter_4)),
+                        );
+                      }
+                    ),
+                  ],
+                ),
+    
                 ElevatedButton(
                   child: Text('Update Shipping'),
                   onPressed: (){
