@@ -4,6 +4,8 @@ import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
 import 'package:app_dos_hermanos/classes/driver.dart';
 import 'package:app_dos_hermanos/classes/shipping.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
+import 'package:app_dos_hermanos/repository/drivers_repository.dart';
+import 'package:app_dos_hermanos/validations/new_shipping_validators.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -140,11 +142,16 @@ class _NewShippingState extends State<NewShipping> {
                   }).toList(),
                 ),
 
+                //TODO: Check AutoValidationMode
                 Divider(),
                 DropdownButtonFormField<String>(
                   value: riceValue,
                   decoration: InputDecoration(labelText: 'Tipo de arroz', border: InputBorder.none, icon: Icon(Icons.rice_bowl)),
                   style: TextStyle(fontSize: 14, color: Colors.black),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (_){
+                    return NewShippingValidator.isRiceValid(riceValue);
+                  },
                   onChanged: (dynamic newValue ){
                     setState(() {
                       riceValue = newValue;
@@ -176,6 +183,10 @@ class _NewShippingState extends State<NewShipping> {
                   decoration: InputDecoration(labelText: 'Humedad', border: InputBorder.none, icon: Icon(Icons.water_sharp)),
                   controller: _humidityController,
                   keyboardType: TextInputType.number,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (_){
+                    return NewShippingValidator.isHumidityValid(_humidityController.text);
+                  },
                 ),
                 Divider(),
 
@@ -209,6 +220,10 @@ class _NewShippingState extends State<NewShipping> {
                   },
                   onSuggestionSelected: (String? suggestion){
                     _driverNameController.text = suggestion!;
+                  },
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (_){
+                    return NewShippingValidator.isNameValid(driver: _driverNameController.text, driverRepository: DriverRepository(drivers: driver));
                   },
                 ),
                 Divider(),
@@ -244,6 +259,10 @@ class _NewShippingState extends State<NewShipping> {
                   },
                   onSuggestionSelected: (String? suggestion){
                     _truckPatentController.text = suggestion!;
+                  },
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (_){
+                    return NewShippingValidator.isTruckPatentValid(patent: _truckPatentController.text, driver: driver.firstWhere((element) => element.name == _driverNameController.text));
                   },
                 ),
                 Divider(),
@@ -283,6 +302,10 @@ class _NewShippingState extends State<NewShipping> {
                   onSuggestionSelected: (String? suggestion){
                     _chasisPatentController.text = suggestion!;
                   },
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (_){
+                    return NewShippingValidator.isChasisPatentValid(chasisPatent: _chasisPatentController.text, truckPatent: _truckPatentController.text, driver: driver.firstWhere((element) => element.name == _driverNameController.text));
+                  },
                 ),
                 Divider(),
 
@@ -302,11 +325,13 @@ class _NewShippingState extends State<NewShipping> {
                   ],
                 ),
                 Divider(),
-                
+
                 ElevatedButton(
                   child: Text('Add new shipping'),
                   onPressed: (){
-                    _showConfirmationAlert();
+                    if (formKey.currentState!.validate()){
+                      _showConfirmationAlert();
+                    }
                   },
                 ),
               ],

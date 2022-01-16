@@ -13,12 +13,9 @@ class NewShippingValidator {
     }
   }
 
-  static String? isRiceValid(String value){
+  static String? isRiceValid(String? value){
     if (value == 'Tipo de Arroz'){
       return 'Seleccione Tipo de Arroz';
-    }
-    else {
-      return null;
     }
   }
 
@@ -31,7 +28,7 @@ class NewShippingValidator {
     });
 
     if (!containValue){
-      return 'No se encuetra Conductor, por favor cree uno';
+      return 'No se encuetra Conductor';
     }
   }
 
@@ -43,7 +40,7 @@ class NewShippingValidator {
       }
     });
     if (!existPatent){
-      return 'No existe esa patente para este conductor';
+      return 'No existe esta patente';
     }
   }
 
@@ -53,10 +50,10 @@ class NewShippingValidator {
     bool existPatent = false;
 
     driver.truckPatents.forEach((element) {
-      index ++;
       if (element == truckPatent){
         indexs.add(index);
       }
+      index++;
     });
 
     indexs.forEach((element) {
@@ -66,7 +63,7 @@ class NewShippingValidator {
     });
 
     if (!existPatent){
-      return 'No se encuentra la patente de chasis para este Conductor';
+      return 'No se encuentra esta patente';
     } else {
       return null;
     }

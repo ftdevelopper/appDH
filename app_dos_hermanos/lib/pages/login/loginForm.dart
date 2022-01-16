@@ -101,7 +101,7 @@ class _LoginFormState extends State<LoginForm> {
                     autocorrect: false,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (_){
-                      return !state.isEmailValid? 'Invalid Email' : '';
+                      return !state.isEmailValid? 'Invalid Email' : null;
                     },
                   ),
                   SizedBox(height: 20),
@@ -116,7 +116,7 @@ class _LoginFormState extends State<LoginForm> {
                     autocorrect: false,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (_){
-                      return !state.isPasswordValid? 'Invalid Password' : '';
+                      return !state.isPasswordValid? 'Invalid Password' : null;
                     },
                   ),
                   Padding(
