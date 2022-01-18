@@ -57,7 +57,7 @@ class _RegisterFormState extends State<RegisterForm> {
           ..showSnackBar(SnackBar(
             content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[Text('Register Failure'), Icon(Icons.error)],
+              children: <Widget>[Text('Error al registrar'), Icon(Icons.error)],
             ),
             backgroundColor: Colors.red,
           ));
@@ -68,7 +68,7 @@ class _RegisterFormState extends State<RegisterForm> {
           ..showSnackBar(SnackBar(
             content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[Text('Registering...'), CircularProgressIndicator()],
+              children: <Widget>[Text('Registrando...'), CircularProgressIndicator()],
             ),
           ));
         }
@@ -82,7 +82,7 @@ class _RegisterFormState extends State<RegisterForm> {
           ..showSnackBar(SnackBar(
             content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[Text('Logging in...'), CircularProgressIndicator()],
+              children: <Widget>[Text('Ingresando...'), CircularProgressIndicator()],
             ),
           ));
         }
@@ -135,7 +135,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   autocorrect: false,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (_){
-                    return !state.isEmailValid? 'Invalid Email' : '';
+                    return !state.isEmailValid? 'Email Invalido' : '';
                   },
                 ),
                 SizedBox(height: 20,),
@@ -143,14 +143,14 @@ class _RegisterFormState extends State<RegisterForm> {
                   controller: _passwordController,
                   decoration: InputDecoration(
                     icon: Icon(Icons.lock),
-                    labelText: 'Password',
+                    labelText: 'Contraseña',
                   ),
                   keyboardType: TextInputType.emailAddress,
                   obscureText: true,
                   autocorrect: false,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (_){
-                    return !state.isPasswordValid? 'Invalid Password' : '';
+                    return !state.isPasswordValid? 'Contraseña Invalida' : '';
                   },
                 ),
                 SizedBox(height: 20,),
@@ -158,7 +158,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   controller: _nameController,
                   decoration: InputDecoration(
                     icon: Icon(Icons.person),
-                    labelText: 'Name',
+                    labelText: 'Nombre',
                   ),
                 ),
                 SizedBox(height: 20,),
