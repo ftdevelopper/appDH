@@ -23,7 +23,7 @@ class _RegisterFormState extends State<RegisterForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
-  String _location = 'campo default';
+  late Location _location;
 
   Image profilePhoto = Image.asset('assets/default_profile_pic.jpg');
   late File profilePhotoFile = File('assets/default_profile_pic.jpg');
@@ -31,7 +31,7 @@ class _RegisterFormState extends State<RegisterForm> {
   late RegisterBloc _registerBloc;
 
   final LocationRepository _locationRepository = LocationRepository();
-  List<Location> _locations = [Location(name: 'campo default')];
+  List<Location> _locations = [Location(name: 'SELECCIONAR')];
 
   bool get isPopulated => (_emailController.text.isNotEmpty && _passwordController.text.isNotEmpty && _nameController.text.isNotEmpty);
 
@@ -111,7 +111,7 @@ class _RegisterFormState extends State<RegisterForm> {
                         if (newImage != null){
                           profilePhotoFile = File(newImage.path);
                           final bytes = await profilePhotoFile.readAsBytes();
-                          final image = (await Image.memory(bytes));
+                          final image = (Image.memory(bytes));
 
                           setState(() {
                             profilePhoto = image;
@@ -146,6 +146,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     labelText: 'Password',
                   ),
                   keyboardType: TextInputType.emailAddress,
+                  obscureText: true,
                   autocorrect: false,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (_){
@@ -161,31 +162,44 @@ class _RegisterFormState extends State<RegisterForm> {
                   ),
                 ),
                 SizedBox(height: 20,),
-                Row(
-                  children: [
-                    Icon(Icons.map, color: Colors.grey.shade600,),
-                    SizedBox(width: 100,),
-                    FutureBuilder(
-                      future: _loadLocations(),
-                      builder:(context, AsyncSnapshot snapshot){ 
-                        return DropdownButton(
-                          
-                          items: _locations.map((Location location) {
-                            return DropdownMenuItem<String>(
-                              value: location.name,
-                              child: Text(location.name)
-                            );
-                          }).toList(),
-                          value: _location,
-                          onChanged: (String? newlocation){
-                            setState(() {
-                              _location = newlocation ?? '';
-                            });
-                          },
-                        );
-                      }),
-                  ],
-                ),
+                FutureBuilder(
+                  future: _loadLocations(),
+                  builder:(context, AsyncSnapshot snapshot){ 
+                    _location = Location(name: 'SELECCIONAR');
+                    return DropdownButtonFormField<String>(
+                    value: _location.name,
+                    decoration: InputDecoration(labelText: 'Ubicacion', border: InputBorder.none, icon: Icon(Icons.location_on)),
+                    style: TextStyle(fontSize: 14, color: Colors.black),
+                    //autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (_){
+                    //TODO: Implement this validation
+                    },
+                  onChanged: (dynamic newValue ){
+                setState(() {
+                  _location = Location.fromName(newValue);
+                });
+                  },
+                  items: _locations.map<DropdownMenuItem<String>>((value) {
+                return DropdownMenuItem<String>(
+                  value: value.name,
+                  child: Text(value.name ,overflow: TextOverflow.visible,),
+                );
+                  }).toList(),
+                  selectedItemBuilder: (context){
+                return _locations
+                .map((value) => Container(
+                  child: Text(
+                    value.name, 
+                    overflow: TextOverflow.ellipsis, 
+                    maxLines: 1, 
+                    softWrap: true
+                  ),
+                  width: MediaQuery.of(context).size.width*0.7,
+                )
+                ).toList();
+                  },
+                );
+                  }),
                 SizedBox(height: 20,),
                 RegisterButton(
                   onPressed: isRegisterButtonEnabled(state)
@@ -221,7 +235,7 @@ class _RegisterFormState extends State<RegisterForm> {
     ..email = _emailController.text
     ..name = _nameController.text
     ..photoURL = ''
-    ..location = Location.fromName(_location)
+    ..location = _location
     ..profilePhoto = profilePhoto;
     _registerBloc.add(Sumbitted(password: _passwordController.text, photoFile: profilePhotoFile)
     );
