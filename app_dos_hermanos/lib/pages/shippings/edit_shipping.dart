@@ -173,7 +173,8 @@ class _EditShippingState extends State<EditShipping> {
                 ),
     
                 ElevatedButton(
-                  child: Text('Update Shipping'),
+                  child: Text('Actualizar Envio'),
+                  style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), primary: Colors.red.shade700),
                   onPressed: (){
                     _showConfirmationAlert();
                   },

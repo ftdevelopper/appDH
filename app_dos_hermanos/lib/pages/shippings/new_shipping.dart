@@ -372,7 +372,8 @@ class _NewShippingState extends State<NewShipping> {
                 Divider(),
 
                 ElevatedButton(
-                  child: Text('Add new shipping'),
+                  child: Text('Agregar Nuevo Envio'),
+                  style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), primary: Colors.red.shade700),
                   onPressed: (){
                     if (formKey.currentState!.validate()){
                       _showConfirmationAlert();
