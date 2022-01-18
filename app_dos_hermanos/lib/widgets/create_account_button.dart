@@ -11,7 +11,7 @@ class CreateAccountButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      child: Text('Create an Account'),
+      child: Text('Crear Cuenta Nueva'),
       onPressed: (){
         Navigator.of(context).push(
           MaterialPageRoute(builder: (context){

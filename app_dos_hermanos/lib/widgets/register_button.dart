@@ -7,9 +7,9 @@ class RegisterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25))),
+      style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)), primary: Colors.red.shade700),
       onPressed: onPressed,
-      child: Text('Register'),
+      child: Text('Registrar'),
     );
   }
 }
