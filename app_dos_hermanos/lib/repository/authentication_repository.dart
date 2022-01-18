@@ -63,8 +63,17 @@ class AuthenticationRepository {
   }) async {
     try {
       await _firebaseAuth.createUserWithEmailAndPassword(email: user.email, password: password).then((value) => user.id = value.user!.uid);
+      print('User Registered with the following ID: ${user.id}');
       user.photoURL = await userRepository.putProfileImage(image: photoFile, name: user.name);
+      print('User Photo updated with the following URL: ${user.photoURL}');
       await userRepository.updateUserData(user);
+      print('''User Data Updated: User{
+        id: ${user.id},
+        name: ${user.name},
+        email: ${user.email}
+        location: ${user.location},
+        photoURL: ${user.photoURL},
+      }''');
       return user;
     } on Exception {
       throw SignUpFailure();
