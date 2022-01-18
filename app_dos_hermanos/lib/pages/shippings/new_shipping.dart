@@ -82,7 +82,7 @@ class _NewShippingState extends State<NewShipping> {
     //TODO: Encontrar una mejor manera de hacer esto
     _loadLocation();
     return Scaffold(
-      appBar: AppBar(title: Text('New Shipping'), centerTitle: true),
+      appBar: AppBar(title: Text('Nuevo Envio'), centerTitle: true),
       body: SafeArea(
         child: Center(
           child: Form(

@@ -43,7 +43,7 @@ class _EditShippingState extends State<EditShipping> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: Text(_shipping.getStatus), centerTitle: true,),
+        appBar: AppBar(title: Text('Actualizar Envio'), centerTitle: true,),
         body: Center(
           child: SingleChildScrollView(
             padding: EdgeInsets.all(25),
