@@ -44,16 +44,16 @@ class _ShippingsPageState extends State<ShippingsPage>
       initialIndex: 0,
       child: Scaffold(
           appBar: AppBar(
-            title: Text('Shippings'),
+            title: Text('Envios'),
             centerTitle: true,
             bottom: TabBar(
               controller: _tabController,
               tabs: <Widget>[
-                Tab(text: 'All', icon: Icon(Icons.home)),
-                Tab(text: 'New', icon: Icon(Icons.fiber_new_outlined)),
-                Tab(text: 'Sending', icon: Icon(Icons.send)),
-                Tab(text: 'Recived', icon: Icon(Icons.call_received)),
-                Tab(text: 'Conpleted', icon: Icon(Icons.done))
+                Tab(text: 'Todo', icon: Icon(Icons.home)),
+                Tab(text: 'Nuevo', icon: Icon(Icons.fiber_new_outlined)),
+                Tab(text: 'En Camino', icon: Icon(Icons.send)),
+                Tab(text: 'Recivido', icon: Icon(Icons.call_received)),
+                Tab(text: 'Conpletado', icon: Icon(Icons.done))
               ],
             ),
           ),
@@ -70,13 +70,13 @@ class _ShippingsPageState extends State<ShippingsPage>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Icon(Icons.error),
-                    Text('Cannot load shippings'),
+                    Text('No se pudieron cargar los envios'),
                     ElevatedButton(
                       onPressed: () {
                         BlocProvider.of<ShippingsBloc>(context)
                             .add(LoadShippings());
                       },
-                      child: Text('Reload'),
+                      child: Text('Recargar'),
                     ),
                   ],
                 ),
@@ -91,7 +91,7 @@ class _ShippingsPageState extends State<ShippingsPage>
                     ? Center(
                         child: Column(
                           children: [
-                            Text('No Shipings Avaliable'),
+                            Text('No hay envios disponibles'),
                           ]
                         )
                       )
@@ -108,7 +108,7 @@ class _ShippingsPageState extends State<ShippingsPage>
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text('No New Shipings Avaliable'),
+                          Text('No hay nuevos envios'),
                         ]
                       )
                     )
@@ -125,7 +125,7 @@ class _ShippingsPageState extends State<ShippingsPage>
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget> [
-                            Text('No Shipings in Travel'),
+                            Text('No hay envios en camino'),
                           ]
                         )
                       )
@@ -142,7 +142,7 @@ class _ShippingsPageState extends State<ShippingsPage>
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget> [
-                          Text('No Shipings Recived'),
+                          Text('No hay envios recibidos'),
                         ]
                       )
                     )
@@ -159,7 +159,7 @@ class _ShippingsPageState extends State<ShippingsPage>
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text('No Complete Shippings'),
+                          Text('No hay envios completados'),
                         ]
                       )
                     )
@@ -188,7 +188,7 @@ class _ShippingsPageState extends State<ShippingsPage>
                 );
               }
             },
-            tooltip: 'Add a new Shipping',
+            tooltip: 'Nuevo Envio',
           ),
           drawer:
               BlocBuilder<DrawerBloc, DrawerState>(builder: (context, state) {
@@ -256,12 +256,12 @@ class _ShippingsPageState extends State<ShippingsPage>
                   ],
                 ),
                 ListTile(
-                  title: Text('Name:'),
+                  title: Text('Nombre:'),
                   subtitle: Text(_user.name),
                   leading: Icon(Icons.verified),
                 ),
                 ListTile(
-                  title: Text('Location: '),
+                  title: Text('Ubicacion: '),
                   subtitle: Text(_user.location.name),
                   leading: Icon(Icons.map_rounded),
                   onTap: (){
@@ -274,7 +274,7 @@ class _ShippingsPageState extends State<ShippingsPage>
                   leading: Icon(Icons.email),
                 ),
                 ListTile(
-                  title: Text('User ID:'),
+                  title: Text('Usuario ID:'),
                   subtitle: Text(_user.id),
                   leading: Icon(Icons.person),
                 ),
@@ -315,9 +315,10 @@ class _ShippingsPageState extends State<ShippingsPage>
                 width: 80,
               ),
               Text(
-                'patent: ${shipping.truckPatent}',
+                'Patente: ${shipping.truckPatent}',
                 style: TextStyle(color: Colors.black),
-              )
+              ),
+
             ],
           ),
         ),
@@ -344,7 +345,7 @@ class _ShippingsPageState extends State<ShippingsPage>
         builder: (context) {
           return AlertDialog(
             title: Text(
-              'Locations',
+              'Ubicaciones',
               textAlign: TextAlign.center,
             ),
             content: Container(
