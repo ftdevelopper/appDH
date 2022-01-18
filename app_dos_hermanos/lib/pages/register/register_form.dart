@@ -26,7 +26,7 @@ class _RegisterFormState extends State<RegisterForm> {
   late Location _location;
 
   Image profilePhoto = Image.asset('assets/default_profile_pic.jpg');
-  late File profilePhotoFile = File('assets/default_profile_pic.jpg');
+  File? profilePhotoFile;
 
   late RegisterBloc _registerBloc;
 
@@ -110,7 +110,7 @@ class _RegisterFormState extends State<RegisterForm> {
                         XFile? newImage = (await ImagePicker().pickImage(source: ImageSource.camera));
                         if (newImage != null){
                           profilePhotoFile = File(newImage.path);
-                          final bytes = await profilePhotoFile.readAsBytes();
+                          final bytes = await profilePhotoFile!.readAsBytes();
                           final image = (Image.memory(bytes));
 
                           setState(() {

@@ -59,13 +59,19 @@ class AuthenticationRepository {
 
   Future<User> signUp({
     required String password,
-    required File photoFile
+    required File? photoFile
   }) async {
     try {
       await _firebaseAuth.createUserWithEmailAndPassword(email: user.email, password: password).then((value) => user.id = value.user!.uid);
       print('User Registered with the following ID: ${user.id}');
-      user.photoURL = await userRepository.putProfileImage(image: photoFile, name: user.name);
-      print('User Photo updated with the following URL: ${user.photoURL}');
+
+      if(photoFile != null){
+        user.photoURL = await userRepository.putProfileImage(image: photoFile, name: user.name);
+        print('User Photo updated with the following URL: ${user.photoURL}');
+      } else {
+        user.photoURL = 'https://firebasestorage.googleapis.com/v0/b/dos-hermanos.appspot.com/o/Profile%20Images%2Fdefault_profile_pic.jpg?alt=media&token=33961555-a0d8-48aa-9a48-124c1e397aeb';
+      }
+      
       await userRepository.updateUserData(user);
       print('''User Data Updated: User{
         id: ${user.id},
