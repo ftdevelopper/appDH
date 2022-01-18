@@ -202,6 +202,7 @@ class _ShippingsPageState extends State<ShippingsPage>
     );
   }
 
+  // ignore: non_constant_identifier_names
   Drawer LoadedDrawer(BuildContext context) {
     return Drawer(
       child: Column(
@@ -237,7 +238,7 @@ class _ShippingsPageState extends State<ShippingsPage>
                               File profilePhotoFile = File(newImage.path);
                               final bytes =
                                   await profilePhotoFile.readAsBytes();
-                              final image = (await Image.memory(bytes));
+                              final image = (Image.memory(bytes));
                               BlocProvider.of<DrawerBloc>(context).add(
                                   ChangeProfilePhoto(
                                       newphoto: image,
