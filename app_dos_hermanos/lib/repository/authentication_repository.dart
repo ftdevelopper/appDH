@@ -32,17 +32,25 @@ class AuthenticationRepository {
   }) : _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance,
       _googleSignIn = googleSignIn ?? GoogleSignIn.standard();
 
-  // Stream User -> actual usuario cuando el estado de autanticacion cambia
+  bool isLoggedIn(){
+    if(_firebaseAuth.currentUser == null){
+      return false;
+    }
+    return true;
+  }
 
-  Stream<String> get getUserID {
+  Future<String> get getUserID async{
+    if (isLoggedIn()){
+      return _firebaseAuth.currentUser!.uid;
+    }
     return _firebaseAuth.authStateChanges().map((firebaseUser) {
       return firebaseUser == null ? '' : firebaseUser.uid;
-    });
+    }).first;
   }
 
   Future<User> get getUser async {
     String _id;
-    _id = await getUserID.first;
+    _id = await getUserID;
     if (_id != ''){
       user = await userRepository.getUserData(_id);
     }
