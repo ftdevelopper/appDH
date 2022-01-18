@@ -179,13 +179,14 @@ class _ShippingsPageState extends State<ShippingsPage>
           floatingActionButton: FloatingActionButton(
             child: Icon(Icons.add_box_outlined),
             onPressed: () {
-              _tabController.index == 0
-                  ? Navigator.of(context).push<void>(MaterialPageRoute(
-                      builder: (_) => NewShipping(
-                            authenticationRepository:
-                                widget.authenticationRepository,
-                          )))
-                  : null;
+              if (_tabController.index == 0){
+                Navigator.of(context).push<void>(MaterialPageRoute(
+                  builder: (_) => NewShipping(
+                    authenticationRepository: widget.authenticationRepository,
+                    )
+                  )
+                );
+              }
             },
             tooltip: 'Add a new Shipping',
           ),

@@ -37,7 +37,7 @@ class UserRepository {
     Image image;
     photoURL == ''
     ? image = Image.asset('assets/default_profile_pic.jpg')
-    : image = await Image.network(photoURL);
+    : image = Image.network(photoURL);
 
     return image;
   }
