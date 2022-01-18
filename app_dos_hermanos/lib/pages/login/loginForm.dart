@@ -48,7 +48,7 @@ class _LoginFormState extends State<LoginForm> {
           ..showSnackBar(SnackBar(
             content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[Text('Login Failure'), Icon(Icons.error)],
+              children: <Widget>[Text('Error al ingresar'), Icon(Icons.error)],
             ),
             backgroundColor: Colors.red,
           ));
@@ -59,7 +59,7 @@ class _LoginFormState extends State<LoginForm> {
           ..showSnackBar(SnackBar(
             content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[Text('Logging in...'), CircularProgressIndicator()],
+              children: <Widget>[Text('Ingresando...'), CircularProgressIndicator()],
             ),
           ));
         }
@@ -72,7 +72,7 @@ class _LoginFormState extends State<LoginForm> {
           ..showSnackBar(SnackBar(
             content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[Text('Logging in...'), CircularProgressIndicator()],
+              children: <Widget>[Text('Ingresando...'), CircularProgressIndicator()],
             ),
           ));
         }
@@ -101,7 +101,7 @@ class _LoginFormState extends State<LoginForm> {
                     autocorrect: false,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (_){
-                      return !state.isEmailValid? 'Invalid Email' : null;
+                      return !state.isEmailValid? 'Email Invalido' : null;
                     },
                   ),
                   SizedBox(height: 20),
@@ -109,14 +109,14 @@ class _LoginFormState extends State<LoginForm> {
                     controller: _passwordController,
                     decoration: InputDecoration(
                       icon: Icon(Icons.lock),
-                      labelText: 'Password',
+                      labelText: 'Contraseña',
                     ),
                     obscureText: true,
                     keyboardType: TextInputType.emailAddress,
                     autocorrect: false,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (_){
-                      return !state.isPasswordValid? 'Invalid Password' : null;
+                      return !state.isPasswordValid? 'Contraseña Invalida' : null;
                     },
                   ),
                   Padding(
