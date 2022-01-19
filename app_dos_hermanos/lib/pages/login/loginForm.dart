@@ -1,8 +1,6 @@
 import 'package:app_dos_hermanos/blocs/authentication_bloc/authenticaiton_bloc.dart';
 import 'package:app_dos_hermanos/blocs/login_bloc/login_bloc.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
-import 'package:app_dos_hermanos/widgets/create_account_button.dart';
-import 'package:app_dos_hermanos/widgets/google_login_button.dart';
 import 'package:app_dos_hermanos/widgets/login_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -129,8 +127,8 @@ class _LoginFormState extends State<LoginForm> {
                           ? _onFormSubmitted
                           : null
                         ),
-                        GoogleLoginButton(),
-                        CreateAccountButton(authenticationRepository: _authenticationRepository),
+                        //GoogleLoginButton(),
+                        //CreateAccountButton(authenticationRepository: _authenticationRepository),
                       ],
                     ),
                   ),
