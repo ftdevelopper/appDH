@@ -25,14 +25,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       ));
     });
 
-    on<LoginWithGooglePressed>((event, emit) async {
+    /*on<LoginWithGooglePressed>((event, emit) async {
       try {
         await authenticationRepository.logInWithGoogle();
         emit(SuccesLogin());
       } catch (_) {
         emit(FailLogin());
       }
-    });
+    });*/
 
     on<LoginWithCredentialPressed>((event, emit) async {
       emit(LoadingLogin());
