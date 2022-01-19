@@ -6,7 +6,7 @@ class NewShippingValidator {
   static String? isHumidityValid(String value){
     int intValue = int.parse(value);
 
-    if (intValue <= 0 || intValue >= 100) {
+    if (intValue <= 9 || intValue >= 35) {
       return 'Rango de humedad invalido';
     } else {
       return null;

@@ -231,7 +231,11 @@ class _NewShippingState extends State<NewShipping> {
                   keyboardType: TextInputType.number,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (_){
-                    return NewShippingValidator.isHumidityValid(_humidityController.text);
+                    String humidity;
+                    _humidityController.text.length == 0
+                    ? humidity = '1'
+                    : humidity = _humidityController.text;
+                    return NewShippingValidator.isHumidityValid(humidity);
                   },
                 ),
                 Divider(),
