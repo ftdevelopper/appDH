@@ -112,7 +112,7 @@ class _NewShippingState extends State<NewShipping> {
                 ),
                 Divider(),
 
-                DropdownButtonFormField(
+                /*DropdownButtonFormField(
                   value: cosechaValue,
                   style: TextStyle(fontSize: 14, color: Colors.black),
                   decoration: InputDecoration(labelText: 'Cosecha', border: InputBorder.none, icon: Icon(Icons.done_outline_outlined)),
@@ -130,15 +130,16 @@ class _NewShippingState extends State<NewShipping> {
                     );
                   }).toList(),
                 ),
-                Divider(),
+                Divider(),*/
 
                 DropdownButtonFormField(
                   value: partidaValue,
                   style: TextStyle(fontSize: 14, color: Colors.black),
-                  decoration:  InputDecoration(labelText: 'Partida', border: InputBorder.none, icon: Icon(Icons.description_sharp)),
+                  decoration:  InputDecoration(labelText: 'Cosecha/Partida', border: InputBorder.none, icon: Icon(Icons.description_sharp)),
                   onChanged: (dynamic newValue ){
                     setState(() {
                       partidaValue = newValue;
+                      cosechaValue = newValue;
                     });
                   },
                   items: <String>[
