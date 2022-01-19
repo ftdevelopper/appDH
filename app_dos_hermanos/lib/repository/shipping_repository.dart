@@ -39,7 +39,7 @@ class ShippingRepository {
       'remiterTaraTime': shipping.remiterTaraTime ?? '',
       'remiterTaraUser': shipping.remiterTaraUser ?? '',
       'reciverFullWeight': shipping.reciverFullWeight ?? '',
-      'reciverFullWeightTime': shipping.reciverFullWeight ?? '',
+      'reciverFullWeightTime': shipping.reciverFullWeightTime ?? '',
       'reciverFullWeightUser': shipping.reciverFullWeightUser ?? '',
       'reciverLocation': shipping.reciverLocation ?? '',
       'reciverTara': shipping.reciverTara ?? '',
