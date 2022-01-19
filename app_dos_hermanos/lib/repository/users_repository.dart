@@ -16,9 +16,20 @@ class UserRepository {
   }
 
   Future<User> getUserData(String uid) async {
-    return await usersReference.doc(uid).get().then((DocumentSnapshot value) {
-      return fromSnapshot(value);
-    });
+    DocumentSnapshot snapshot = await usersReference.doc(uid).get();
+    if (snapshot.exists){
+      return fromSnapshot(snapshot);
+    } else {
+      return User(
+        email: '',
+        id: '',
+        location: Location (name: "SELECCIONAR"),
+        name: '',
+        photoURL: 'https://firebasestorage.googleapis.com/v0/b/dos-hermanos.appspot.com/o/Profile%20Images%2Fdefault_profile_pic.jpg?alt=media&token=33961555-a0d8-48aa-9a48-124c1e397aeb',
+        profilePhoto: Image.asset('assets/default_profile_pic.jpg'),
+      );
+    }
+    
   }
 
   Future<String> putProfileImage({required File image, required String name}) async {

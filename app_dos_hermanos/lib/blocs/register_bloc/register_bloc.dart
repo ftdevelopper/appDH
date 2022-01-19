@@ -30,7 +30,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       // ignore: invalid_use_of_visible_for_testing_member
       emit(new LoadingRegister());
       try {
-        authenticationRepository.user = await authenticationRepository.signUp(password: event.password, photoFile: event.photoFile);
+        //authenticationRepository.user = await authenticationRepository.signUp(password: event.password, photoFile: event.photoFile);
         // ignore: invalid_use_of_visible_for_testing_member
         emit(SuccesRegister());
       } catch (_) {

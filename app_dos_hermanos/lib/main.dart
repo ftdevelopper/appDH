@@ -1,5 +1,4 @@
 import 'package:app_dos_hermanos/blocs/login_bloc/login_bloc.dart';
-import 'package:app_dos_hermanos/blocs/register_bloc/register_bloc.dart';
 import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
 import 'package:app_dos_hermanos/classes/user.dart';
 import 'package:app_dos_hermanos/pages/login/login.dart';
@@ -62,7 +61,7 @@ class _AppViewState extends State<AppView> {
       providers: [
         BlocProvider(create: (context) => AuthenticationBloc(authenticationRepository: widget.authenticationRepository)),
         BlocProvider(create: (context) => LoginBloc(authenticationRepository: widget.authenticationRepository)),
-        BlocProvider(create: (context) => RegisterBloc(authenticationRepository: widget.authenticationRepository)),
+        //BlocProvider(create: (context) => RegisterBloc(authenticationRepository: widget.authenticationRepository)),
         BlocProvider(create: (context) => ShippingsBloc(shippingRepository: widget.shippingRepository)),
         BlocProvider(create: (context) => DrawerBloc(authenticationRepository: widget.authenticationRepository))
       ],

@@ -17,7 +17,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       on<AuthenticationUserChanged>((event, emit) async {
 
         if(authenticationRepository.isLoggedIn()){
-          await authenticationRepository.getUserID;
           await authenticationRepository.getUser;
           emit(AuthenticatedUser(user: authenticationRepository.user));
         } else {

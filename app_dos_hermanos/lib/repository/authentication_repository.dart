@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:app_dos_hermanos/classes/user.dart';
 import 'package:app_dos_hermanos/repository/users_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
@@ -23,14 +22,14 @@ class AuthenticationRepository {
   UserRepository userRepository = UserRepository();
 
   final firebase_auth.FirebaseAuth _firebaseAuth;
-  final GoogleSignIn _googleSignIn;
+  //final GoogleSignIn _googleSignIn;
 
   AuthenticationRepository({
     required this.user,
     firebase_auth.FirebaseAuth? firebaseAuth,
     GoogleSignIn? googleSignIn
-  }) : _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance,
-      _googleSignIn = googleSignIn ?? GoogleSignIn.standard();
+  }) : _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance;
+      //_googleSignIn = googleSignIn ?? GoogleSignIn.standard();
 
   bool isLoggedIn(){
     if(_firebaseAuth.currentUser == null){
@@ -49,15 +48,16 @@ class AuthenticationRepository {
   }
 
   Future<User> get getUser async {
-    String _id;
-    _id = await getUserID;
-    if (_id != ''){
-      user = await userRepository.getUserData(_id);
+    String _id = await getUserID;
+    user = await userRepository.getUserData(_id);
+    if (user.id == ''){
+      user.id = _firebaseAuth.currentUser!.uid;
+      user.email = _firebaseAuth.currentUser!.email!;
     }
     return user;
   }
 
-  Future<User> signUp({
+  /*Future<User> signUp({
     required String password,
     required File? photoFile
   }) async {
@@ -98,7 +98,7 @@ class AuthenticationRepository {
     } on Exception {
       throw LogInWithGoogleFailure();
     }
-  }
+  }*/
 
   // Login con email y password
   Future<void> logInWithEmailAndPassword({
@@ -117,7 +117,7 @@ class AuthenticationRepository {
     try {
       await Future.wait([
         _firebaseAuth.signOut(),
-        _googleSignIn.signOut()
+        //_googleSignIn.signOut()
       ]);
       user = User.empty();
     } on Exception {
