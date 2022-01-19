@@ -53,6 +53,7 @@ class AuthenticationRepository {
     if (user.id == ''){
       user.id = _firebaseAuth.currentUser!.uid;
       user.email = _firebaseAuth.currentUser!.email!;
+      user.name = _firebaseAuth.currentUser!.uid;
     }
     return user;
   }
