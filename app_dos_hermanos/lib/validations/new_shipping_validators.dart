@@ -62,6 +62,10 @@ class NewShippingValidator {
       }
     });
 
+    if(chasisPatent == 'Sin Chasis'){
+      existPatent = true;
+    }
+
     if (!existPatent){
       return 'No se encuentra esta patente';
     } else {
