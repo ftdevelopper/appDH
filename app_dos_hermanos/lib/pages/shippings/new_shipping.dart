@@ -36,13 +36,13 @@ class _NewShippingState extends State<NewShipping> {
   late TextEditingController _driverNameController;
   late TextEditingController _userController;
   late TextEditingController _dateController;
-  late TextEditingController _humidityController;
+  
   late DateTime _date;
   late String _formatedDate;
 
   String cosechaValue = 'CAMPAÑA 20-21';
   String partidaValue = 'CAMPAÑA 20-21';
-  late String riceValue = 'Tipo de Arroz';
+ 
   Location destination = Location(name: 'SELECCIONAR');
 
   List<Driver> driver = [
@@ -56,7 +56,7 @@ class _NewShippingState extends State<NewShipping> {
   void initState(){
     _truckPatentController = TextEditingController();
     _chasisPatentController = TextEditingController();
-    _humidityController = TextEditingController();
+    
     _driverNameController = TextEditingController();
     _locationController = TextEditingController(text: widget.authenticationRepository.user.location.name);
     _userController = TextEditingController(text: widget.authenticationRepository.user.name);
@@ -153,41 +153,7 @@ class _NewShippingState extends State<NewShipping> {
                 ),
 
                 //TODO: Check AutoValidationMode
-                Divider(),
-                DropdownButtonFormField<String>(
-                  value: riceValue,
-                  decoration: InputDecoration(labelText: 'Tipo de arroz', border: InputBorder.none, icon: Icon(Icons.rice_bowl)),
-                  style: TextStyle(fontSize: 14, color: Colors.black),
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (_){
-                    return NewShippingValidator.isRiceValid(riceValue);
-                  },
-                  onChanged: (dynamic newValue ){
-                    setState(() {
-                      riceValue = newValue;
-                    });
-                  },
-                  items: _shipping.rices.map<DropdownMenuItem<String>>((value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value ,overflow: TextOverflow.visible,),
-                    );
-                  }).toList(),
-                  selectedItemBuilder: (context){
-                    return _shipping.rices
-                    .map((value) => Container(
-                      child: Text(
-                        value, 
-                        overflow: TextOverflow.ellipsis, 
-                        maxLines: 1, 
-                        softWrap: true
-                      ),
-                      width: MediaQuery.of(context).size.width*0.7,
-                    )
-                    ).toList();
-                  },
-                ),
-                Divider(),
+                
 
                 DropdownButtonFormField<String>(
                   value: destination.name,
@@ -225,21 +191,7 @@ class _NewShippingState extends State<NewShipping> {
                 Divider(),
 
 
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Humedad', border: InputBorder.none, icon: Icon(Icons.water_sharp)),
-                  controller: _humidityController,
-                  keyboardType: TextInputType.number,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (_){
-                    String humidity;
-                    _humidityController.text.length == 0
-                    ? humidity = '1'
-                    : humidity = _humidityController.text;
-                    return NewShippingValidator.isHumidityValid(humidity);
-                  },
-                ),
-                Divider(),
-
+                
                 TypeAheadFormField(
                   textFieldConfiguration: TextFieldConfiguration(
                     controller: this._driverNameController,
@@ -408,9 +360,9 @@ class _NewShippingState extends State<NewShipping> {
                 ShippingData(title: 'Ubicacion', data: _locationController.text),
                 ShippingData(title: 'Partida', data: partidaValue),
                 ShippingData(title: 'Cosecha', data: cosechaValue),
-                ShippingData(title: 'Arroz', data: riceValue),
+                
                 ShippingData(title: 'Destino', data: destination.name),
-                ShippingData(title: 'Humedad', data: _humidityController.text),
+                
                 ShippingData(title: 'Chofer', data: _driverNameController.text),
                 ShippingData(title: 'Camion', data: _truckPatentController.text),
                 ShippingData(title: 'Chasis', data: _chasisPatentController.text),
@@ -440,9 +392,9 @@ class _NewShippingState extends State<NewShipping> {
   void uploadShipping(){
     _shipping.crop = cosechaValue;
     _shipping.departure = partidaValue;
-    _shipping.riceType = riceValue;
+    
     _shipping.reciverLocation = destination.name;
-    _shipping.humidity = _humidityController.text;
+    
     _shipping.driverName = _driverNameController.text;
     _shipping.truckPatent = _truckPatentController.text;
     _shipping.chasisPatent = _chasisPatentController.text;
