@@ -1,5 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'dart:async';
 import 'dart:math';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
 import 'package:app_dos_hermanos/classes/driver.dart';
 import 'package:app_dos_hermanos/classes/locations.dart';
@@ -9,10 +13,6 @@ import 'package:app_dos_hermanos/repository/drivers_repository.dart';
 import 'package:app_dos_hermanos/repository/location_repository.dart';
 import 'package:app_dos_hermanos/validations/new_shipping_validators.dart';
 import 'package:app_dos_hermanos/widgets/shipping_data.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class NewShipping extends StatefulWidget {
   final Shipping? shipping;
@@ -193,7 +193,6 @@ class _NewShippingState extends State<NewShipping> {
                   }).toList(),
                 ),
 
-                //TODO: Check AutoValidationMode
 
                 DropdownButtonFormField<String>(
                   value: destination.name,
@@ -261,9 +260,8 @@ class _NewShippingState extends State<NewShipping> {
                     return ListTile(
                       leading: Icon(Icons.add),
                       title: Text('No se encontro al conductor'),
-                      subtitle: Text('Presione para cargar nuevo conductor'),
                       onTap: () {
-                        //TODO: Implementar Carga de nuevo conductor
+                        
                       },
                     );
                   },
@@ -311,10 +309,8 @@ class _NewShippingState extends State<NewShipping> {
                     return ListTile(
                       leading: Icon(Icons.add),
                       title: Text('No se encontro la patente'),
-                      subtitle: Text(
-                          'Presione para crear nueva patente para este conductor'),
                       onTap: () {
-                        //TODO: Implementar Carga de nueva patente.
+                        
                       },
                     );
                   },
@@ -364,10 +360,7 @@ class _NewShippingState extends State<NewShipping> {
                     return ListTile(
                       leading: Icon(Icons.add),
                       title: Text('No se encontro la patente'),
-                      subtitle: Text(
-                          'Presione para crear nueva patente para este conductor'),
                       onTap: () {
-                        //TODO: Implementar Carga de nueva patente.
                       },
                     );
                   },
