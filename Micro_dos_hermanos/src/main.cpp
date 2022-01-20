@@ -36,28 +36,24 @@ void Read_data(void)
 {
   int id, flags;
   float peso;
-  int peso_pe, peso_dec;
   char flagsBuf[10];
+  String peso_string = "          ";
 
   id = Serial2.parseInt();
   if (Serial2.read() != CR || Serial2.read() != LF)
   {
-    Serial.println("ADM: \tFalla 02");
+    Serial.println("ADM: \tFalla 01");
     return;
   }
-  peso_pe = Serial2.parseInt();
-  Serial.println(peso_pe);
-  Serial2.read();
-  peso_dec = Serial2.parseInt();
-  Serial.println(peso_dec);
-  peso = peso_pe + peso_dec / 1000.0;
-  if (Serial2.read() != CR || Serial2.read() != LF)
+  peso_string = Serial2.readStringUntil(CR);
+  peso = peso_string.toFloat();
+
+  if (Serial2.read() != LF)
   {
     Serial.println("ADM: \tFalla 02");
     return;
   }
   flags = Serial2.read(flagsBuf, 10);
-  blink(3);
   if (Serial2.read() == CR && Serial2.read() == LF && Serial2.read() == ETX)
   {
     Serial.printf("\nid: %u", id);
@@ -112,6 +108,5 @@ void loop()
   {
     Serial.print("DIJISTE: ");
     Serial.println(Serial.read());
-    
   }
 }
