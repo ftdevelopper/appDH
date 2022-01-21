@@ -12,6 +12,16 @@
 #define ETX 0x03
 #define SPACE 0x20
 
+// Define the states of the input reader
+#define WAITINGSTX 0x00
+#define WAITINGCR 0x01
+#define WAITINGLF 0x02
+#define WAITINGETX 0x03
+#define WAITINGDATA 0x04
+#define WAITINGID 0x05
+#define WAITINGNT 0x06
+#define WAITINGFG 0x07
+
 //Define chars protocol
 #define ID 0x00
 #define PN 0x01
@@ -22,6 +32,29 @@
 #define RS485_TX_PIN_VALUE HIGH
 #define RS485_RX_PIN_VALUE LOW
 
+// Flags
+typedef union
+{
+  struct
+  {
+    uint8_t b0 : 1;
+    uint8_t b1 : 1;
+    uint8_t b2 : 1;
+    uint8_t b3 : 1;
+    uint8_t b4 : 1;
+    uint8_t b5 : 1;
+    uint8_t b6 : 1;
+    uint8_t b7 : 1;
+  } bit;
+  uint8_t byte;
+} _flag;
+
+// Define the used Flags
+
+#define DATA_COMPLETE flag1.bit.b0
+
+_flag flag1;
+
 // VARIAS DE PRUEBA
 char dato_recibido;
 
@@ -29,46 +62,157 @@ char dato_recibido;
 void Read_data();
 void blink(uint8_t times);
 
-// Variables
-char dato = ID;
+void ReadSerRXBuff();
+uint8_t SerRXBuffHasData();
+void DecodeSerRXBuff();
+void SaveReadedData();
+void DebugPrint(String Mensaje);
 
-void Read_data(void)
+int id, flags;
+float peso;
+char flagsBuf[10];
+String id_str = "          ";
+String peso_str = "          ";
+String flags_str = "          ";
+ 
+//      Variables for serial port
+uint8_t checksumSerTX, checksumSerRX, stateReadSer, stateDecodeSer;
+uint8_t indexWriteSerTX, indexReadSerTX, indexReadSerRX, indexWriteSerRX;
+uint8_t rxBuff[256], txBuff[256], pinsValue, numberOfSteps, parametros[16];
+
+// Functions for Read the Serial inputs
+void ReadSerRXBuff()
 {
-  int id, flags;
-  float peso;
-  char flagsBuf[10];
-  String peso_string = "          ";
-
-  id = Serial2.parseInt();
-  if (Serial2.read() != CR || Serial2.read() != LF)
+  while (Serial2.available())
   {
-    Serial.println("ADM: \tFalla 01");
-    return;
+    // rxBuff[indexWriteSerRX++] = Serial2.read();
+    rxBuff[indexWriteSerRX] = Serial2.read();
+    Serial.print("DBG: Llego -> ");
+    Serial.println(rxBuff[indexWriteSerRX], HEX);
+    indexWriteSerRX++;
   }
-  peso_string = Serial2.readStringUntil(CR);
-  peso = peso_string.toFloat();
-
-  if (Serial2.read() != LF)
+  if (SerRXBuffHasData())
   {
-    Serial.println("ADM: \tFalla 02");
-    return;
+    DecodeSerRXBuff();
   }
-  flags = Serial2.read(flagsBuf, 10);
-  if (Serial2.read() == CR && Serial2.read() == LF && Serial2.read() == ETX)
+}
+
+uint8_t SerRXBuffHasData()
+{
+  return (indexWriteSerRX - indexReadSerRX);
+}
+
+void DecodeSerRXBuff()
+{
+  switch (stateReadSer)
   {
+  case WAITINGSTX:
+    if (rxBuff[indexReadSerRX++] == STX)
+    {
+      DebugPrint("Llego stx");
+      DATA_COMPLETE = false;
+      stateReadSer = WAITINGDATA;
+      stateDecodeSer = WAITINGID;
+    }
+    break;
+  case WAITINGCR:
+    if (rxBuff[indexReadSerRX++] == CR)
+    {
+      DebugPrint("Llego CR");
+      stateReadSer = WAITINGLF;
+    }
+    else
+    {
+      stateReadSer = WAITINGSTX;
+    }
+    break;
+  case WAITINGLF:
+    if (rxBuff[indexReadSerRX++] == LF)
+    {
+      DebugPrint("Llego LF");
+      if (DATA_COMPLETE)
+      {
+        stateReadSer = WAITINGETX;
+      }
+      else
+      {
+        stateReadSer = WAITINGDATA;
+      }
+    }
+    else
+    {
+      stateReadSer = WAITINGSTX;
+    }
+    break;
+  case WAITINGDATA:
+    if (SerRXBuffHasData() < 9)
+    {
+      break;
+    }
+    DebugPrint("Llego data");
+    SaveReadedData();
+    stateReadSer = WAITINGCR;
+    break;
+  case WAITINGETX:
     Serial.printf("\nid: %u", id);
-    Serial.printf("\nPeso: %f", peso);
-    Serial.printf("\nDisplay negativo: %d", flags & 0x01);
-    Serial.printf("\nCero: %d", flags & 0x02);
-    Serial.printf("\nMov: %d", flags & 0x04);
-    Serial.printf("\nModo: %d", flags & 0x08);
-    Serial.printf("\nBruto-: %d", flags & 0x10);
-    Serial.printf("\nNO USADO: %d", flags & 0x20);
-    Serial.printf("\nDip ilum: %d", flags & 0x40);
-    Serial.printf("\nError: %d", flags & 0x80);
-    Serial.printf("\nflags: ");
-    Serial.println(flags, HEX);
+    Serial.printf("\tPeso: %f", peso);
+    Serial.printf("\tFlags: %d", (flags & 0x01) != 0);
+    Serial.printf("\t%d", (flags & 0x02) != 0);
+    Serial.printf("\t%d", (flags & 0x04) != 0);
+    Serial.printf("\t%d", (flags & 0x08) != 0);
+    Serial.printf("\t%d", (flags & 0x10) != 0);
+    Serial.printf("\t%d", (flags & 0x20) != 0);
+    Serial.printf("\t%d", (flags & 0x40) != 0);
+    Serial.printf("\t%d", (flags & 0x80) != 0);
+    stateReadSer = WAITINGSTX;
+    break;
+  default:
+    stateReadSer = WAITINGSTX;
+    break;
   }
+}
+
+void SaveReadedData(){
+  switch (stateDecodeSer)
+    {
+    case WAITINGID:
+      DebugPrint("Decoding ID");
+      id_str = (char)rxBuff[indexReadSerRX++];
+      for (uint8_t i = 0; i < 9; i++)
+      {
+        id_str += (char)rxBuff[indexReadSerRX++];
+      }
+      DebugPrint(id_str);
+      id = id_str.toInt();
+      stateDecodeSer = WAITINGNT;
+      break;
+    case WAITINGNT:
+      DebugPrint("Decoding NETO");
+      peso_str = (char)rxBuff[indexReadSerRX++];
+      for (uint8_t i = 0; i < 9; i++)
+      {
+        peso_str += (char)rxBuff[indexReadSerRX++];
+      }
+      DebugPrint(peso_str);
+      peso = peso_str.toFloat();
+      stateDecodeSer = WAITINGFG;
+      break;
+    case WAITINGFG:
+      DebugPrint("Decoding FLAGS");
+      flags_str = (char)rxBuff[indexReadSerRX++];
+      for (uint8_t i = 0; i < 9; i++)
+      {
+        flags_str += (char)rxBuff[indexReadSerRX++];
+      }
+      DebugPrint(flags_str);
+      flags = flags_str.toInt();
+      DATA_COMPLETE = true;
+      break;
+    default:
+      stateReadSer = WAITINGSTX;
+      stateDecodeSer = WAITINGID;
+      break;
+    }
 }
 
 void blink(uint8_t times)
@@ -89,24 +233,37 @@ void setup()
   Serial2.begin(4800, SERIAL_8N1, RXD2, TXD2);
 
   pinMode(LED_BI, OUTPUT);
+  stateReadSer = WAITINGSTX;
+  stateDecodeSer = WAITINGID;
   blink(5);
+
+  // PRUEBA DE IMPRESION
+  // uint8_t prueba01[10] = {0x20, 0x20, 0x20, 0x20, 0x20, 0x30, 0x2E, 0x30, 0x31, 0x35};
+  // String prueba01_str;
+  // uint8_t pri = 0;
+  // int prueba_def;
+  // prueba01_str = (char)prueba01[pri++];
+  // DebugPrint(prueba01_str);
+  // for (uint8_t i = 0; i < 9; i++)
+  // {
+  //   prueba01_str += (char)prueba01[pri++];
+  // }
+  // DebugPrint(prueba01_str);
+  // prueba_def = prueba01_str.toInt();
+  // DebugPrint(String(prueba_def));
 }
 
 void loop()
 {
-  if (Serial2.available())
-  {
-    Serial.println("ADM: \tLlega");
-    if (Serial2.read() == STX)
-    {
-      delay(500);
-      Serial.println("ADM: \tEntro");
-      Read_data();
-    }
-  }
+  ReadSerRXBuff();
   if (Serial.available())
   {
     Serial.print("DIJISTE: ");
     Serial.println(Serial.read());
   }
+}
+
+void DebugPrint(String Mensaje){
+  Serial.print("DBG: ");
+  Serial.println(Mensaje);
 }
