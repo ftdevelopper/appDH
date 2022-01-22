@@ -259,6 +259,9 @@ class _ShippingsPageState extends State<ShippingsPage>
                   title: Text('Nombre:'),
                   subtitle: Text(_user.name),
                   leading: Icon(Icons.verified),
+                  onTap: (){
+                    _changeName();
+                  }
                 ),
                 ListTile(
                   title: Text('Ubicacion: '),
@@ -365,16 +368,54 @@ class _ShippingsPageState extends State<ShippingsPage>
                       onTap: () {
                         Navigator.of(context).pop();
                         BlocProvider.of<DrawerBloc>(context).add(ChangeLocation(locationName: state.locations[index].name));
-                      });
-                    },
-                  );} else{
-                    return Container();
-                  }
-                },
-              ),
+                      }
+                    );
+                  },
+                );
+              } else{
+                return Container();
+              }
+            },
+          ),
+        ),
+      );
+    });
+  }
+
+  Future<void> _changeName() async {
+    String name;
+    return showDialog<void>(
+      context: context,
+      builder: (context){
+        return AlertDialog(
+          title: Text('Introduzca su nuevo nombre', textAlign: TextAlign.center,),
+          content: Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            height: MediaQuery.of(context).size.height * 0.4,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextFormField(
+                  controller: TextEditingController(),
+                  decoration: InputDecoration(),
+                  onChanged: (String txt){
+                    name = txt;
+                  },
+                ),
+                ElevatedButton(
+                  child: Text('Guardar'),
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                    //BlocProvider.of<DrawerBloc>(context).add();
+                  },
+                )
+              ],
             ),
-          );
-        });
+          ),
+        );
+      }
+    );
   }
 
   @override
