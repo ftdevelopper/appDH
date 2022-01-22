@@ -32,3 +32,12 @@ class LoadLocations extends DrawerEvent {
   @override
   List<Object?> get props => [];
 }
+
+class ChangeName extends DrawerEvent {
+  ChangeName({required this.name});
+
+  final String name;
+
+  @override
+  List<Object?> get props => [this.name];
+}

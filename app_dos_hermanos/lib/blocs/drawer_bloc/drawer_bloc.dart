@@ -41,6 +41,17 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
       }
     });
 
+    on<ChangeName>((event, emit) async {
+      emit(LoadingDrawer());
+      try {
+        authenticationRepository.user.name = event.name;
+        await authenticationRepository.userRepository.updateUserData(authenticationRepository.user);
+        emit(LoadedDrawer());
+      } catch (e) {
+        print('Error in uploafing name: $e');
+      }
+    });
+
     on<LoadLocations>((event, emit) async {
       emit(LoadingLocations());
       try {
