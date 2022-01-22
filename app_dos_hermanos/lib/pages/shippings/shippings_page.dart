@@ -266,7 +266,7 @@ class _ShippingsPageState extends State<ShippingsPage>
                 ListTile(
                   title: Text('Ubicacion: '),
                   subtitle: Text(_user.location.name),
-                  leading: Icon(Icons.map_rounded),
+                  leading: Icon(Icons.location_on),
                   onTap: (){
                     _showlocationsDrawer(context);
                   },
@@ -280,6 +280,12 @@ class _ShippingsPageState extends State<ShippingsPage>
                   title: Text('Usuario ID:'),
                   subtitle: Text(_user.id),
                   leading: Icon(Icons.person),
+                ),
+                ListTile(
+                  title: Text('DashBoard'),
+                  subtitle: Text('Proximamente...'),
+                  leading: Icon(Icons.space_dashboard),
+                  onTap: (){},
                 ),
               ],
             ),
@@ -347,6 +353,7 @@ class _ShippingsPageState extends State<ShippingsPage>
         context: context,
         builder: (context) {
           return AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
             title: Text(
               'Ubicaciones',
               textAlign: TextAlign.center,
@@ -383,15 +390,16 @@ class _ShippingsPageState extends State<ShippingsPage>
   }
 
   Future<void> _changeName() async {
-    String name;
+    String name = '';
     return showDialog<void>(
       context: context,
       builder: (context){
         return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
           title: Text('Introduzca su nuevo nombre', textAlign: TextAlign.center,),
           content: Container(
             width: MediaQuery.of(context).size.width * 0.8,
-            height: MediaQuery.of(context).size.height * 0.4,
+            height: MediaQuery.of(context).size.height * 0.15,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -407,7 +415,7 @@ class _ShippingsPageState extends State<ShippingsPage>
                   child: Text('Guardar'),
                   onPressed: (){
                     Navigator.of(context).pop();
-                    //BlocProvider.of<DrawerBloc>(context).add();
+                    BlocProvider.of<DrawerBloc>(context).add(ChangeName(name: name));
                   },
                 )
               ],
