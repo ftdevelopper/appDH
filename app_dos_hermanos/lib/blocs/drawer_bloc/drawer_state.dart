@@ -15,7 +15,7 @@ class DrawerInitial extends DrawerState {
 
 class LoadingDrawer extends DrawerState{
   LoadingDrawer({required this.localDataBase});
-  
+
   final LocalDataBase localDataBase;
 }
 
@@ -27,8 +27,16 @@ class DrawerLoaded extends DrawerState{
 
 class LoadingLocations extends DrawerState{}
 
+class LoadingRices extends DrawerState{}
+
 class LoadedLocations extends DrawerState{
   LoadedLocations({required this.localDataBase});
+
+  final LocalDataBase localDataBase;
+}
+
+class LoadedRices extends DrawerState {
+  LoadedRices({required this.localDataBase});
 
   final LocalDataBase localDataBase;
 }

@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:app_dos_hermanos/classes/locations.dart';
+import 'package:app_dos_hermanos/classes/rice.dart';
 import 'package:app_dos_hermanos/local_repository/local_data_base.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:app_dos_hermanos/repository/location_repository.dart';
+import 'package:app_dos_hermanos/repository/rice_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
@@ -64,7 +66,21 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
         print('Se escribio exitosamente en la base de datos');
         emit(LoadedLocations(localDataBase: localDataBase));
       } catch (e) {
+        print(e);
       } 
+    });
+
+    on<LoadRices>((event,emit) async {
+      emit(LoadingRices());
+      try {
+        List<Rice> riceTypes = await RiceRepository().getRiceTypes();
+        print('rice Types Loaded from FireBase, now Trying to write DB');
+        localDataBase.riceDB = riceTypes;
+        DataBaseFileRoutines().writeDataBase(databaseToJson(localDataBase));
+        emit(LoadedRices(localDataBase: localDataBase));
+      } catch (e) {
+        print(e);
+      }
     });
   }
 }

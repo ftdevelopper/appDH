@@ -33,6 +33,12 @@ class LoadLocations extends DrawerEvent {
   List<Object?> get props => [];
 }
 
+class LoadRices extends DrawerEvent {
+  @override
+  
+  List<Object?> get props => [];
+}
+
 class ChangeName extends DrawerEvent {
   ChangeName({required this.name});
 
