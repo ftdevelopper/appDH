@@ -3,6 +3,7 @@ import 'package:app_dos_hermanos/blocs/authentication_bloc/authenticaiton_bloc.d
 import 'package:app_dos_hermanos/blocs/drawer_bloc/drawer_bloc.dart';
 import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
 import 'package:app_dos_hermanos/classes/locations.dart';
+import 'package:app_dos_hermanos/classes/rice.dart';
 import 'package:app_dos_hermanos/classes/shipping.dart';
 import 'package:app_dos_hermanos/classes/user.dart';
 import 'package:app_dos_hermanos/local_repository/local_data_base.dart';
@@ -284,6 +285,14 @@ class _ShippingsPageState extends State<ShippingsPage>
                   leading: Icon(Icons.person),
                 ),
                 ListTile(
+                  title: Text('Tipos de Arroz:'),
+                  subtitle: Text('Mis tipos de Arroz'),
+                  leading: Icon(Icons.rice_bowl_rounded),
+                  onTap: (){
+                    _showRiceTypes(context);
+                  },
+                ),
+                ListTile(
                   title: Text('DashBoard'),
                   subtitle: Text('Proximamente...'),
                   leading: Icon(Icons.space_dashboard),
@@ -349,7 +358,7 @@ class _ShippingsPageState extends State<ShippingsPage>
         .toList();
   }
 
-  Future<void> _showlocationsDrawer(BuildContext context) async {
+  Future<void> _showlocationsDrawer(BuildContext context){
     return showDialog<void>(
         context: context,
         builder: (context) {
@@ -388,6 +397,52 @@ class _ShippingsPageState extends State<ShippingsPage>
                         Navigator.of(context).pop();
                         BlocProvider.of<DrawerBloc>(context).add(ChangeLocation(locationName: locations[index].name));
                       }
+                    );
+                  },
+                );
+              }
+            },
+          ),
+        ),
+      );
+    });
+  }
+
+  Future<void> _showRiceTypes(BuildContext context){
+    return showDialog<void>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+            title: Text(
+              'Tipos de Arroz',
+              textAlign: TextAlign.center,
+            ),
+            actionsPadding: EdgeInsets.zero,
+            actions: <Widget>[
+              Center(
+                child: IconButton(
+                  onPressed: (){
+                    BlocProvider.of<DrawerBloc>(context).add(LoadRices());
+                  },
+                  icon: Icon(Icons.replay_circle_filled, size: 30,)
+                ),
+              )],
+            content: Container(
+              width: MediaQuery.of(context).size.width * 0.7,
+              height: MediaQuery.of(context).size.height * 0.4,
+              child: BlocBuilder<DrawerBloc, DrawerState>(
+                builder: (context, state) {
+                  if (state is LoadingRices){
+                    return Center(child: CircularProgressIndicator());
+                  } else {
+                    List<Rice> rices = state.localDataBase!.riceDB;
+                    return ListView.builder(
+                    itemCount: rices.length,
+                    itemBuilder: (_, index) {
+                      return ListTile(
+                      leading: Icon(Icons.rice_bowl_rounded),
+                      title: Text(rices[index].type),
                     );
                   },
                 );

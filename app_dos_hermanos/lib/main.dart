@@ -1,5 +1,6 @@
 import 'package:app_dos_hermanos/blocs/login_bloc/login_bloc.dart';
 import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
+import 'package:app_dos_hermanos/classes/locations.dart';
 import 'package:app_dos_hermanos/classes/user.dart';
 import 'package:app_dos_hermanos/local_repository/local_data_base.dart';
 import 'package:app_dos_hermanos/pages/login/login.dart';
@@ -17,13 +18,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'blocs/authentication_bloc/authenticaiton_bloc.dart';
 import 'blocs/drawer_bloc/drawer_bloc.dart';
 import 'blocs/simple_bloc_observer.dart';
+import 'classes/rice.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   EquatableConfig.stringify = kDebugMode;
   BlocOverrides.runZoned(() async {
-    LocalDataBase localDataBase = LocalDataBase(locationDB: [], riceDB: []);
+    LocalDataBase localDataBase = LocalDataBase(locationDB: [Location(name: 'No cargado')], riceDB: [Rice(type:'No cargado'),]);
     await localDataBase.loadDB();
     runApp(MyApp(authenticationRepository: AuthenticationRepository(user: User.empty()), localDataBase: localDataBase,));
   }, blocObserver: SimpleBlocObserver());
