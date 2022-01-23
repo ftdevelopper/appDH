@@ -495,7 +495,7 @@ class _NewShippingState extends State<NewShipping> {
     _shipping.truckPatent = _truckPatentController.text;
     _shipping.chasisPatent = _chasisPatentController.text;
     _shipping.remiterTaraUser = widget.authenticationRepository.user.id;
-    _shipping.remiterTaraTime = _date.toString();
+    _shipping.remiterTaraTime = _date;
     _shipping.truckPatent = _truckPatentController.text;
     _shipping.remiterLocation = _locationController.text;
 

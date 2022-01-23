@@ -7,7 +7,7 @@ class Shipping {
   String truckPatent, chasisPatent, driverName;
   ShippingStatus shippingState;
   String? remiterTara, remiterFullWeight, reciverTara, reciverFullWeight;
-  String? remiterTaraTime, remiterFullWeightTime, reciverTaraTime, reciverFullWeightTime;
+  DateTime? remiterTaraTime, remiterFullWeightTime, reciverTaraTime, reciverFullWeightTime;
   String? remiterTaraUser, remiterFullWeightUser, reciverTaraUser, reciverFullWeightUser;
   String? remiterLocation, reciverLocation;
   String? riceType, id, crop, departure, humidity;
@@ -32,18 +32,18 @@ class Shipping {
       driverName: data['driverName'],
       chasisPatent: data['chasisPatent'],
       remiterFullWeight: data['remiterFullWeight'],
-      remiterFullWeightTime: data['remiterFullWeightTime'],
+      remiterFullWeightTime: DateTime.tryParse(data['remiterFullWeightTime']),
       remiterFullWeightUser: data['remiterFullWeightUser'],
       remiterLocation: data['remiterLocation'],
       remiterTara: data['remiterTara'],
-      remiterTaraTime: data['remiterTaraTime'],
+      remiterTaraTime: DateTime.tryParse(data['remiterTaraTime']),
       remiterTaraUser: data['remiterTaraUser'],
       reciverFullWeight: data['reciverFullWeight'],
-      reciverFullWeightTime: data['reciverFullWeight'],
+      reciverFullWeightTime: DateTime.tryParse(data['reciverFullWeightTime']),
       reciverFullWeightUser: data['reciverFullWeightUser'],
       reciverLocation: data['reciverLocation'],
       reciverTara: data['reciverTara'],
-      reciverTaraTime: data['reciverTaraTime'],
+      reciverTaraTime: DateTime.tryParse(data['reciverTaraTime']),
       reciverTaraUser: data['reciverTaraUser'],
       riceType: data['riceType'],
       id: data['id'],

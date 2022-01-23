@@ -354,19 +354,19 @@ class _EditShippingState extends State<EditShipping> {
   void uploadShipping() async {
     switch (_shipping.shippingState) {
       case ShippingStatus.newShipping:
-        _shipping.remiterFullWeightTime = _date.toString();
+        _shipping.remiterFullWeightTime = _date;
         _shipping.remiterFullWeightUser =
             widget.authenticationRepository.user.id;
         _shipping.riceType = riceValue;
         _shipping.humidity = _humidityController.text;
         break;
       case ShippingStatus.inTravelShipping:
-        _shipping.reciverFullWeightTime = _date.toString();
+        _shipping.reciverFullWeightTime = _date;
         _shipping.reciverFullWeightUser =
             widget.authenticationRepository.user.id;
         break;
       case ShippingStatus.downloadedShipping:
-        _shipping.reciverTaraTime = _date.toString();
+        _shipping.reciverTaraTime = _date;
         _shipping.reciverTaraUser = widget.authenticationRepository.user.id;
         break;
       default:
