@@ -22,7 +22,10 @@ class ShippingsBloc extends Bloc<ShippingsEvent, ShippingsState> {
       _shippingsSubscription?.cancel();
       try {
         _shippingsSubscription = shippingRepository.getSippings().listen(
-          (shippings) => add(ShippingsUpdated(shippingList: shippings))
+          (shippings){
+            shippings.sort((shipping1, shipping2) => shipping2.remiterTaraTime!.compareTo(shipping1.remiterTaraTime!));
+            add(ShippingsUpdated(shippingList: shippings));
+          }
         );
       } catch (e) {
         print('Error recived: $e');
