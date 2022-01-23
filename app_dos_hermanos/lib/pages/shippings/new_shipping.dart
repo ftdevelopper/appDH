@@ -1,3 +1,4 @@
+import 'package:app_dos_hermanos/local_repository/local_data_base.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
@@ -17,7 +18,8 @@ import 'package:app_dos_hermanos/widgets/shipping_data.dart';
 class NewShipping extends StatefulWidget {
   final Shipping? shipping;
   final AuthenticationRepository authenticationRepository;
-  NewShipping({Key? key, this.shipping, required this.authenticationRepository})
+  final LocalDataBase localDataBase;
+  NewShipping({Key? key, this.shipping, required this.authenticationRepository, required this.localDataBase})
       : super(key: key);
 
   @override
@@ -29,7 +31,6 @@ class _NewShippingState extends State<NewShipping> {
   final formKey = GlobalKey<FormState>();
 
   LocationRepository locationRepository = LocationRepository();
-  late List<Location> locations = [];
 
   late TextEditingController _truckPatentController;
   late TextEditingController _chasisPatentController;
@@ -108,8 +109,6 @@ class _NewShippingState extends State<NewShipping> {
 
   @override
   Widget build(BuildContext context) {
-    //TODO: Encontrar una mejor manera de hacer esto
-    _loadLocation();
     return Scaffold(
       appBar: AppBar(title: Text('Nuevo Envio'), centerTitle: true),
       body: SafeArea(
@@ -210,7 +209,7 @@ class _NewShippingState extends State<NewShipping> {
                       destination = Location.fromName(newValue);
                     });
                   },
-                  items: locations.map<DropdownMenuItem<String>>((value) {
+                  items: widget.localDataBase.locationDB.map<DropdownMenuItem<String>>((value) {
                     return DropdownMenuItem<String>(
                       value: value.name,
                       child: Text(
@@ -220,7 +219,7 @@ class _NewShippingState extends State<NewShipping> {
                     );
                   }).toList(),
                   selectedItemBuilder: (context) {
-                    return locations
+                    return widget.localDataBase.locationDB
                         .map((value) => Container(
                               child: Text(value.name,
                                   overflow: TextOverflow.ellipsis,
@@ -512,9 +511,5 @@ class _NewShippingState extends State<NewShipping> {
     _locationController.dispose();
     _truckPatentController.dispose();
     super.dispose();
-  }
-
-  void _loadLocation() async {
-    locations = await locationRepository.getLocations();
   }
 }

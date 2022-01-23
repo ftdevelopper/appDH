@@ -17,8 +17,9 @@ import 'edit_shipping.dart';
 
 class ShippingsPage extends StatefulWidget {
   final AuthenticationRepository authenticationRepository;
+  final LocalDataBase localDataBase;
 
-  ShippingsPage({Key? key, required this.authenticationRepository})
+  ShippingsPage({Key? key, required this.authenticationRepository, required this.localDataBase})
       : super(key: key);
 
   @override
@@ -185,6 +186,7 @@ class _ShippingsPageState extends State<ShippingsPage>
               if (_tabController.index <= 1){
                 Navigator.of(context).push<void>(MaterialPageRoute(
                   builder: (_) => NewShipping(
+                    localDataBase: widget.localDataBase,
                     authenticationRepository: widget.authenticationRepository,
                     )
                   )
@@ -345,6 +347,7 @@ class _ShippingsPageState extends State<ShippingsPage>
         onPressed: () {
           Navigator.of(context).push<void>(MaterialPageRoute(
               builder: (_) => EditShipping(
+                  localDataBase: widget.localDataBase,
                   authenticationRepository: widget.authenticationRepository,
                   shipping: shipping)));
         },

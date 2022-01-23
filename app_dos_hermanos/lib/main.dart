@@ -25,7 +25,7 @@ void main() async {
   await Firebase.initializeApp();
   EquatableConfig.stringify = kDebugMode;
   BlocOverrides.runZoned(() async {
-    LocalDataBase localDataBase = LocalDataBase(locationDB: [Location(name: 'No cargado')], riceDB: [Rice(type:'No cargado'),]);
+    LocalDataBase localDataBase = LocalDataBase(locationDB: [Location(name: 'SELECCIONAR')], riceDB: [Rice(type:'Tipo de Arroz'),]);
     await localDataBase.loadDB();
     runApp(MyApp(authenticationRepository: AuthenticationRepository(user: User.empty()), localDataBase: localDataBase,));
   }, blocObserver: SimpleBlocObserver());
@@ -81,7 +81,7 @@ class _AppViewState extends State<AppView> {
               listener: (context, state) {
                 switch (state.status) {
                   case AuthenticationStatus.authenticated:
-                    _navigator!.pushAndRemoveUntil<void>(MaterialPageRoute(builder: (_) => ShippingsPage(authenticationRepository: widget.authenticationRepository,)), (route) => false);
+                    _navigator!.pushAndRemoveUntil<void>(MaterialPageRoute(builder: (_) => ShippingsPage(authenticationRepository: widget.authenticationRepository, localDataBase: widget.localDataBase,)), (route) => false);
                   break;
                   case AuthenticationStatus.unknown:
                     _navigator!.pushAndRemoveUntil<void>(MaterialPageRoute(builder: (_) => LoginPage(authenticationRepository: widget.authenticationRepository,)), (route) => false);

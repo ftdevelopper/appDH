@@ -24,18 +24,6 @@ class Shipping {
     this.riceType, this.id, this.crop, this.departure, this.humidity
   });
 
-  List<String> rices = [
-    'GRANO ARROZ CON CASCARA (AROMATICO) LARGO FINO',
-    'GRANO ARROZ CON CASSCARA CORTO',
-    'GRANO ARROZ CON CASCARA CORTO (YAMANI)',
-    'GRANO ARROZ CON CASCARA LARGO ANCHO',
-    'GRANO ARROZ CON CASCARA LARGO FINO',
-    'DRANO ARROZ CON CASCARA MEDIANO',
-    'ORGANICO GRANO CON CASCARA KOSHIHIKARI',
-    'ORGANICO GRANO ARROZ CON CASCARA LARGO FINO',
-    'Tipo de Arroz'
-  ];
-
   static Shipping fromSnapShot(DocumentSnapshot snapshot) {
     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
     return Shipping(

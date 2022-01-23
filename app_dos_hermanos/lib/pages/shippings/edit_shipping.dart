@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:app_dos_hermanos/classes/shipping.dart';
+import 'package:app_dos_hermanos/local_repository/local_data_base.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:app_dos_hermanos/repository/shipping_repository.dart';
 import 'package:app_dos_hermanos/validations/new_shipping_validators.dart';
@@ -12,11 +13,14 @@ import 'package:intl/intl.dart';
 class EditShipping extends StatefulWidget {
   AuthenticationRepository authenticationRepository;
   Shipping shipping;
+  LocalDataBase localDataBase;
 
   EditShipping(
       {Key? key,
       required this.authenticationRepository,
-      required this.shipping})
+      required this.shipping,
+      required this.localDataBase
+      })
       : super(key: key);
 
   @override
@@ -112,20 +116,20 @@ class _EditShippingState extends State<EditShipping> {
                             riceValue = newValue;
                           });
                         },
-                        items: _shipping.rices
+                        items: widget.localDataBase.riceDB
                             .map<DropdownMenuItem<String>>((value) {
                           return DropdownMenuItem<String>(
-                            value: value,
+                            value: value.type,
                             child: Text(
-                              value,
+                              value.type,
                               overflow: TextOverflow.visible,
                             ),
                           );
                         }).toList(),
                         selectedItemBuilder: (context) {
-                          return _shipping.rices
+                          return widget.localDataBase.riceDB
                               .map((value) => Container(
-                                    child: Text(value,
+                                    child: Text(value.type,
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                         softWrap: true),
