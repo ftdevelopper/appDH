@@ -4,7 +4,7 @@ class Validators {
   );
 
   static final RegExp _passwordRegExp = RegExp(
-    r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$',
+    r"^(?=.*[A-Za-z0-9])(?=.*\d)[A-Za-z\d]{6,}$",
   );
 
   static isValidEmail(String email){
