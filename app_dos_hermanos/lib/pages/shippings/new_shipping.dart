@@ -125,6 +125,10 @@ class _NewShippingState extends State<NewShipping> {
                       border: InputBorder.none,
                       icon: Icon(Icons.person)),
                   enabled: false,
+                  autovalidateMode: AutovalidateMode.always,
+                  validator: (_){
+                   return NewShippingValidator.isUserNameValid(widget.authenticationRepository.user.name); 
+                  },
                 ),
                 Divider(),
 
@@ -135,6 +139,10 @@ class _NewShippingState extends State<NewShipping> {
                       border: InputBorder.none,
                       icon: Icon(Icons.location_on)),
                   enabled: false,
+                  autovalidateMode: AutovalidateMode.always,
+                  validator: (_){
+                    return NewShippingValidator.isLocationValid(widget.authenticationRepository.user.location.name);
+                  },
                 ),
                 Divider(),
 
@@ -200,9 +208,9 @@ class _NewShippingState extends State<NewShipping> {
                       border: InputBorder.none,
                       icon: Icon(Icons.location_on)),
                   style: TextStyle(fontSize: 14, color: Colors.black),
-                  //autovalidateMode: AutovalidateMode.onUserInteraction,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (_) {
-                    //TODO: Implement this validation
+                    return NewShippingValidator.isLocationValid(destination.name);
                   },
                   onChanged: (dynamic newValue) {
                     setState(() {

@@ -170,9 +170,9 @@ class _RegisterFormState extends State<RegisterForm> {
                     value: _location.name,
                     decoration: InputDecoration(labelText: 'Ubicacion', border: InputBorder.none, icon: Icon(Icons.location_on)),
                     style: TextStyle(fontSize: 14, color: Colors.black),
-                    //autovalidateMode: AutovalidateMode.onUserInteraction,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (_){
-                    //TODO: Implement this validation
+                    
                     },
                   onChanged: (dynamic newValue ){
                 setState(() {

@@ -80,5 +80,21 @@ class NewShippingValidator {
       return null;
     }
   }
+
+  static String? isLocationValid(String location){
+    if(location == 'SELECCIONAR'){
+      return 'Seleccione una Ubicacion Valida';
+    } else {
+      return null;
+    }
+  }
+
+  static String? isUserNameValid(String name){
+    if(name == ''){
+      return 'Ingrese Su Nombre';
+    } else {
+      return null;
+    }
+  }
 }
 

@@ -68,7 +68,7 @@ class UserRepository {
     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
     return User(
       id: data['uid'] ?? '', 
-      name: data['name'] ?? '', // TODO: Si el usuario es nuevo tiene que poder seleccionar su nombre
+      name: data['name'] ?? '',
       email: data['email'] ?? '',
       photoURL: data['photoURL'] ?? 'https://firebasestorage.googleapis.com/v0/b/dos-hermanos.appspot.com/o/Profile%20Images%2Fdefault_profile_pic.jpg?alt=media&token=33961555-a0d8-48aa-9a48-124c1e397aeb',
       location: Location.fromName(data['location'] ?? 'SELECCIONAR'),
