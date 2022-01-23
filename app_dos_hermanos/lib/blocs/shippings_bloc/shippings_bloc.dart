@@ -15,13 +15,13 @@ class ShippingsBloc extends Bloc<ShippingsEvent, ShippingsState> {
 
   ShippingsBloc({required this.shippingRepository}) : super(ShippingsLoading()) {
 
-    _shippingsSubscription = shippingRepository.getSippings().listen((event) {});
+    _shippingsSubscription = shippingRepository.getShippings(duration: Duration(days: 2)).listen((event) {});
 
     on<LoadShippings>((event, emit) async {
       emit(ShippingsLoading());
       _shippingsSubscription?.cancel();
       try {
-        _shippingsSubscription = shippingRepository.getSippings().listen(
+        _shippingsSubscription = shippingRepository.getShippings(duration: event.duration ?? Duration(days: 2)).listen(
           (shippings){
             shippings.sort((shipping1, shipping2) => shipping2.remiterTaraTime!.compareTo(shipping1.remiterTaraTime!));
             add(ShippingsUpdated(shippingList: shippings));

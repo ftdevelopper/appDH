@@ -9,7 +9,10 @@ abstract class ShippingsEvent extends Equatable{
 }
 
 class LoadShippings extends ShippingsEvent {
-  
+  LoadShippings({this.duration, this.reciverLocation, this.remiterLocation});
+  final Duration? duration;
+  final String? remiterLocation;
+  final String? reciverLocation;
 }
 
 class AddShipping extends ShippingsEvent {
