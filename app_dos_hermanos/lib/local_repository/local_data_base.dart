@@ -7,14 +7,14 @@ import 'package:path_provider/path_provider.dart';
 
 class LocalDataBase {
   // Listas de objetos a guardar en DB
-  //List<Rice> riceDB;
+  List<Rice> riceDB;
   List<Location> locationDB;
 
-  LocalDataBase({required this.locationDB});
+  LocalDataBase({required this.locationDB, required this.riceDB});
 
   // Transformar las listas de objetos a formato Json como distintos valores de un Mapa
   Map<String, dynamic> toJson() => {
-    //"riceTypes": List<dynamic>.from(riceDB.map((riceType) => riceType.toJson())),
+    "riceTypes": List<dynamic>.from(riceDB.map((riceType) => riceType.toJson())),
     "locations": List<dynamic>.from(locationDB.map((locaiton) => locaiton.toJson()))
   };
 
@@ -22,16 +22,21 @@ class LocalDataBase {
   // Construye la base de datos desde el json guardado en el dispositivo.
   factory LocalDataBase.fromJson(Map<String, dynamic> jsonDB) {
     return LocalDataBase(
-      //riceDB: List<Rice>.from(jsonDB["riceTypes"].map((json) => Rice.fromJson(json))),
+      riceDB: List<Rice>.from(jsonDB["riceTypes"].map((element) => Rice.fromJson(element))),
       locationDB: List<Location>.from(jsonDB["locations"].map((element) => Location.fromJson(element)))
     );
   }
 
   loadDB() async {
-    await DataBaseFileRoutines().readDataBase().then((jsonDB) {
-      locationDB = databaseFromJson(jsonDB).locationDB;
-      //_localDB.riceDB = databaseFromJson(jsonDB).riceDB;
-    });
+    try {
+      await DataBaseFileRoutines().readDataBase().then((jsonDB) {
+        locationDB = databaseFromJson(jsonDB).locationDB;
+        riceDB = databaseFromJson(jsonDB).riceDB;
+      });  
+    } catch (e) {
+      print(e);
+    }
+    
   }
 }
 
@@ -49,7 +54,7 @@ class DataBaseFileRoutines {
     final path = await _localPath;
     //TODO: Delete Print
     print(path);
-    return File('$path/LoCAlDataBase.json');
+    return File('$path/LOCAlDataBase.json');
   }
 
 
@@ -69,7 +74,7 @@ class DataBaseFileRoutines {
       final file = await _localFile;
       if(!file.existsSync()){
         print('File does not exist: ${file.absolute}');
-        await writeDataBase('{"locations:[{"name":name}]"}');
+        await writeDataBase('{"locations:[{"name":name}]","riceTypes":["type":type]}');
       }
       String content = await file.readAsString();
       return content;

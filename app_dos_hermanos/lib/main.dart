@@ -23,7 +23,7 @@ void main() async {
   await Firebase.initializeApp();
   EquatableConfig.stringify = kDebugMode;
   BlocOverrides.runZoned(() async {
-    LocalDataBase localDataBase = LocalDataBase(locationDB: []);
+    LocalDataBase localDataBase = LocalDataBase(locationDB: [], riceDB: []);
     await localDataBase.loadDB();
     runApp(MyApp(authenticationRepository: AuthenticationRepository(user: User.empty()), localDataBase: localDataBase,));
   }, blocObserver: SimpleBlocObserver());
