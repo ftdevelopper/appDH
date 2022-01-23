@@ -2,8 +2,10 @@ import 'dart:io';
 import 'package:app_dos_hermanos/blocs/authentication_bloc/authenticaiton_bloc.dart';
 import 'package:app_dos_hermanos/blocs/drawer_bloc/drawer_bloc.dart';
 import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
+import 'package:app_dos_hermanos/classes/locations.dart';
 import 'package:app_dos_hermanos/classes/shipping.dart';
 import 'package:app_dos_hermanos/classes/user.dart';
+import 'package:app_dos_hermanos/local_repository/local_data_base.dart';
 import 'package:app_dos_hermanos/pages/shippings/new_shipping.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
@@ -348,7 +350,6 @@ class _ShippingsPageState extends State<ShippingsPage>
   }
 
   Future<void> _showlocationsDrawer(BuildContext context) async {
-    BlocProvider.of<DrawerBloc>(context).add(LoadLocations());
     return showDialog<void>(
         context: context,
         builder: (context) {
@@ -358,29 +359,38 @@ class _ShippingsPageState extends State<ShippingsPage>
               'Ubicaciones',
               textAlign: TextAlign.center,
             ),
+            actionsPadding: EdgeInsets.zero,
+            actions: <Widget>[
+              Center(
+                child: IconButton(
+                  onPressed: (){
+                    BlocProvider.of<DrawerBloc>(context).add(LoadLocations());
+                  },
+                  icon: Icon(Icons.replay_circle_filled, size: 30,)
+                ),
+              )],
             content: Container(
-              width: 70,
-              height: 230,
+              width: MediaQuery.of(context).size.width * 0.7,
+              height: MediaQuery.of(context).size.height * 0.4,
               child: BlocBuilder<DrawerBloc, DrawerState>(
                 builder: (context, state) {
                   if (state is LoadingLocations){
-                    return Center(child: CircularProgressIndicator(),);
-                  } else if (state is LoadedLocations){
-                  return ListView.builder(
-                    itemCount: state.locations.length,
+                    return Center(child: CircularProgressIndicator());
+                  } else {
+                    List<Location> locations = state.localDataBase!.locationDB;
+                    return ListView.builder(
+                    itemCount: locations.length,
                     itemBuilder: (_, index) {
                       return ListTile(
                       leading: Icon(Icons.location_on),
-                      title: Text(state.locations[index].name),
+                      title: Text(locations[index].name),
                       onTap: () {
                         Navigator.of(context).pop();
-                        BlocProvider.of<DrawerBloc>(context).add(ChangeLocation(locationName: state.locations[index].name));
+                        BlocProvider.of<DrawerBloc>(context).add(ChangeLocation(locationName: locations[index].name));
                       }
                     );
                   },
                 );
-              } else{
-                return Container();
               }
             },
           ),
