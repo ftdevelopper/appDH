@@ -3,20 +3,32 @@ part of 'drawer_bloc.dart';
 @immutable
 abstract class DrawerState {
 
-  final List<Location>? locations;
-  DrawerState({this.locations});
+  final LocalDataBase? localDataBase;
+  DrawerState({this.localDataBase});
 }
 
-class DrawerInitial extends DrawerState {}
+class DrawerInitial extends DrawerState {
+  DrawerInitial({required this.localDataBase}) : super(localDataBase: localDataBase);
 
-class LoadingDrawer extends DrawerState{}
+  final LocalDataBase localDataBase;
+}
 
-class LoadedDrawer extends DrawerState{}
+class LoadingDrawer extends DrawerState{
+  LoadingDrawer({required this.localDataBase});
+  
+  final LocalDataBase localDataBase;
+}
+
+class DrawerLoaded extends DrawerState{
+  DrawerLoaded({required this.localDataBase});
+
+  final LocalDataBase localDataBase;
+}
 
 class LoadingLocations extends DrawerState{}
 
 class LoadedLocations extends DrawerState{
-  final List<Location> locations;
+  LoadedLocations({required this.localDataBase});
 
-  LoadedLocations({required this.locations});
+  final LocalDataBase localDataBase;
 }
