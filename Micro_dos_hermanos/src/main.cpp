@@ -73,33 +73,36 @@ float peso;
 char flagsBuf[10];
 String id_str = "          ";
 String peso_str = "          ";
-String flags_str = "          ";
- 
+
 //      Variables for serial port
-uint8_t checksumSerTX, checksumSerRX, stateReadSer, stateDecodeSer;
-uint8_t indexWriteSerTX, indexReadSerTX, indexReadSerRX, indexWriteSerRX;
-uint8_t rxBuff[256], txBuff[256], pinsValue, numberOfSteps, parametros[16];
+uint8_t stateReadSer, stateDecodeSer;
+uint8_t indexReadSerRX, indexWriteSerRX;
+uint8_t rxBuff[256], txBuff[256];
 
 // Functions for Read the Serial inputs
 void ReadSerRXBuff()
 {
-  while (Serial2.available())
+  if (Serial2.available())
   {
-    // rxBuff[indexWriteSerRX++] = Serial2.read();
     rxBuff[indexWriteSerRX] = Serial2.read();
-    Serial.print("DBG: Llego -> ");
-    Serial.println(rxBuff[indexWriteSerRX], HEX);
     indexWriteSerRX++;
   }
-  if (SerRXBuffHasData())
+  if (SerRXBuffHasData() != 0)
   {
+    // DebugPrint("Decoding");
     DecodeSerRXBuff();
   }
 }
 
 uint8_t SerRXBuffHasData()
 {
-  return (indexWriteSerRX - indexReadSerRX);
+  uint8_t diferencia = indexWriteSerRX - indexReadSerRX;
+  // DebugPrint("SBHD: " + String(indexWriteSerRX) + " vs " + String(indexReadSerRX));
+  if (diferencia != 0)
+  {
+    return diferencia;
+  }
+  return 0;
 }
 
 void DecodeSerRXBuff()
@@ -109,7 +112,8 @@ void DecodeSerRXBuff()
   case WAITINGSTX:
     if (rxBuff[indexReadSerRX++] == STX)
     {
-      DebugPrint("Llego stx");
+      // DebugPrint("DSRB: " + String(indexWriteSerRX) + " vs " + String(indexReadSerRX));
+      // DebugPrint("Data recived");
       DATA_COMPLETE = false;
       stateReadSer = WAITINGDATA;
       stateDecodeSer = WAITINGID;
@@ -118,18 +122,17 @@ void DecodeSerRXBuff()
   case WAITINGCR:
     if (rxBuff[indexReadSerRX++] == CR)
     {
-      DebugPrint("Llego CR");
       stateReadSer = WAITINGLF;
     }
     else
     {
       stateReadSer = WAITINGSTX;
+      // DebugPrint("Error 01");
     }
     break;
   case WAITINGLF:
     if (rxBuff[indexReadSerRX++] == LF)
     {
-      DebugPrint("Llego LF");
       if (DATA_COMPLETE)
       {
         stateReadSer = WAITINGETX;
@@ -141,20 +144,20 @@ void DecodeSerRXBuff()
     }
     else
     {
+      // DebugPrint("Error 02");
       stateReadSer = WAITINGSTX;
     }
     break;
   case WAITINGDATA:
-    if (SerRXBuffHasData() < 9)
+    if (SerRXBuffHasData() > 9)
     {
-      break;
+      // DebugPrint("Llego data");
+      SaveReadedData();
+      stateReadSer = WAITINGCR;
     }
-    DebugPrint("Llego data");
-    SaveReadedData();
-    stateReadSer = WAITINGCR;
     break;
   case WAITINGETX:
-    Serial.printf("\nid: %u", id);
+    Serial.printf("id: %u", id);
     Serial.printf("\tPeso: %f", peso);
     Serial.printf("\tFlags: %d", (flags & 0x01) != 0);
     Serial.printf("\t%d", (flags & 0x02) != 0);
@@ -163,56 +166,52 @@ void DecodeSerRXBuff()
     Serial.printf("\t%d", (flags & 0x10) != 0);
     Serial.printf("\t%d", (flags & 0x20) != 0);
     Serial.printf("\t%d", (flags & 0x40) != 0);
-    Serial.printf("\t%d", (flags & 0x80) != 0);
+    Serial.printf("\t%d\n", (flags & 0x80) != 0);
     stateReadSer = WAITINGSTX;
+    //indexReadSerRX++;
     break;
   default:
     stateReadSer = WAITINGSTX;
+    // DebugPrint("Error 03");
     break;
   }
 }
 
-void SaveReadedData(){
+void SaveReadedData()
+{
   switch (stateDecodeSer)
+  {
+  case WAITINGID:
+    id_str = (char)rxBuff[indexReadSerRX++];
+    for (uint8_t i = 0; i < 9; i++)
     {
-    case WAITINGID:
-      DebugPrint("Decoding ID");
-      id_str = (char)rxBuff[indexReadSerRX++];
-      for (uint8_t i = 0; i < 9; i++)
-      {
-        id_str += (char)rxBuff[indexReadSerRX++];
-      }
-      DebugPrint(id_str);
-      id = id_str.toInt();
-      stateDecodeSer = WAITINGNT;
-      break;
-    case WAITINGNT:
-      DebugPrint("Decoding NETO");
-      peso_str = (char)rxBuff[indexReadSerRX++];
-      for (uint8_t i = 0; i < 9; i++)
-      {
-        peso_str += (char)rxBuff[indexReadSerRX++];
-      }
-      DebugPrint(peso_str);
-      peso = peso_str.toFloat();
-      stateDecodeSer = WAITINGFG;
-      break;
-    case WAITINGFG:
-      DebugPrint("Decoding FLAGS");
-      flags_str = (char)rxBuff[indexReadSerRX++];
-      for (uint8_t i = 0; i < 9; i++)
-      {
-        flags_str += (char)rxBuff[indexReadSerRX++];
-      }
-      DebugPrint(flags_str);
-      flags = flags_str.toInt();
-      DATA_COMPLETE = true;
-      break;
-    default:
-      stateReadSer = WAITINGSTX;
-      stateDecodeSer = WAITINGID;
-      break;
+      id_str += (char)rxBuff[indexReadSerRX++];
     }
+    id = id_str.toInt();
+    stateDecodeSer = WAITINGNT;
+    // DebugPrint("SRD: LLego ID = " + String(id));
+    break;
+  case WAITINGNT:
+    peso_str = (char)rxBuff[indexReadSerRX++];
+    for (uint8_t i = 0; i < 9; i++)
+    {
+      peso_str += (char)rxBuff[indexReadSerRX++];
+    }
+    peso = peso_str.toFloat();
+    stateDecodeSer = WAITINGFG;
+    // DebugPrint("SRD: LLego NETO = " + String(peso));
+    break;
+  case WAITINGFG:
+    indexReadSerRX += 9;
+    flags = rxBuff[indexReadSerRX++];
+    DATA_COMPLETE = true;
+    // DebugPrint("SRD: LLego FLAGS = " + String(flags));
+    break;
+  default:
+    stateReadSer = WAITINGSTX;
+    stateDecodeSer = WAITINGID;
+    break;
+  }
 }
 
 void blink(uint8_t times)
@@ -230,27 +229,37 @@ void setup()
   Serial.begin(9600);
   pinMode(SERIAL_COMMUNICATION_CONTROL_PIN, OUTPUT);
   digitalWrite(SERIAL_COMMUNICATION_CONTROL_PIN, RS485_RX_PIN_VALUE);
-  Serial2.begin(4800, SERIAL_8N1, RXD2, TXD2);
+  Serial2.begin(9600, SERIAL_8N1, RXD2, TXD2);
 
   pinMode(LED_BI, OUTPUT);
   stateReadSer = WAITINGSTX;
-  stateDecodeSer = WAITINGID;
+  indexWriteSerRX = 0;
+  indexReadSerRX = 0;
   blink(5);
 
   // PRUEBA DE IMPRESION
-  // uint8_t prueba01[10] = {0x20, 0x20, 0x20, 0x20, 0x20, 0x30, 0x2E, 0x30, 0x31, 0x35};
+  // uint8_t prueba01[10] = {0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x01};
   // String prueba01_str;
   // uint8_t pri = 0;
   // int prueba_def;
-  // prueba01_str = (char)prueba01[pri++];
-  // DebugPrint(prueba01_str);
+  // prueba01_str = String(prueba01[pri++], HEX);
+  // // DebugPrint(prueba01_str);
   // for (uint8_t i = 0; i < 9; i++)
   // {
-  //   prueba01_str += (char)prueba01[pri++];
+  //   prueba01_str += String(prueba01[pri++], HEX);
   // }
-  // DebugPrint(prueba01_str);
-  // prueba_def = prueba01_str.toInt();
-  // DebugPrint(String(prueba_def));
+  // pri += 9;
+  // prueba_def = prueba01[pri++];
+  // // DebugPrint(String(prueba_def));
+
+  // Serial.printf("\tFlags: %d", (prueba_def & 0x01) != 0);
+  // Serial.printf("\t%d", (prueba_def & 0x02) != 0);
+  // Serial.printf("\t%d", (prueba_def & 0x04) != 0);
+  // Serial.printf("\t%d", (prueba_def & 0x08) != 0);
+  // Serial.printf("\t%d", (prueba_def & 0x10) != 0);
+  // Serial.printf("\t%d", (prueba_def & 0x20) != 0);
+  // Serial.printf("\t%d", (prueba_def & 0x40) != 0);
+  // Serial.printf("\t%d\n", (prueba_def & 0x80) != 0);
 }
 
 void loop()
@@ -263,7 +272,8 @@ void loop()
   }
 }
 
-void DebugPrint(String Mensaje){
+void DebugPrint(String Mensaje)
+{
   Serial.print("DBG: ");
   Serial.println(Mensaje);
 }
