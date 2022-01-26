@@ -47,10 +47,10 @@ _flag flagSer;
 #define DATA_COMPLETE flagSer.bit.b0
 
 // Prototipado
-void ReadSerRXBuff(int *id, int *flags, float *peso, uint8_t *decodeComplete);
+void ReadSerRXBuff(int *id, uint8_t *flags, float *peso, uint8_t *decodeComplete);
 uint8_t SerRXBuffHasData();
-void DecodeSerRXBuff(int *id, int *flags, float *peso, uint8_t *decodeComplete);
-void SaveReadedData(int *id, int *flags, float *peso);
+void DecodeSerRXBuff(int *id, uint8_t *flags, float *peso, uint8_t *decodeComplete);
+void SaveReadedData(int *id, uint8_t *flags, float *peso);
 void SerialSetup();
 
 // VARIABLES
@@ -73,7 +73,7 @@ void SerialSetup(){
   indexReadSerRX = 0;
 }
 
-void ReadSerRXBuff(int *id, int *flags, float *peso, uint8_t *decodeComplete)
+void ReadSerRXBuff(int *id, uint8_t *flags, float *peso, uint8_t *decodeComplete)
 {
     if (Serial2.available())
     {
@@ -98,7 +98,7 @@ uint8_t SerRXBuffHasData()
     return 0;
 }
 
-void DecodeSerRXBuff(int *id, int *flags, float *peso, uint8_t *decodeComplete)
+void DecodeSerRXBuff(int *id, uint8_t *flags, float *peso, uint8_t *decodeComplete)
 {
     switch (stateReadSer)
     {
@@ -169,7 +169,7 @@ void DecodeSerRXBuff(int *id, int *flags, float *peso, uint8_t *decodeComplete)
     }
 }
 
-void SaveReadedData(int *id, int *flags, float *peso)
+void SaveReadedData(int *id, uint8_t *flags, float *peso)
 {
     switch (stateDecodeSer)
     {

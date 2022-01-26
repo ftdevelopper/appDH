@@ -5,14 +5,11 @@
 #define LED_BUILTIN 2
 #endif
 
-// Define the used Flags
-// _flag flagMain;
-// #define DECODE_COMPLETE flagMain.bit.b0
-
 // VARIABLES
 uint8_t data;
-int id, flags;
-float peso;
+int id;
+uint8_t flags;
+float peso, pesoValido = 0;
 uint8_t DECODE_COMPLETE = 0;
 uint8_t PRINT_RESULTS = 0;
 
@@ -35,7 +32,7 @@ void loop()
 {
   ReadSerRXBuff(&id, &flags, &peso, &DECODE_COMPLETE);
 
-  if (DECODE_COMPLETE && (flags & 0x04) == 0)
+  if (DECODE_COMPLETE && (flags & 0x05) == 0)
   {
     if (PRINT_RESULTS)
     {
