@@ -1,22 +1,33 @@
 #include <Arduino.h>
 #include <SerialFunctions.h>
+#include <BluetoothFunctions.h>
 
 #ifndef LED_BUILTIN
 #define LED_BUILTIN 2
 #endif
+
+#define BUFFER_SIZE 30
 
 // VARIABLES
 uint8_t data;
 int id;
 uint8_t flags;
 float peso, pesoValido = 0;
-uint8_t DECODE_COMPLETE = 0;
+uint8_t DECODE_SER_COMPLETE = 0;
 uint8_t PRINT_RESULTS = 0;
+
+char patente[BUFFER_SIZE][9];
+char momento[BUFFER_SIZE][16];
+float taras[BUFFER_SIZE];
+float netos[BUFFER_SIZE];
+uint8_t comando = 0x00;
+uint8_t indexList = 0x00;
 
 // Prototipado
 void blink(uint8_t times);
 void DebugPrint(String Mensaje);
 void PrintResults();
+void RespuestaBluetooth();
 
 // FUCTIONS
 
@@ -25,21 +36,40 @@ void setup()
   Serial.begin(9600);
   pinMode(LED_BUILTIN, OUTPUT);
   SerialSetup();
+  BtSetup();
   blink(3);
 }
 
 void loop()
 {
-  ReadSerRXBuff(&id, &flags, &peso, &DECODE_COMPLETE);
+  ReadSerRXBuff(&id, &flags, &peso, &DECODE_SER_COMPLETE);
 
-  if (DECODE_COMPLETE && (flags & 0x05) == 0)
+  if (DECODE_SER_COMPLETE && (flags & 0x05) == 0)
   {
     pesoValido = peso;
     if (PRINT_RESULTS)
     {
       PrintResults();
     }
-    DECODE_COMPLETE = 0x00;
+    DECODE_SER_COMPLETE = 0x00;
+  }
+
+  ReadBtRXBuff(&patente[indexList][0], &momento[indexList][0], &comando);
+
+    if (comando != 0x00)
+  {
+    RespuestaBluetooth();
+    comando = 0x00;
+  }
+
+  if (DECODE_SER_COMPLETE && (flags & 0x05) == 0)
+  {
+    pesoValido = peso;
+    if (PRINT_RESULTS)
+    {
+      PrintResults();
+    }
+    DECODE_SER_COMPLETE = 0x00;
   }
 
   if (Serial.available())
@@ -59,6 +89,43 @@ void loop()
       PRINT_RESULTS = 0x00;
       break;
     }
+  }
+}
+
+void RespuestaBluetooth()
+{
+  switch (comando)
+  {
+  case 'T':
+    SendPeso(pesoValido);
+    taras[indexList] = pesoValido;
+    DebugPrint("Pidieron Tara: " + String(taras[indexList]) + "\t" +
+               patente[indexList] + "\t" + momento[indexList]);
+    indexList++;
+    break;
+  case 'N':
+    SendPeso(pesoValido);
+    DebugPrint(String(indexList));
+    for (uint8_t i = BUFFER_SIZE; i > 0; i--)
+    {
+      DebugPrint(String((indexList + i) % BUFFER_SIZE));
+      if (patente[(indexList + i) % BUFFER_SIZE] == patente[indexList])
+      {
+        netos[(indexList + i) % BUFFER_SIZE] = pesoValido;
+        break;
+      }
+    }
+    DebugPrint("Pidieron Neto: " + String(netos[indexList]) +
+               "\tTara: " + String(taras[indexList]) + "\t" +
+               patente[indexList] + "\t" + momento[indexList]);
+    indexList++;
+    break;
+  case 'L':
+    DebugPrint("Pidieron la lista");
+    // SendList();
+    break;
+  default:
+    break;
   }
 }
 
