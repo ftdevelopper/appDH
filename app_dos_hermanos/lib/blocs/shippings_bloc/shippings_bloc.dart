@@ -18,13 +18,14 @@ class ShippingsBloc extends Bloc<ShippingsEvent, ShippingsState> {
     _shippingsSubscription = shippingRepository.getShippings(duration: Duration(days: 2)).listen((event) {});
 
     on<LoadShippings>((event, emit) async {
-      emit(ShippingsLoading());
       _shippingsSubscription?.cancel();
+      emit(ShippingsLoading());
       try {
-        _shippingsSubscription = shippingRepository.getShippings(duration: event.duration ?? Duration(days: 2)).listen(
+        _shippingsSubscription = shippingRepository.getShippings(
+          duration: event.duration ?? Duration(days: 2),
+        ).listen(
           (shippings){
-            shippings.sort((shipping1, shipping2) => shipping2.remiterTaraTime!.compareTo(shipping1.remiterTaraTime!));
-            add(ShippingsUpdated(shippingList: shippings));
+            return add(ShippingsUpdated(shippingList: filterShippings(shippings: shippings, event: event)));
           }
         );
       } catch (e) {
@@ -47,4 +48,24 @@ class ShippingsBloc extends Bloc<ShippingsEvent, ShippingsState> {
     _shippingsSubscription?.cancel();
     return super.close();
   }
+}
+
+List<Shipping> filterShippings({required List<Shipping> shippings, required LoadShippings event}){
+
+  String? destination = event.reciverLocation == 'SELECCIONAR' ? null : event.reciverLocation;
+  String? origin = event.remiterLocation == 'SELECCIONAR' ? null : event.remiterLocation;
+
+  if (destination == null && origin == null){
+    return shippings;
+  }
+
+  if (destination == null){
+    return shippings.where((element) => element.remiterLocation == origin).toList();
+  }
+
+  if (origin == null){
+    return shippings.where((element) => element.reciverLocation == destination).toList();
+  }
+
+  return shippings.where((element) => element.reciverLocation == destination || element.remiterLocation == origin).toList();
 }

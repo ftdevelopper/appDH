@@ -4,18 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class ShippingRepository {
   final databaseReference = FirebaseFirestore.instance.collection("shippings");
 
-  Stream<List<Shipping>> getShippings({required Duration duration, String? reciverLocation, String? remiterLocation}) {
-    return databaseReference.where('remiterTaraTime', isGreaterThanOrEqualTo: DateTime.now().subtract(duration).toString())
-    .where('reciverLocation', isEqualTo: reciverLocation)
-    .where('remiterLocation', isEqualTo: remiterLocation)
+  Stream<List<Shipping>> getShippings({required Duration duration}) {
+    return databaseReference
+    .where('remiterTaraTime', isGreaterThanOrEqualTo: DateTime.now().subtract(duration).toString())
+    .orderBy('remiterTaraTime', descending: true)
     .snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) => Shipping.fromSnapShot(doc)).toList();
-    });
-  }
-
-  Stream<List<Shipping>> contidionalGetSippings(String reciverLocation, String remiterLocation) {
-    return databaseReference.where('remiterLocation',isEqualTo: remiterLocation).where('reciverLocation', isEqualTo: reciverLocation).snapshots()
-    .map((snapshot) {
       return snapshot.docs.map((doc) => Shipping.fromSnapShot(doc)).toList();
     });
   }
