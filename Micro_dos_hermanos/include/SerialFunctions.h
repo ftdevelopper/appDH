@@ -201,7 +201,6 @@ void SaveReadedData(int *id, uint8_t *flags, float *peso)
         break;
     default:
         stateReadSer = WAITINGSTX;
-        stateDecodeSer = WAITINGID;
         break;
     }
 }

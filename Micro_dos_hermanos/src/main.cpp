@@ -34,6 +34,7 @@ void loop()
 
   if (DECODE_COMPLETE && (flags & 0x05) == 0)
   {
+    pesoValido = peso;
     if (PRINT_RESULTS)
     {
       PrintResults();
