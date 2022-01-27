@@ -6,7 +6,7 @@
 #define LED_BUILTIN 2
 #endif
 
-#define BUFFER_SIZE 30
+#define BUFFER_SIZE 30 // de 1 a 255
 
 // VARIABLES
 uint8_t data;
@@ -16,8 +16,11 @@ float peso, pesoValido = 0;
 uint8_t DECODE_SER_COMPLETE = 0;
 uint8_t PRINT_RESULTS = 0;
 
-char patente[BUFFER_SIZE][9];
-char momento[BUFFER_SIZE][16];
+char patentes[BUFFER_SIZE][9];
+char momentosT[BUFFER_SIZE][16];
+char momentosN[BUFFER_SIZE][16];
+char patenteNueva[9];
+char momentoNuevo[16];
 float taras[BUFFER_SIZE];
 float netos[BUFFER_SIZE];
 uint8_t comando = 0x00;
@@ -54,9 +57,9 @@ void loop()
     DECODE_SER_COMPLETE = 0x00;
   }
 
-  ReadBtRXBuff(&patente[indexList][0], &momento[indexList][0], &comando);
+  ReadBtRXBuff(&patenteNueva[0], &momentoNuevo[0], &comando);
 
-    if (comando != 0x00)
+  if (comando != 0x00)
   {
     RespuestaBluetooth();
     comando = 0x00;
@@ -97,28 +100,42 @@ void RespuestaBluetooth()
   switch (comando)
   {
   case 'T':
+    indexList = (indexList + 1) % BUFFER_SIZE;
     SendPeso(pesoValido);
     taras[indexList] = pesoValido;
+    for (uint8_t i = 0; i < 9; i++)
+    {
+      patentes[indexList][i] = patenteNueva[i];
+    }
+    for (uint8_t i = 0; i < 16; i++)
+    {
+      momentosT[indexList][i] = momentoNuevo[i];
+    }
     DebugPrint("Pidieron Tara: " + String(taras[indexList]) + "\t" +
-               patente[indexList] + "\t" + momento[indexList]);
-    indexList++;
+               patentes[indexList] + "\t" + momentosT[indexList]);
     break;
   case 'N':
     SendPeso(pesoValido);
-    DebugPrint(String(indexList));
     for (uint8_t i = BUFFER_SIZE; i > 0; i--)
     {
-      DebugPrint(String((indexList + i) % BUFFER_SIZE));
-      if (patente[(indexList + i) % BUFFER_SIZE] == patente[indexList])
+      if (patentes[(indexList + i) % BUFFER_SIZE] == patentes[indexList])
       {
         netos[(indexList + i) % BUFFER_SIZE] = pesoValido;
         break;
       }
     }
+    for (uint8_t i = 0; i < 9; i++)
+    {
+      patentes[indexList][i] = patenteNueva[i];
+    }
+    for (uint8_t i = 0; i < 16; i++)
+    {
+      momentosN[indexList][i] = momentoNuevo[i];
+    }
     DebugPrint("Pidieron Neto: " + String(netos[indexList]) +
                "\tTara: " + String(taras[indexList]) + "\t" +
-               patente[indexList] + "\t" + momento[indexList]);
-    indexList++;
+               patentes[indexList] + "\t" +
+               momentosT[indexList] + "\t" + momentosN[indexList]);
     break;
   case 'L':
     DebugPrint("Pidieron la lista");

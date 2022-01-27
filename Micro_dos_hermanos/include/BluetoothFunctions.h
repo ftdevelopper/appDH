@@ -83,7 +83,7 @@ void ReadBtRXBuff(char *patente, char *momento, uint8_t *comando)
     if (SerialBT.available())
     {
         rxBuffBt[indexWriteBtRX] = SerialBT.read();
-        BtDebugPrint("d_in: " + String(rxBuffBt[indexWriteBtRX], HEX));
+        // BtDebugPrint("d_in: " + String(rxBuffBt[indexWriteBtRX], HEX));
         indexWriteBtRX++;
     }
     if (BtRXBuffHasData() != 0)
@@ -123,7 +123,7 @@ void DecodeBtRXBuff(char *patente, char *momento, uint8_t *comando)
         else
         {
             stateReadBt = WAITINGSTX;
-            BtDebugPrint("Error 01");
+            // BtDebugPrint("Error 01");
         }
         break;
     case WAITINGLF:
@@ -140,7 +140,7 @@ void DecodeBtRXBuff(char *patente, char *momento, uint8_t *comando)
         }
         else
         {
-            BtDebugPrint("Error 02");
+            // BtDebugPrint("Error 02");
             stateReadBt = WAITINGSTX;
         }
         break;
@@ -163,7 +163,7 @@ void DecodeBtRXBuff(char *patente, char *momento, uint8_t *comando)
     case WAITINGDATA:
         if (BtRXBuffHasData() > 15)
         {
-            BtDebugPrint("Llego data");
+            // BtDebugPrint("Llego data");
             SaveReadedData(patente, momento);
             stateReadBt = WAITINGCR;
         }
@@ -173,17 +173,17 @@ void DecodeBtRXBuff(char *patente, char *momento, uint8_t *comando)
         {
             *comando = comandoLoc;
             stateReadBt = WAITINGSTX;
-            BtDebugPrint("Llego todo");
+            // BtDebugPrint("Llego todo");
         }
         else
         {
             stateReadBt = WAITINGSTX;
-            BtDebugPrint("Error 03");
+            // BtDebugPrint("Error 03");
         }
         break;
     default:
         stateReadBt = WAITINGSTX;
-        BtDebugPrint("Error 04");
+        // BtDebugPrint("Error 04");
         break;
     }
 }
@@ -193,19 +193,19 @@ void SaveReadedData(char *patente, char *momento)
     switch (stateDecodeBt)
     {
     case WAITINGPAT:
-        BtDebugPrint("PATENTE");
+        // BtDebugPrint("PATENTE");
         for (uint8_t i = 0; i < 9; i++)
         {
-            BtDebugPrint(String(rxBuffBt[indexReadBtRX]));
+            // BtDebugPrint(String(rxBuffBt[indexReadBtRX]));
             *(patente + i) = (char)rxBuffBt[indexReadBtRX++];
         }
         stateDecodeBt = WAITINGTIME;
         break;
     case WAITINGTIME:
-        BtDebugPrint("MOMENTO");
+        // BtDebugPrint("MOMENTO");
         for (uint8_t i = 0; i < 16; i++)
         {
-            BtDebugPrint(String(rxBuffBt[indexReadBtRX]));
+            // BtDebugPrint(String(rxBuffBt[indexReadBtRX]));
             *(momento + i) = (char)rxBuffBt[indexReadBtRX++];
         }
         DATA_COMPLETE_BT = true;
@@ -218,8 +218,8 @@ void SaveReadedData(char *patente, char *momento)
 
 void SendPeso(float pesoValido)
 {
-    BtDebugPrint("ENVIANDO PESO");
-    BtDebugPrint(String(pesoValido));
+    // BtDebugPrint("ENVIANDO PESO");
+    // BtDebugPrint(String(pesoValido));
     // SerialBT.write(0x02);
     SerialBT.println(String(pesoValido, 3));
     // SerialBT.write(0x03);
