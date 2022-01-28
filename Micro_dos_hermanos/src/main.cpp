@@ -36,7 +36,7 @@ void RespuestaBluetooth();
 
 void setup()
 {
-  Serial.begin(9600);
+  // Serial.begin(9600);
   pinMode(LED_BUILTIN, OUTPUT);
   SerialSetup();
   BtSetup();
@@ -75,11 +75,11 @@ void loop()
     DECODE_SER_COMPLETE = 0x00;
   }
 
-  if (Serial.available())
+  // if (Serial.available())
   {
-    data = Serial.read();
-    Serial.print("DIJISTE: ");
-    Serial.println(data, HEX);
+    // data = Serial.read();
+    // Serial.print("DIJISTE: ");
+    // Serial.println(data, HEX);
     switch (data)
     {
     case 0x30:
@@ -148,22 +148,22 @@ void RespuestaBluetooth()
 
 void PrintResults()
 {
-  Serial.printf("id: %u", id);
-  Serial.printf("\tPeso: %f", peso);
-  Serial.printf("\tFlags: %d", (flags & 0x01) != 0);
-  Serial.printf("\t%d", (flags & 0x02) != 0);
-  Serial.printf("\t%d", (flags & 0x04) != 0);
-  Serial.printf("\t%d", (flags & 0x08) != 0);
-  Serial.printf("\t%d", (flags & 0x10) != 0);
-  Serial.printf("\t%d", (flags & 0x20) != 0);
-  Serial.printf("\t%d", (flags & 0x40) != 0);
-  Serial.printf("\t%d\n", (flags & 0x80) != 0);
+  // Serial.printf("id: %u", id);
+  // Serial.printf("\tPeso: %f", peso);
+  // Serial.printf("\tFlags: %d", (flags & 0x01) != 0);
+  // Serial.printf("\t%d", (flags & 0x02) != 0);
+  // Serial.printf("\t%d", (flags & 0x04) != 0);
+  // Serial.printf("\t%d", (flags & 0x08) != 0);
+  // Serial.printf("\t%d", (flags & 0x10) != 0);
+  // Serial.printf("\t%d", (flags & 0x20) != 0);
+  // Serial.printf("\t%d", (flags & 0x40) != 0);
+  // Serial.printf("\t%d\n", (flags & 0x80) != 0);
 }
 
 void DebugPrint(String Mensaje)
 {
-  Serial.print("DBG: ");
-  Serial.println(Mensaje);
+  // Serial.print("DBG: ");
+  // Serial.println(Mensaje);
 }
 
 void blink(uint8_t times)
