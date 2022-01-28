@@ -57,6 +57,8 @@ void BtDebugPrint(String Mensaje);
 
 void SendPeso(float pesoValido);
 
+void SendList(const uint8_t *patentesasas, char *momentosT, float *taras, char *momentossN, float *netos, uint8_t indexList, const uint8_t bufferSize);
+
 // Instanciado de clase bluetooth serial
 BluetoothSerial SerialBT;
 
@@ -229,4 +231,17 @@ void BtDebugPrint(String Mensaje)
 {
     Serial.print("DBG(BT): ");
     Serial.println(Mensaje);
+}
+
+void SendList(const uint8_t *patentesasas, const uint8_t  *momentosT,  float *taras, const uint8_t  *momentossN, float *netos, uint8_t indexList, const uint8_t bufferSize)
+{
+    uint8_t actIndex = 0;
+    for (uint8_t i = bufferSize; i > 0; i--)
+    {
+        actIndex = (indexList + i) % bufferSize;
+        SerialBT.write(patentesasas + (9 * actIndex), 9);
+        SerialBT.print("\t");
+        SerialBT.write(momentosT + (16 * actIndex), 16);
+        SerialBT.print("\t");
+    }
 }
