@@ -15,6 +15,7 @@ uint8_t flags;
 float peso, pesoValido = 0;
 uint8_t DECODE_SER_COMPLETE = 0;
 uint8_t PRINT_RESULTS = 0;
+uint8_t actIndex = 0;
 
 char patentes[BUFFER_SIZE][9];
 char momentosT[BUFFER_SIZE][16];
@@ -27,9 +28,9 @@ uint8_t comando = 0x00;
 uint8_t indexList = 0x00;
 
 // Prototipado
-void blink(uint8_t times);
-void DebugPrint(String Mensaje);
-void PrintResults();
+void blink(uint8_t times_per_second);
+// void DebugPrint(String Mensaje);
+// void PrintResults();
 void RespuestaBluetooth();
 
 // FUCTIONS
@@ -40,58 +41,67 @@ void setup()
   pinMode(LED_BUILTIN, OUTPUT);
   SerialSetup();
   BtSetup();
-  blink(3);
 }
 
 void loop()
 {
-  ReadSerRXBuff(&id, &flags, &peso, &DECODE_SER_COMPLETE);
 
-  if (DECODE_SER_COMPLETE && (flags & 0x05) == 0)
+  if (IsBluetoothConected())
   {
-    pesoValido = peso;
-    if (PRINT_RESULTS)
-    {
-      PrintResults();
-    }
-    DECODE_SER_COMPLETE = 0x00;
+    digitalWrite(LED_BUILTIN, HIGH);
+  }
+  else
+  {
+    blink(2);
   }
 
   ReadBtRXBuff(&patenteNueva[0], &momentoNuevo[0], &comando);
 
-  if (comando != 0x00)
+  if (comando != 0x00 && IsBluetoothConected())
   {
     RespuestaBluetooth();
-    comando = 0x00;
   }
 
-  if (DECODE_SER_COMPLETE && (flags & 0x05) == 0)
+  ReadSerRXBuff(&id, &flags, &peso, &DECODE_SER_COMPLETE);
+
+  if (DECODE_SER_COMPLETE && (flags & 0x05) == 0 && PRINT_RESULTS == 0x01)
   {
     pesoValido = peso;
-    if (PRINT_RESULTS)
-    {
-      PrintResults();
-    }
+    SendFloat(pesoValido);
     DECODE_SER_COMPLETE = 0x00;
-  }
-
-  // if (Serial.available())
-  {
-    // data = Serial.read();
-    // Serial.print("DIJISTE: ");
-    // Serial.println(data, HEX);
-    switch (data)
+    PRINT_RESULTS = 0x00;
+    // SendString((String)comando);
+    switch (comando)
     {
-    case 0x30:
-      PRINT_RESULTS = 0x00;
+    case 'T':
+      indexList = (indexList + 1) % BUFFER_SIZE;
+      for (uint8_t i = 0; i < 9; i++)
+      {
+        patentes[indexList][i] = patenteNueva[i];
+      }
+      for (uint8_t i = 0; i < 16; i++)
+      {
+        momentosT[indexList][i] = momentoNuevo[i];
+      }
+      taras[indexList] = pesoValido;
       break;
-    case 0x31:
-      PRINT_RESULTS = 0x01;
+    case 'N':
+      for (uint8_t i = BUFFER_SIZE; i > 0; i--)
+      {
+        if (String(patentes[(indexList + i) % BUFFER_SIZE]) == String(patenteNueva))
+        {
+          netos[(indexList + i) % BUFFER_SIZE] = pesoValido;
+          for (uint8_t j = 0; j < 16; j++)
+          {
+            momentosN[(indexList + i) % BUFFER_SIZE][j] = momentoNuevo[j];
+          }
+          break;
+        }
+      }
       break;
-    default:
-      PRINT_RESULTS = 0x00;
       break;
     }
+    comando = 0x00;
   }
 }
 
@@ -100,79 +110,31 @@ void RespuestaBluetooth()
   switch (comando)
   {
   case 'T':
-    indexList = (indexList + 1) % BUFFER_SIZE;
-    SendPeso(pesoValido);
-    taras[indexList] = pesoValido;
-    for (uint8_t i = 0; i < 9; i++)
-    {
-      patentes[indexList][i] = patenteNueva[i];
-    }
-    for (uint8_t i = 0; i < 16; i++)
-    {
-      momentosT[indexList][i] = momentoNuevo[i];
-    }
-    DebugPrint("Pidieron Tara: " + String(taras[indexList]) + "\t" +
-               patentes[indexList] + "\t" + momentosT[indexList]);
+    PRINT_RESULTS = 0x01;
     break;
   case 'N':
-    SendPeso(pesoValido);
-    for (uint8_t i = BUFFER_SIZE; i > 0; i--)
-    {
-      if (patentes[(indexList + i) % BUFFER_SIZE] == patentes[indexList])
-      {
-        netos[(indexList + i) % BUFFER_SIZE] = pesoValido;
-        break;
-      }
-    }
-    for (uint8_t i = 0; i < 9; i++)
-    {
-      patentes[indexList][i] = patenteNueva[i];
-    }
-    for (uint8_t i = 0; i < 16; i++)
-    {
-      momentosN[indexList][i] = momentoNuevo[i];
-    }
-    DebugPrint("Pidieron Neto: " + String(netos[indexList]) +
-               "\tTara: " + String(taras[indexList]) + "\t" +
-               patentes[indexList] + "\t" +
-               momentosT[indexList] + "\t" + momentosN[indexList]);
+    PRINT_RESULTS = 0x01;
     break;
   case 'L':
-    DebugPrint("Pidieron la lista");
-    // SendList();
-    break;
-  default:
+    for (uint8_t i = BUFFER_SIZE; i > 0; i--)
+    {
+      actIndex = (indexList + i) % BUFFER_SIZE;
+      if (taras[actIndex] != 0)
+      {
+      SendString((String)actIndex);
+      SendString((String)patentes[actIndex]);
+      SendString((String)momentosT[actIndex]);
+      SendFloat(taras[actIndex]);
+      SendString((String)momentosN[actIndex]);
+      SendFloat(netos[actIndex]);
+      }
+    }
+    comando = 0x00;
     break;
   }
 }
 
-void PrintResults()
+void blink(uint8_t times_per_second)
 {
-  // Serial.printf("id: %u", id);
-  // Serial.printf("\tPeso: %f", peso);
-  // Serial.printf("\tFlags: %d", (flags & 0x01) != 0);
-  // Serial.printf("\t%d", (flags & 0x02) != 0);
-  // Serial.printf("\t%d", (flags & 0x04) != 0);
-  // Serial.printf("\t%d", (flags & 0x08) != 0);
-  // Serial.printf("\t%d", (flags & 0x10) != 0);
-  // Serial.printf("\t%d", (flags & 0x20) != 0);
-  // Serial.printf("\t%d", (flags & 0x40) != 0);
-  // Serial.printf("\t%d\n", (flags & 0x80) != 0);
-}
-
-void DebugPrint(String Mensaje)
-{
-  // Serial.print("DBG: ");
-  // Serial.println(Mensaje);
-}
-
-void blink(uint8_t times)
-{
-  for (uint8_t i = 0; i < times; i++)
-  {
-    digitalWrite(LED_BUILTIN, 1);
-    delay(50);
-    digitalWrite(LED_BUILTIN, 0);
-    delay(250);
-  }
+  digitalWrite(LED_BUILTIN, !((millis() * times_per_second / 1000) % 2));
 }

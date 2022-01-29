@@ -53,12 +53,13 @@ void DecodeBtRXBuff(char *patente, char *momento, uint8_t *comando);
 void SaveReadedData(char *patente, char *momento);
 void BtSetup();
 
-void BtDebugPrint(String Mensaje);
 
-void SendPeso(float pesoValido);
+// void BtDebugPrint(String Mensaje);
 
-void SendList(const uint8_t *patentesasas, char *momentosT, float *taras, char *momentossN, float *netos, uint8_t indexList, const uint8_t bufferSize);
+void SendFloat(float data);
+void SendString(String data);
 
+void SendLine(String *patentes, String *momentosT, float *taras, String *momentosN, float *netos);
 // Instanciado de clase bluetooth serial
 BluetoothSerial SerialBT;
 
@@ -74,7 +75,7 @@ uint8_t comandoLoc;
 
 void BtSetup()
 {
-    SerialBT.begin("Controlador Sipel"); //Bluetooth device name
+    SerialBT.begin("Controlador de cabezal"); //Bluetooth device name
     stateReadBt = WAITINGSTX;
     indexWriteBtRX = 0;
     indexReadBtRX = 0;
@@ -218,30 +219,34 @@ void SaveReadedData(char *patente, char *momento)
     }
 }
 
-void SendPeso(float pesoValido)
+void SendFloat(float data)
 {
     // BtDebugPrint("ENVIANDO PESO");
     // BtDebugPrint(String(pesoValido));
     // SerialBT.write(0x02);
-    SerialBT.println(String(pesoValido, 3));
+    SerialBT.println(String(data, 3));
     // SerialBT.write(0x03);
 }
 
-void BtDebugPrint(String Mensaje)
+void SendString(String data)
 {
-    Serial.print("DBG(BT): ");
-    Serial.println(Mensaje);
+    SerialBT.println(data);
 }
 
-void SendList(const uint8_t *patentesasas, const uint8_t  *momentosT,  float *taras, const uint8_t  *momentossN, float *netos, uint8_t indexList, const uint8_t bufferSize)
-{
-    uint8_t actIndex = 0;
-    for (uint8_t i = bufferSize; i > 0; i--)
-    {
-        actIndex = (indexList + i) % bufferSize;
-        SerialBT.write(patentesasas + (9 * actIndex), 9);
-        SerialBT.print("\t");
-        SerialBT.write(momentosT + (16 * actIndex), 16);
-        SerialBT.print("\t");
-    }
+// void BtDebugPrint(String Mensaje)
+// {
+//     Serial.print("DBG(BT): ");
+//     Serial.println(Mensaje);
+// }
+
+void SendLine(String *patentes, String *momentosT, float *taras, String *momentosN, float *netos){
+    SerialBT.println(*patentes);
+    SerialBT.println(*momentosT);
+    SerialBT.println(*taras);
+    SerialBT.println(*momentosN);
+    SerialBT.println(*netos);
+}
+
+bool IsBluetoothConected(){
+    return SerialBT.connected();
 }
