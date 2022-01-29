@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
+import 'package:app_dos_hermanos/classes/drivers.dart';
 import 'package:app_dos_hermanos/classes/locations.dart';
 import 'package:app_dos_hermanos/classes/rice.dart';
 import 'package:path_provider/path_provider.dart';
@@ -9,13 +10,15 @@ class LocalDataBase {
   // Listas de objetos a guardar en DB
   List<Rice> riceDB;
   List<Location> locationDB;
+  List<Driver> driversDB;
 
-  LocalDataBase({required this.locationDB, required this.riceDB});
+  LocalDataBase({required this.locationDB, required this.riceDB, required this.driversDB});
 
   // Transformar las listas de objetos a formato Json como distintos valores de un Mapa
   Map<String, dynamic> toJson() => {
     "riceTypes": List<dynamic>.from(riceDB.map((riceType) => riceType.toJson())),
-    "locations": List<dynamic>.from(locationDB.map((locaiton) => locaiton.toJson()))
+    "locations": List<dynamic>.from(locationDB.map((locaiton) => locaiton.toJson())),
+    "drivers": List<dynamic>.from(driversDB.map((driver) => driver.toJson())),
   };
 
 
@@ -23,15 +26,18 @@ class LocalDataBase {
   factory LocalDataBase.fromJson(Map<String, dynamic> jsonDB) {
     return LocalDataBase(
       riceDB: List<Rice>.from(jsonDB["riceTypes"].map((element) => Rice.fromJson(element))),
-      locationDB: List<Location>.from(jsonDB["locations"].map((element) => Location.fromJson(element)))
+      locationDB: List<Location>.from(jsonDB["locations"].map((element) => Location.fromJson(element))),
+      driversDB: List<Driver>.from(jsonDB["drivers"].map((element) => Driver.fromJson(element))),
     );
   }
 
   loadDB() async {
     try {
       await DataBaseFileRoutines().readDataBase().then((jsonDB) {
-        locationDB = databaseFromJson(jsonDB).locationDB;
-        riceDB = databaseFromJson(jsonDB).riceDB;
+        LocalDataBase _localDabtaBase = databaseFromJson(jsonDB);
+        riceDB = _localDabtaBase.riceDB;
+        locationDB = _localDabtaBase.locationDB;
+        driversDB = _localDabtaBase.driversDB;
       });  
     } catch (e) {
       print(e);
@@ -74,7 +80,7 @@ class DataBaseFileRoutines {
       final file = await _localFile;
       if(!file.existsSync()){
         print('File does not exist: ${file.absolute}');
-        await writeDataBase('{"locations:[{"name":name}]","riceTypes":["type":type]}');
+        await writeDataBase('{"locations:[{"name":name}]","riceTypes":["type":type],"drivers":["driver": driver]}');
       }
       String content = await file.readAsString();
       return content;

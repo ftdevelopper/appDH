@@ -1,6 +1,7 @@
 import 'package:app_dos_hermanos/blocs/filter_bloc/filter_bloc.dart';
 import 'package:app_dos_hermanos/blocs/login_bloc/login_bloc.dart';
 import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
+import 'package:app_dos_hermanos/classes/drivers.dart';
 import 'package:app_dos_hermanos/classes/locations.dart';
 import 'package:app_dos_hermanos/classes/user.dart';
 import 'package:app_dos_hermanos/local_repository/local_data_base.dart';
@@ -26,7 +27,11 @@ void main() async {
   await Firebase.initializeApp();
   EquatableConfig.stringify = kDebugMode;
   BlocOverrides.runZoned(() async {
-    LocalDataBase localDataBase = LocalDataBase(locationDB: [Location(name: 'SELECCIONAR')], riceDB: [Rice(type:'Tipo de Arroz'),]);
+    LocalDataBase localDataBase = LocalDataBase(
+      locationDB: [Location(name: 'SELECCIONAR')], 
+      riceDB: [Rice(type:'Tipo de Arroz'),], 
+      driversDB: [Driver(active: false, chasisPatent: '',code: '',company: '',name: '',patent: '')]
+    );
     await localDataBase.loadDB();
     runApp(MyApp(authenticationRepository: AuthenticationRepository(user: User.empty()), localDataBase: localDataBase,));
   }, blocObserver: SimpleBlocObserver());

@@ -47,3 +47,9 @@ class ChangeName extends DrawerEvent {
   @override
   List<Object?> get props => [this.name];
 }
+
+class LoadDrivers extends DrawerEvent {
+  
+  @override
+  List<Object?> get props => [];
+}

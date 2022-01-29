@@ -280,9 +280,7 @@ class _NewShippingState extends State<NewShipping> {
                   },
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (_) {
-                    return NewShippingValidator.isNameValid(
-                        driver: _driverNameController.text,
-                        driverRepository: DriverRepository(drivers: driver));
+                    //TODO: IMPLEMENT VALIDATION
                   },
                 ),
                 Divider(),

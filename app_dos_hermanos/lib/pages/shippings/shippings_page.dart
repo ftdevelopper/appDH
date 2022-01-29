@@ -7,8 +7,10 @@ import 'package:app_dos_hermanos/classes/locations.dart';
 import 'package:app_dos_hermanos/classes/rice.dart';
 import 'package:app_dos_hermanos/classes/shipping.dart';
 import 'package:app_dos_hermanos/classes/user.dart';
+import 'package:app_dos_hermanos/keys/apikeys.dart';
 import 'package:app_dos_hermanos/local_repository/local_data_base.dart';
 import 'package:app_dos_hermanos/pages/shippings/new_shipping.dart';
+import 'package:app_dos_hermanos/provider/drivers_provider.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -318,6 +320,14 @@ class _ShippingsPageState extends State<ShippingsPage>
                   subtitle: Text('Proximamente...'),
                   leading: Icon(Icons.space_dashboard),
                   onTap: () {},
+                ),
+                ListTile(
+                  title: Text('Drivers'),
+                  subtitle: Text('Testing...'),
+                  leading: Icon(Icons.text_snippet_outlined,),
+                  onTap: () {
+                    BlocProvider.of<DrawerBloc>(context).add(LoadDrivers());
+                  },
                 ),
               ],
             ),

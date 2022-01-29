@@ -29,6 +29,8 @@ class LoadingLocations extends DrawerState{}
 
 class LoadingRices extends DrawerState{}
 
+class LoadingDrivers extends DrawerState{}
+
 class LoadedLocations extends DrawerState{
   LoadedLocations({required this.localDataBase});
 
@@ -39,4 +41,8 @@ class LoadedRices extends DrawerState {
   LoadedRices({required this.localDataBase});
 
   final LocalDataBase localDataBase;
+}
+
+class LoadedDrivers extends DrawerState{
+  
 }
