@@ -61,27 +61,27 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
     });
 
     on<LoadLocations>((event, emit) async {
-      emit(LoadingLocations());
+      emit(LoadingLocations(localDataBase: localDataBase));
       try {
         List<Location> locations = await LocationRepository().getLocations();
         localDataBase.locationDB = locations;
         print('Se intentara Escribir en la base de datos');
         DataBaseFileRoutines().writeDataBase(databaseToJson(localDataBase));
         print('Se escribio exitosamente en la base de datos');
-        emit(LoadedLocations(localDataBase: localDataBase));
+        emit(DrawerLoaded(localDataBase: localDataBase));
       } catch (e) {
         print(e);
       } 
     });
 
     on<LoadRices>((event,emit) async {
-      emit(LoadingRices());
+      emit(LoadingRices(localDataBase: localDataBase));
       try {
         List<Rice> riceTypes = await RiceRepository().getRiceTypes();
         print('rice Types Loaded from FireBase, now Trying to write DB');
         localDataBase.riceDB = riceTypes;
         DataBaseFileRoutines().writeDataBase(databaseToJson(localDataBase));
-        emit(LoadedRices(localDataBase: localDataBase));
+        emit(DrawerLoaded(localDataBase: localDataBase));
       } catch (e) {
         print(e);
       }
@@ -89,7 +89,9 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
 
     on<LoadDrivers>((event, emit) async {
       DriversProvider _driverProvider = DriversProvider();
-      emit(LoadingDrivers());
+      double progress = 0;
+      emit(LoadingDrivers(localDataBase: localDataBase, progress: progress));
+
       try {
         Response? token = await _driverProvider.callApi(
           endpoint: 'oauth/token', 
@@ -114,25 +116,17 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
               driversrepo.drivers[i].company = parameters["Transportista"];
               print(i.toString());
             } else {
-              print('''
-
-
-
-              TROP UN ERROOOOOOOOOOR AHHHHHHHHHHH NOOOOOOOOO ME MUEROOOOOO  DEAAAAAA NANO COME NTRABAJAAAAAAA
-
-
-
-              ''');
               print(paramResponse.statusCode);
               print(i.toString());
             }
+            emit(LoadingDrivers(localDataBase: localDataBase, progress: i / driversrepo.drivers.length));
           }
         }
 
         localDataBase.driversDB = driversrepo.drivers;
         await DataBaseFileRoutines().writeDataBase(databaseToJson(localDataBase));
 
-        emit(LoadedDrivers());
+        emit(DrawerLoaded(localDataBase: localDataBase));
       } catch (e) {
         print(e);
       }
