@@ -1,3 +1,4 @@
+import 'package:app_dos_hermanos/blocs/bluetootu_cubit/bluetooth_cubit.dart';
 import 'package:app_dos_hermanos/local_repository/local_data_base.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -417,6 +418,7 @@ class _NewShippingState extends State<NewShipping> {
                           borderRadius: BorderRadius.circular(25)),
                       primary: Colors.red.shade700),
                   onPressed: () {
+                    BlocProvider.of<BluetoothCubit>(context).requestWeight(patent: "123456789", comand: "T");
                     if (formKey.currentState!.validate()) {
                       _showConfirmationAlert();
                     }

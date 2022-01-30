@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:app_dos_hermanos/blocs/authentication_bloc/authenticaiton_bloc.dart';
+import 'package:app_dos_hermanos/blocs/bluetootu_cubit/bluetooth_cubit.dart';
 import 'package:app_dos_hermanos/blocs/drawer_bloc/drawer_bloc.dart';
 import 'package:app_dos_hermanos/blocs/filter_bloc/filter_bloc.dart';
 import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
@@ -9,11 +10,13 @@ import 'package:app_dos_hermanos/classes/shipping.dart';
 import 'package:app_dos_hermanos/classes/user.dart';
 import 'package:app_dos_hermanos/keys/apikeys.dart';
 import 'package:app_dos_hermanos/local_repository/local_data_base.dart';
+import 'package:app_dos_hermanos/pages/bluetooth/discovery_page.dart';
 import 'package:app_dos_hermanos/pages/shippings/new_shipping.dart';
 import 'package:app_dos_hermanos/provider/drivers_provider.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'edit_shipping.dart';
@@ -49,184 +52,221 @@ class _ShippingsPageState extends State<ShippingsPage>
   @override
   Widget build(BuildContext context) {
     BlocProvider.of<ShippingsBloc>(context).add(LoadShippings());
-    return DefaultTabController(
-      length: 5,
-      initialIndex: 0,
-      child: Scaffold(
-          appBar: AppBar(
-            title: Text('Envios'),
-            centerTitle: true,
-            bottom: TabBar(
-              controller: _tabController,
-              tabs: <Widget>[
-                Tab(text: 'Todo', icon: Icon(Icons.home)),
-                Tab(text: 'Nuevo', icon: Icon(Icons.fiber_new_outlined)),
-                Tab(text: 'En Camino', icon: Icon(Icons.send)),
-                Tab(text: 'Recivido', icon: Icon(Icons.call_received)),
-                Tab(text: 'Conpletado', icon: Icon(Icons.done))
-              ],
-            ),
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.filter_alt_rounded),
-                onPressed: () {
-                  _showFilter(context);
-                },
-              )
-            ],
-          ),
-          body: BlocBuilder<ShippingsBloc, ShippingsState>(
-              builder: (context, state) {
-            if (state is ShippingsLoading) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
+    return BlocBuilder<BluetoothCubit, MyBluetoothState>(
+      builder: (context, state) {
+        return BlocListener<BluetoothCubit, MyBluetoothState>(
+          listener: (context, state) {
+            if(state is ConnectedBluetooth){
+
             }
-            if (state is ShippingsNotLoaded) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(Icons.error),
-                    Text('No se pudieron cargar los envios'),
-                    ElevatedButton(
+          },
+          child: DefaultTabController(
+            length: 5,
+            initialIndex: 0,
+            child: Scaffold(
+                appBar: AppBar(
+                  title: Text('Envios'),
+                  centerTitle: true,
+                  bottom: TabBar(
+                    controller: _tabController,
+                    tabs: <Widget>[
+                      Tab(text: 'Todo', icon: Icon(Icons.home)),
+                      Tab(text: 'Nuevo', icon: Icon(Icons.fiber_new_outlined)),
+                      Tab(text: 'En Camino', icon: Icon(Icons.send)),
+                      Tab(text: 'Recivido', icon: Icon(Icons.call_received)),
+                      Tab(text: 'Conpletado', icon: Icon(Icons.done))
+                    ],
+                  ),
+                  actions: <Widget>[
+                    IconButton(
+                      icon: Icon(Icons.filter_alt_rounded),
                       onPressed: () {
-                        BlocProvider.of<ShippingsBloc>(context)
-                            .add(LoadShippings());
+                        _showFilter(context);
                       },
-                      child: Text('Recargar'),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.bluetooth,
+                        color: (state is ConnectedBluetooth)
+                            ? Colors.blue
+                            : Colors.grey,
+                      ),
+                      onPressed: () async {
+                        if (state is ConnectedBluetooth){
+                          print('Aca hay que deconectarse');
+                        } else {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => DiscoveryPage()));
+                        }
+                      },
                     ),
                   ],
                 ),
-              );
-            }
-            if (state is ShippingsLoaded) {
-              shippingList = state.shippings;
-              return TabBarView(controller: _tabController, children: <Widget>[
-                Container(
-                    child: shippingList.length == 0
-                        ? Center(
-                            child: Column(children: [
-                            Text('No hay envios disponibles'),
-                          ]))
-                        : ListView.builder(
-                            itemCount: shippingList.length,
-                            itemBuilder: (_, index) {
-                              return shippingsUI(shippingList[index], context);
+                body: BlocBuilder<ShippingsBloc, ShippingsState>(
+                    builder: (context, state) {
+                  if (state is ShippingsLoading) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (state is ShippingsNotLoaded) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(Icons.error),
+                          Text('No se pudieron cargar los envios'),
+                          ElevatedButton(
+                            onPressed: () {
+                              BlocProvider.of<ShippingsBloc>(context)
+                                  .add(LoadShippings());
                             },
-                          )),
-                Container(
-                    child:
-                        filterShippings(ShippingStatus.newShipping).length == 0
-                            ? Center(
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                    Text('No hay nuevos envios'),
-                                  ]))
-                            : ListView.builder(
-                                itemCount:
-                                    filterShippings(ShippingStatus.newShipping)
-                                        .length,
-                                itemBuilder: (_, index) {
-                                  return shippingsUI(
-                                      filterShippings(
-                                          ShippingStatus.newShipping)[index],
-                                      context);
-                                },
-                              )),
-                Container(
-                    child: filterShippings(ShippingStatus.inTravelShipping)
-                                .length ==
-                            0
-                        ? Center(
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                Text('No hay envios en camino'),
-                              ]))
-                        : ListView.builder(
-                            itemCount:
-                                filterShippings(ShippingStatus.inTravelShipping)
-                                    .length,
-                            itemBuilder: (_, index) {
-                              return shippingsUI(
-                                  filterShippings(
-                                      ShippingStatus.inTravelShipping)[index],
-                                  context);
-                            },
-                          )),
-                Container(
-                    child: filterShippings(ShippingStatus.downloadedShipping)
-                                .length ==
-                            0
-                        ? Center(
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                Text('No hay envios recibidos'),
-                              ]))
-                        : ListView.builder(
-                            itemCount: filterShippings(
-                                    ShippingStatus.downloadedShipping)
-                                .length,
-                            itemBuilder: (_, index) {
-                              return shippingsUI(
-                                  filterShippings(
-                                      ShippingStatus.downloadedShipping)[index],
-                                  context);
-                            },
-                          )),
-                Container(
-                    child: filterShippings(ShippingStatus.completedShipping)
-                                .length ==
-                            0
-                        ? Center(
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                Text('No hay envios completados'),
-                              ]))
-                        : ListView.builder(
-                            itemCount: filterShippings(
-                                    ShippingStatus.completedShipping)
-                                .length,
-                            itemBuilder: (_, index) {
-                              return shippingsUI(
-                                  filterShippings(
-                                      ShippingStatus.completedShipping)[index],
-                                  context);
-                            },
-                          )),
-              ]);
-            } else {
-              return Container();
-            }
-          }),
-          floatingActionButton: FloatingActionButton(
-            child: Icon(Icons.add_box_outlined),
-            onPressed: () {
-              if (_tabController.index <= 1) {
-                Navigator.of(context).push<void>(MaterialPageRoute(
-                    builder: (_) => NewShipping(
-                          localDataBase: widget.localDataBase,
-                          authenticationRepository:
-                              widget.authenticationRepository,
-                        )));
-              }
-            },
-            tooltip: 'Nuevo Envio',
+                            child: Text('Recargar'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  if (state is ShippingsLoaded) {
+                    shippingList = state.shippings;
+                    return TabBarView(controller: _tabController, children: <
+                        Widget>[
+                      Container(
+                          child: shippingList.length == 0
+                              ? Center(
+                                  child: Column(children: [
+                                  Text('No hay envios disponibles'),
+                                ]))
+                              : ListView.builder(
+                                  itemCount: shippingList.length,
+                                  itemBuilder: (_, index) {
+                                    return shippingsUI(
+                                        shippingList[index], context);
+                                  },
+                                )),
+                      Container(
+                          child: filterShippings(ShippingStatus.newShipping)
+                                      .length ==
+                                  0
+                              ? Center(
+                                  child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                      Text('No hay nuevos envios'),
+                                    ]))
+                              : ListView.builder(
+                                  itemCount: filterShippings(
+                                          ShippingStatus.newShipping)
+                                      .length,
+                                  itemBuilder: (_, index) {
+                                    return shippingsUI(
+                                        filterShippings(
+                                            ShippingStatus.newShipping)[index],
+                                        context);
+                                  },
+                                )),
+                      Container(
+                          child:
+                              filterShippings(ShippingStatus.inTravelShipping)
+                                          .length ==
+                                      0
+                                  ? Center(
+                                      child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                          Text('No hay envios en camino'),
+                                        ]))
+                                  : ListView.builder(
+                                      itemCount: filterShippings(
+                                              ShippingStatus.inTravelShipping)
+                                          .length,
+                                      itemBuilder: (_, index) {
+                                        return shippingsUI(
+                                            filterShippings(ShippingStatus
+                                                .inTravelShipping)[index],
+                                            context);
+                                      },
+                                    )),
+                      Container(
+                          child:
+                              filterShippings(ShippingStatus.downloadedShipping)
+                                          .length ==
+                                      0
+                                  ? Center(
+                                      child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                          Text('No hay envios recibidos'),
+                                        ]))
+                                  : ListView.builder(
+                                      itemCount: filterShippings(
+                                              ShippingStatus.downloadedShipping)
+                                          .length,
+                                      itemBuilder: (_, index) {
+                                        return shippingsUI(
+                                            filterShippings(ShippingStatus
+                                                .downloadedShipping)[index],
+                                            context);
+                                      },
+                                    )),
+                      Container(
+                          child:
+                              filterShippings(ShippingStatus.completedShipping)
+                                          .length ==
+                                      0
+                                  ? Center(
+                                      child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                          Text('No hay envios completados'),
+                                        ]))
+                                  : ListView.builder(
+                                      itemCount: filterShippings(
+                                              ShippingStatus.completedShipping)
+                                          .length,
+                                      itemBuilder: (_, index) {
+                                        return shippingsUI(
+                                            filterShippings(ShippingStatus
+                                                .completedShipping)[index],
+                                            context);
+                                      },
+                                    )),
+                    ]);
+                  } else {
+                    return Container();
+                  }
+                }),
+                floatingActionButton: FloatingActionButton(
+                  child: Icon(Icons.add_box_outlined),
+                  onPressed: () {
+                    if (_tabController.index <= 1) {
+                      Navigator.of(context).push<void>(MaterialPageRoute(
+                          builder: (_) => NewShipping(
+                                localDataBase: widget.localDataBase,
+                                authenticationRepository:
+                                    widget.authenticationRepository,
+                              )));
+                    }
+                  },
+                  tooltip: 'Nuevo Envio',
+                ),
+                drawer: BlocBuilder<DrawerBloc, DrawerState>(
+                    builder: (context, state) {
+                  if (state is LoadingDrawer) {
+                    return Drawer(
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  } else {
+                    return LoadedDrawer(context);
+                  }
+                })),
           ),
-          drawer:
-              BlocBuilder<DrawerBloc, DrawerState>(builder: (context, state) {
-            if (state is LoadingDrawer) {
-              return Drawer(
-                child: Center(child: CircularProgressIndicator()),
-              );
-            } else {
-              return LoadedDrawer(context);
-            }
-          })),
+        );
+      },
     );
   }
 
@@ -324,7 +364,9 @@ class _ShippingsPageState extends State<ShippingsPage>
                 ListTile(
                   title: Text('Drivers'),
                   subtitle: Text('Testing...'),
-                  leading: Icon(Icons.text_snippet_outlined,),
+                  leading: Icon(
+                    Icons.text_snippet_outlined,
+                  ),
                   onTap: () {
                     BlocProvider.of<DrawerBloc>(context).add(LoadDrivers());
                   },
@@ -370,9 +412,18 @@ class _ShippingsPageState extends State<ShippingsPage>
                   ),
                 ],
               ),
-              Text('Destino: ${shipping.reciverLocation}', style: TextStyle(color: Colors.black),),
-              Text('Origen: ${shipping.remiterLocation}', style: TextStyle(color: Colors.black),),
-              Text('Hora Tara: ${shipping.remiterTaraTime}', style: TextStyle(color: Colors.black),),
+              Text(
+                'Destino: ${shipping.reciverLocation}',
+                style: TextStyle(color: Colors.black),
+              ),
+              Text(
+                'Origen: ${shipping.remiterLocation}',
+                style: TextStyle(color: Colors.black),
+              ),
+              Text(
+                'Hora Tara: ${shipping.remiterTaraTime}',
+                style: TextStyle(color: Colors.black),
+              ),
             ],
           ),
         ),
@@ -521,78 +572,77 @@ class _ShippingsPageState extends State<ShippingsPage>
                         minValue: 0,
                         value: state.days,
                         step: 1,
-                        onChanged: (newValue){
-                          BlocProvider.of<FilterBloc>(context).add(ChangeDays(days: newValue));
+                        onChanged: (newValue) {
+                          BlocProvider.of<FilterBloc>(context)
+                              .add(ChangeDays(days: newValue));
                         },
                       ),
                       DropdownButtonFormField<String>(
                         value: state.origin,
                         decoration: InputDecoration(
-                          labelText: 'Origen',
-                          border: InputBorder.none,
-                          icon: Icon(Icons.location_on)
-                        ),
+                            labelText: 'Origen',
+                            border: InputBorder.none,
+                            icon: Icon(Icons.location_on)),
                         style: TextStyle(fontSize: 14, color: Colors.black),
                         onChanged: (dynamic newValue) {
-                          BlocProvider.of<FilterBloc>(context).add(ChangeOrigin(origin: newValue));
+                          BlocProvider.of<FilterBloc>(context)
+                              .add(ChangeOrigin(origin: newValue));
                         },
                         items: widget.localDataBase.locationDB
-                          .map<DropdownMenuItem<String>>((value) {
-                            return DropdownMenuItem<String>(
-                              value: value.name,
-                              child: Text(
-                                value.name,
-                                overflow: TextOverflow.visible,
-                              ),
-                            );
-                          }
-                        ).toList(),
+                            .map<DropdownMenuItem<String>>((value) {
+                          return DropdownMenuItem<String>(
+                            value: value.name,
+                            child: Text(
+                              value.name,
+                              overflow: TextOverflow.visible,
+                            ),
+                          );
+                        }).toList(),
                         selectedItemBuilder: (context) {
                           return widget.localDataBase.locationDB
-                            .map((value) => Container(
-                              child: Text(value.name,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                softWrap: true
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.5,
-                            )
-                          ).toList();
+                              .map((value) => Container(
+                                    child: Text(value.name,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        softWrap: true),
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.5,
+                                  ))
+                              .toList();
                         },
                       ),
                       DropdownButtonFormField<String>(
                         value: state.destination,
                         decoration: InputDecoration(
-                          labelText: 'Destino',
-                          border: InputBorder.none,
-                          icon: Icon(Icons.location_on)
-                        ),
+                            labelText: 'Destino',
+                            border: InputBorder.none,
+                            icon: Icon(Icons.location_on)),
                         style: TextStyle(fontSize: 14, color: Colors.black),
                         onChanged: (dynamic newValue) {
-                          BlocProvider.of<FilterBloc>(context).add(ChangeDestination(destination: newValue));
+                          BlocProvider.of<FilterBloc>(context)
+                              .add(ChangeDestination(destination: newValue));
                         },
                         items: widget.localDataBase.locationDB
-                          .map<DropdownMenuItem<String>>((value) {
-                            return DropdownMenuItem<String>(
-                              value: value.name,
-                              child: Text(
-                                value.name,
-                                overflow: TextOverflow.visible,
-                              ),
-                            );
-                          }
-                        ).toList(),
+                            .map<DropdownMenuItem<String>>((value) {
+                          return DropdownMenuItem<String>(
+                            value: value.name,
+                            child: Text(
+                              value.name,
+                              overflow: TextOverflow.visible,
+                            ),
+                          );
+                        }).toList(),
                         selectedItemBuilder: (context) {
                           return widget.localDataBase.locationDB
-                            .map((value) => Container(
-                              child: Text(value.name,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                softWrap: true
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.5,
-                            )
-                          ).toList();
+                              .map((value) => Container(
+                                    child: Text(value.name,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        softWrap: true),
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.5,
+                                  ))
+                              .toList();
                         },
                       ),
                       ElevatedButton(
@@ -600,12 +650,10 @@ class _ShippingsPageState extends State<ShippingsPage>
                         onPressed: () {
                           Navigator.pop(context);
                           BlocProvider.of<ShippingsBloc>(context).add(
-                            LoadShippings(
-                              duration: Duration(days: state.days),
-                              reciverLocation: state.destination, 
-                              remiterLocation: state.origin
-                            )
-                          );
+                              LoadShippings(
+                                  duration: Duration(days: state.days),
+                                  reciverLocation: state.destination,
+                                  remiterLocation: state.origin));
                         },
                       ),
                     ],
