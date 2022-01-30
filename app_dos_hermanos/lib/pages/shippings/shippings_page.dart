@@ -1,24 +1,17 @@
-import 'dart:io';
-import 'package:app_dos_hermanos/blocs/authentication_bloc/authenticaiton_bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:numberpicker/numberpicker.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:app_dos_hermanos/blocs/bluetootu_cubit/bluetooth_cubit.dart';
 import 'package:app_dos_hermanos/blocs/drawer_bloc/drawer_bloc.dart';
 import 'package:app_dos_hermanos/blocs/filter_bloc/filter_bloc.dart';
 import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
-import 'package:app_dos_hermanos/classes/locations.dart';
-import 'package:app_dos_hermanos/classes/rice.dart';
 import 'package:app_dos_hermanos/classes/shipping.dart';
 import 'package:app_dos_hermanos/classes/user.dart';
-import 'package:app_dos_hermanos/keys/apikeys.dart';
 import 'package:app_dos_hermanos/local_repository/local_data_base.dart';
 import 'package:app_dos_hermanos/pages/bluetooth/discovery_page.dart';
 import 'package:app_dos_hermanos/pages/shippings/new_shipping.dart';
-import 'package:app_dos_hermanos/provider/drivers_provider.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:numberpicker/numberpicker.dart';
+import 'package:app_dos_hermanos/widgets/drawer.dart';
 import 'edit_shipping.dart';
 
 class ShippingsPage extends StatefulWidget {
@@ -56,9 +49,7 @@ class _ShippingsPageState extends State<ShippingsPage>
       builder: (context, state) {
         return BlocListener<BluetoothCubit, MyBluetoothState>(
           listener: (context, state) {
-            if(state is ConnectedBluetooth){
-
-            }
+            if (state is ConnectedBluetooth) {}
           },
           child: DefaultTabController(
             length: 5,
@@ -92,11 +83,11 @@ class _ShippingsPageState extends State<ShippingsPage>
                             : Colors.grey,
                       ),
                       onPressed: () async {
-                        if (state is ConnectedBluetooth){
+                        if (state is ConnectedBluetooth) {
                           print('Aca hay que deconectarse');
                         } else {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => DiscoveryPage()));
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => DiscoveryPage()));
                         }
                       },
                     ),
@@ -261,133 +252,14 @@ class _ShippingsPageState extends State<ShippingsPage>
                       child: Center(child: CircularProgressIndicator()),
                     );
                   } else {
-                    return LoadedDrawer(context);
+                    return LoadedDrawer(user: _user);
                   }
-                })),
+                },
+              ),
+            ),
           ),
         );
       },
-    );
-  }
-
-  // ignore: non_constant_identifier_names
-  Drawer LoadedDrawer(BuildContext context) {
-    return Drawer(
-      child: Column(
-        children: [
-          Flexible(
-            child: ListView(
-              children: <Widget>[
-                SizedBox(height: 20),
-                Stack(
-                  alignment: AlignmentDirectional.center,
-                  fit: StackFit.passthrough,
-                  children: <Widget>[
-                    Container(
-                      height: 200,
-                      width: 200,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image:
-                              DecorationImage(image: _user.profilePhoto.image)),
-                    ),
-                    Positioned(
-                      bottom: -10,
-                      right: 50,
-                      child: IconButton(
-                        iconSize: 50,
-                        color: Colors.grey,
-                        icon: Icon(Icons.add_a_photo),
-                        onPressed: () async {
-                          try {
-                            XFile? newImage = (await ImagePicker()
-                                .pickImage(source: ImageSource.camera));
-                            if (newImage != null) {
-                              File profilePhotoFile = File(newImage.path);
-                              final bytes =
-                                  await profilePhotoFile.readAsBytes();
-                              final image = (Image.memory(bytes));
-                              BlocProvider.of<DrawerBloc>(context).add(
-                                  ChangeProfilePhoto(
-                                      newphoto: image,
-                                      newphotoFile: profilePhotoFile));
-                            } else {
-                              print('newImage = null');
-                            }
-                          } catch (e) {
-                            print(e);
-                          }
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                ListTile(
-                    title: Text('Nombre:'),
-                    subtitle: Text(_user.name),
-                    leading: Icon(Icons.verified),
-                    onTap: () {
-                      _changeName();
-                    }),
-                ListTile(
-                  title: Text('Ubicacion: '),
-                  subtitle: Text(_user.location.name),
-                  leading: Icon(Icons.location_on),
-                  onTap: () {
-                    _showlocationsDrawer(context);
-                  },
-                ),
-                ListTile(
-                  title: Text('Emai:'),
-                  subtitle: Text(_user.email),
-                  leading: Icon(Icons.email),
-                ),
-                ListTile(
-                  title: Text('Usuario ID:'),
-                  subtitle: Text(_user.id),
-                  leading: Icon(Icons.person),
-                ),
-                ListTile(
-                  title: Text('Tipos de Arroz:'),
-                  subtitle: Text('Mis tipos de Arroz'),
-                  leading: Icon(Icons.rice_bowl_rounded),
-                  onTap: () {
-                    _showRiceTypes(context);
-                  },
-                ),
-                ListTile(
-                  title: Text('DashBoard'),
-                  subtitle: Text('Proximamente...'),
-                  leading: Icon(Icons.space_dashboard),
-                  onTap: () {},
-                ),
-                ListTile(
-                  title: Text('Drivers'),
-                  subtitle: Text('Testing...'),
-                  leading: Icon(
-                    Icons.text_snippet_outlined,
-                  ),
-                  onTap: () {
-                    BlocProvider.of<DrawerBloc>(context).add(LoadDrivers());
-                  },
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-            child: ListTile(
-              title: Text('LogOut'),
-              subtitle: Text('Press to Logout'),
-              leading: Icon(Icons.login_outlined),
-              onTap: () {
-                BlocProvider.of<AuthenticationBloc>(context)
-                    .add(AuthenticationLogoutRequested());
-              },
-            ),
-          )
-        ],
-      ),
     );
   }
 
@@ -442,111 +314,6 @@ class _ShippingsPageState extends State<ShippingsPage>
     return shippingList
         .where((element) => element.shippingState == status)
         .toList();
-  }
-
-  Future<void> _showlocationsDrawer(BuildContext context) {
-    return showDialog<void>(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-            title: Text(
-              'Ubicaciones',
-              textAlign: TextAlign.center,
-            ),
-            actionsPadding: EdgeInsets.zero,
-            actions: <Widget>[
-              Center(
-                child: IconButton(
-                    onPressed: () {
-                      BlocProvider.of<DrawerBloc>(context).add(LoadLocations());
-                    },
-                    icon: Icon(
-                      Icons.replay_circle_filled,
-                      size: 30,
-                    )),
-              )
-            ],
-            content: Container(
-              width: MediaQuery.of(context).size.width * 0.7,
-              height: MediaQuery.of(context).size.height * 0.4,
-              child: BlocBuilder<DrawerBloc, DrawerState>(
-                builder: (context, state) {
-                  if (state is LoadingLocations) {
-                    return Center(child: CircularProgressIndicator());
-                  } else {
-                    List<Location> locations = state.localDataBase!.locationDB;
-                    return ListView.builder(
-                      itemCount: locations.length,
-                      itemBuilder: (_, index) {
-                        return ListTile(
-                            leading: Icon(Icons.location_on),
-                            title: Text(locations[index].name),
-                            onTap: () {
-                              Navigator.of(context).pop();
-                              BlocProvider.of<DrawerBloc>(context).add(
-                                  ChangeLocation(
-                                      locationName: locations[index].name));
-                            });
-                      },
-                    );
-                  }
-                },
-              ),
-            ),
-          );
-        });
-  }
-
-  Future<void> _showRiceTypes(BuildContext context) {
-    return showDialog<void>(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-            title: Text(
-              'Tipos de Arroz',
-              textAlign: TextAlign.center,
-            ),
-            actionsPadding: EdgeInsets.zero,
-            actions: <Widget>[
-              Center(
-                child: IconButton(
-                    onPressed: () {
-                      BlocProvider.of<DrawerBloc>(context).add(LoadRices());
-                    },
-                    icon: Icon(
-                      Icons.replay_circle_filled,
-                      size: 30,
-                    )),
-              )
-            ],
-            content: Container(
-              width: MediaQuery.of(context).size.width * 0.7,
-              height: MediaQuery.of(context).size.height * 0.4,
-              child: BlocBuilder<DrawerBloc, DrawerState>(
-                builder: (context, state) {
-                  if (state is LoadingRices) {
-                    return Center(child: CircularProgressIndicator());
-                  } else {
-                    List<Rice> rices = state.localDataBase!.riceDB;
-                    return ListView.builder(
-                      itemCount: rices.length,
-                      itemBuilder: (_, index) {
-                        return ListTile(
-                          leading: Icon(Icons.rice_bowl_rounded),
-                          title: Text(rices[index].type),
-                        );
-                      },
-                    );
-                  }
-                },
-              ),
-            ),
-          );
-        });
   }
 
   Future<void> _showFilter(BuildContext context) {
@@ -659,47 +426,6 @@ class _ShippingsPageState extends State<ShippingsPage>
                     ],
                   );
                 },
-              ),
-            ),
-          );
-        });
-  }
-
-  Future<void> _changeName() async {
-    String name = '';
-    return showDialog<void>(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-            title: Text(
-              'Introduzca su nuevo nombre',
-              textAlign: TextAlign.center,
-            ),
-            content: Container(
-              width: MediaQuery.of(context).size.width * 0.8,
-              height: MediaQuery.of(context).size.height * 0.15,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextFormField(
-                    controller: TextEditingController(),
-                    decoration: InputDecoration(),
-                    onChanged: (String txt) {
-                      name = txt;
-                    },
-                  ),
-                  ElevatedButton(
-                    child: Text('Guardar'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      BlocProvider.of<DrawerBloc>(context)
-                          .add(ChangeName(name: name));
-                    },
-                  )
-                ],
               ),
             ),
           );

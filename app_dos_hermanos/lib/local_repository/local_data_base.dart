@@ -36,8 +36,11 @@ class LocalDataBase {
       await DataBaseFileRoutines().readDataBase().then((jsonDB) {
         LocalDataBase _localDabtaBase = databaseFromJson(jsonDB);
         riceDB = _localDabtaBase.riceDB;
+        print('riceBD: $riceDB');
         locationDB = _localDabtaBase.locationDB;
+        print('locationDB: $locationDB');
         driversDB = _localDabtaBase.driversDB;
+        print('driversDB: $driversDB');
       });  
     } catch (e) {
       print(e);

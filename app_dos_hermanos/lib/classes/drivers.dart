@@ -18,7 +18,7 @@ class Driver {
   factory Driver.fromJson(Map<String, dynamic> json){
     return Driver(
       code: json["codigo"] ?? '',
-      active: json["activo"] ?? '',
+      active: json["activo"] ?? true,
       name: json["nombre"] ?? '',
       patent: json["patente"] ?? '',
       chasisPatent: json["patenteAcoplado"] ?? '',
@@ -46,12 +46,12 @@ class Driver {
 
   Map<String, dynamic> toJson(){
     return {
-      "Codigo": code,
-      "Activo": active,
-      "Nombre": name,
-      "Patente": patent,
-      "PatenteAcoplado": chasisPatent,
-      "Transportista": company,
+      "codigo": code,
+      "activo": active,
+      "nombre": name,
+      "patente": patent,
+      "patenteAcoplado": chasisPatent,
+      "transportista": company,
     };
   }
 }

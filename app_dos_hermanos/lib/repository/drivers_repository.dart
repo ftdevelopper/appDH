@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:app_dos_hermanos/classes/drivers.dart';
-import 'package:app_dos_hermanos/provider/drivers_provider.dart';
 
 class DriverRepository {
   List<Driver> drivers;
