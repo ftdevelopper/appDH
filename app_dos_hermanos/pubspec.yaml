@@ -45,6 +45,7 @@ dependencies:
   flutter_typeahead: ^3.2.4
   numberpicker: ^2.1.1
   http: ^0.13.3
+  flutter_bluetooth_serial: ^0.4.0
 
 
 dev_dependencies:
