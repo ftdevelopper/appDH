@@ -1,12 +1,16 @@
 part of 'bluetooth_cubit.dart';
 
 @immutable
-abstract class BluetoothState {}
+abstract class MyBluetoothState {
 
-class BluetoothInitial extends BluetoothState {}
+  MyBluetoothState();
 
-class DisconnectedBluetooth extends BluetoothState {}
+}
 
-class ConectingBluetooth extends BluetoothState {}
+class BluetoothInitial extends MyBluetoothState {}
 
-class ConnectedBluetooth extends BluetoothState {}
+class DisconnectedBluetooth extends MyBluetoothState {}
+
+class ConectingBluetooth extends MyBluetoothState {}
+
+class ConnectedBluetooth extends MyBluetoothState {}
