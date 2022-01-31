@@ -1,3 +1,4 @@
+import 'package:app_dos_hermanos/blocs/internet_cubit/internet_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -45,6 +46,7 @@ class _ShippingsPageState extends State<ShippingsPage>
 
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<InternetCubit>(context).initInternetCheck();
     BlocProvider.of<ShippingsBloc>(context).add(LoadShippings());
     return BlocBuilder<BluetoothCubit, MyBluetoothState>(
       builder: (context, state) {

@@ -42,6 +42,7 @@ class BluetoothCubit extends Cubit<MyBluetoothState> {
     if (!selectedDevice.isConnected) {
       print('Discovery -> selected ' + selectedDevice.address);
       try {
+        await bluetoothSubscription.cancel();
         BluetoothConnection.toAddress(selectedDevice.address).catchError((e){print(e);}).then(( _connection) {
         print('Connected to the device');
         connection = _connection;
@@ -93,5 +94,11 @@ class BluetoothCubit extends Cubit<MyBluetoothState> {
         print('Error in disconnection: $e');
       }
     }
+  }
+
+  @override
+  Future<void> close() async {
+    await bluetoothSubscription.cancel();
+    return super.close();
   }
 }

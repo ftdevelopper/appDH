@@ -1,5 +1,6 @@
 import 'package:app_dos_hermanos/blocs/bluetootu_cubit/bluetooth_cubit.dart';
 import 'package:app_dos_hermanos/blocs/filter_bloc/filter_bloc.dart';
+import 'package:app_dos_hermanos/blocs/internet_cubit/internet_cubit.dart';
 import 'package:app_dos_hermanos/blocs/login_bloc/login_bloc.dart';
 import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
 import 'package:app_dos_hermanos/classes/drivers.dart';
@@ -76,6 +77,7 @@ class _AppViewState extends State<AppView> {
         BlocProvider(create: (context) => AuthenticationBloc(authenticationRepository: widget.authenticationRepository)),
         BlocProvider(create: (context) => LoginBloc(authenticationRepository: widget.authenticationRepository)),
         //BlocProvider(create: (context) => RegisterBloc(authenticationRepository: widget.authenticationRepository)),
+        BlocProvider(create: (context) => InternetCubit()),
         BlocProvider(create: (context) => ShippingsBloc(shippingRepository: widget.shippingRepository)),
         BlocProvider(create: (context) => FilterBloc()),
         BlocProvider(create: (context) => DrawerBloc(authenticationRepository: widget.authenticationRepository, localDataBase: widget.localDataBase)),
