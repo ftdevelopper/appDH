@@ -40,6 +40,7 @@ class _ShippingsPageState extends State<ShippingsPage>
     super.initState();
     _tabController = TabController(length: 5, initialIndex: 0, vsync: this);
     _user = widget.authenticationRepository.user;
+    BlocProvider.of<BluetoothCubit>(context).initBlutetooth();
   }
 
   @override
@@ -84,7 +85,7 @@ class _ShippingsPageState extends State<ShippingsPage>
                       ),
                       onPressed: () async {
                         if (state is ConnectedBluetooth) {
-                          print('Aca hay que deconectarse');
+                          BlocProvider.of<BluetoothCubit>(context).disconectBluetooth();
                         } else {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => DiscoveryPage()));

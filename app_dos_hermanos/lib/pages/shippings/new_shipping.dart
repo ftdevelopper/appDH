@@ -1,5 +1,3 @@
-import 'package:app_dos_hermanos/blocs/bluetootu_cubit/bluetooth_cubit.dart';
-import 'package:app_dos_hermanos/local_repository/local_data_base.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
@@ -7,11 +5,12 @@ import 'dart:math';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
+import 'package:app_dos_hermanos/blocs/bluetootu_cubit/bluetooth_cubit.dart';
 import 'package:app_dos_hermanos/classes/driver.dart';
 import 'package:app_dos_hermanos/classes/locations.dart';
 import 'package:app_dos_hermanos/classes/shipping.dart';
+import 'package:app_dos_hermanos/local_repository/local_data_base.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
-import 'package:app_dos_hermanos/repository/drivers_repository.dart';
 import 'package:app_dos_hermanos/repository/location_repository.dart';
 import 'package:app_dos_hermanos/validations/new_shipping_validators.dart';
 import 'package:app_dos_hermanos/widgets/shipping_data.dart';
@@ -20,7 +19,11 @@ class NewShipping extends StatefulWidget {
   final Shipping? shipping;
   final AuthenticationRepository authenticationRepository;
   final LocalDataBase localDataBase;
-  NewShipping({Key? key, this.shipping, required this.authenticationRepository, required this.localDataBase})
+  NewShipping(
+      {Key? key,
+      this.shipping,
+      required this.authenticationRepository,
+      required this.localDataBase})
       : super(key: key);
 
   @override
@@ -102,333 +105,313 @@ class _NewShippingState extends State<NewShipping> {
     super.initState();
   }
 
-  final Stream<String> _weightStream =
-      Stream.periodic(Duration(seconds: 1), (_) {
-    int _weight = 39000 + Random().nextInt(5000);
-    return _weight.toString();
-  });
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Nuevo Envio'), centerTitle: true),
-      body: SafeArea(
-        child: Center(
-          child: Form(
-            key: formKey,
-            child: ListView(
-              padding: EdgeInsets.all(25),
-              children: <Widget>[
-                TextFormField(
-                  controller: this._userController,
-                  decoration: InputDecoration(
-                      labelText: 'Usuario',
-                      border: InputBorder.none,
-                      icon: Icon(Icons.person)),
-                  enabled: false,
-                  autovalidateMode: AutovalidateMode.always,
-                  validator: (_){
-                   return NewShippingValidator.isUserNameValid(widget.authenticationRepository.user.name); 
-                  },
-                ),
-                Divider(),
-
-                TextFormField(
-                  controller: this._locationController,
-                  decoration: InputDecoration(
-                      labelText: 'Ubicacion',
-                      border: InputBorder.none,
-                      icon: Icon(Icons.location_on)),
-                  enabled: false,
-                  autovalidateMode: AutovalidateMode.always,
-                  validator: (_){
-                    return NewShippingValidator.isLocationValid(widget.authenticationRepository.user.location.name);
-                  },
-                ),
-                Divider(),
-
-                TextFormField(
-                  controller: this._dateController,
-                  decoration: InputDecoration(
-                      labelText: 'Fecha',
-                      border: InputBorder.none,
-                      icon: Icon(Icons.calendar_today_outlined)),
-                  enabled: false,
-                ),
-                Divider(),
-
-                /*DropdownButtonFormField(
-                  value: cosechaValue,
-                  style: TextStyle(fontSize: 14, color: Colors.black),
-                  decoration: InputDecoration(labelText: 'Cosecha', border: InputBorder.none, icon: Icon(Icons.done_outline_outlined)),
-                  onChanged: (dynamic newValue ){
-                    setState(() {
-                      cosechaValue = newValue;
-                    });
-                  },
-                  items: <String>[
-                    'CAMPAÑA 20-21','CAMPAÑA 21-22',
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
-                Divider(),*/
-
-                DropdownButtonFormField(
-                  value: partidaValue,
-                  style: TextStyle(fontSize: 14, color: Colors.black),
-                  decoration: InputDecoration(
-                      labelText: 'Cosecha/Partida',
-                      border: InputBorder.none,
-                      icon: Icon(Icons.description_sharp)),
-                  onChanged: (dynamic newValue) {
-                    setState(() {
-                      partidaValue = newValue;
-                      cosechaValue = newValue;
-                    });
-                  },
-                  items: <String>[
-                    'CAMPAÑA 20-21',
-                    'CAMPAÑA 21-22',
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
-
-
-                DropdownButtonFormField<String>(
-                  value: destination.name,
-                  decoration: InputDecoration(
-                      labelText: 'Destino',
-                      border: InputBorder.none,
-                      icon: Icon(Icons.location_on)),
-                  style: TextStyle(fontSize: 14, color: Colors.black),
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (_) {
-                    return NewShippingValidator.isLocationValid(destination.name);
-                  },
-                  onChanged: (dynamic newValue) {
-                    setState(() {
-                      destination = Location.fromName(newValue);
-                    });
-                  },
-                  items: widget.localDataBase.locationDB.map<DropdownMenuItem<String>>((value) {
-                    return DropdownMenuItem<String>(
-                      value: value.name,
-                      child: Text(
-                        value.name,
-                        overflow: TextOverflow.visible,
-                      ),
-                    );
-                  }).toList(),
-                  selectedItemBuilder: (context) {
-                    return widget.localDataBase.locationDB
-                        .map((value) => Container(
-                              child: Text(value.name,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  softWrap: true),
-                              width: MediaQuery.of(context).size.width * 0.7,
-                            ))
-                        .toList();
-                  },
-                ),
-                Divider(),
-
-                TypeAheadFormField(
-                  textFieldConfiguration: TextFieldConfiguration(
-                    controller: this._driverNameController,
-                    decoration: InputDecoration(
-                        labelText: 'Nombre del Conductor',
-                        border: InputBorder.none,
-                        icon: Icon(Icons.contacts_outlined)),
-                  ),
-                  suggestionsCallback: (pattern) {
-                    List<String?> names = [];
-                    driver.forEach((element) {
-                      if (element.name
-                          .toLowerCase()
-                          .contains(_driverNameController.text.toLowerCase()))
-                        names.add(element.name);
-                    });
-                    return names;
-                  },
-                  itemBuilder: (context, String? suggestion) {
-                    return ListTile(
-                      title: Text(suggestion!),
-                    );
-                  },
-                  noItemsFoundBuilder: (context) {
-                    return ListTile(
-                      leading: Icon(Icons.add),
-                      title: Text('No se encontro al conductor'),
-                      onTap: () {
-                        
+    return BlocBuilder<BluetoothCubit, MyBluetoothState>(
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(title: Text('Nuevo Envio'), centerTitle: true),
+          body: SafeArea(
+            child: Center(
+              child: Form(
+                key: formKey,
+                child: ListView(
+                  padding: EdgeInsets.all(25),
+                  children: <Widget>[
+                    TextFormField(
+                      controller: this._userController,
+                      decoration: InputDecoration(
+                          labelText: 'Usuario',
+                          border: InputBorder.none,
+                          icon: Icon(Icons.person)),
+                      enabled: false,
+                      autovalidateMode: AutovalidateMode.always,
+                      validator: (_) {
+                        return NewShippingValidator.isUserNameValid(
+                            widget.authenticationRepository.user.name);
                       },
-                    );
-                  },
-                  transitionBuilder: (context, suggestionsBox, controller) {
-                    return suggestionsBox;
-                  },
-                  onSuggestionSelected: (String? suggestion) {
-                    _driverNameController.text = suggestion!;
-                  },
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (_) {
-                    //TODO: IMPLEMENT VALIDATION
-                  },
-                ),
-                Divider(),
-
-                TypeAheadFormField(
-                  textFieldConfiguration: TextFieldConfiguration(
-                    controller: this._truckPatentController,
-                    decoration: InputDecoration(
-                        labelText: 'Patente del Camion',
-                        border: InputBorder.none,
-                        icon: Icon(Icons.local_shipping_rounded)),
-                  ),
-                  suggestionsCallback: (pattern) {
-                    Driver actualDriver = driver.firstWhere((element) =>
-                        element.name == _driverNameController.text);
-                    List<String?> patents = [];
-                    actualDriver.truckPatents.forEach((patent) {
-                      if (patent
-                          .toLowerCase()
-                          .contains(_truckPatentController.text.toLowerCase()))
-                        patents.add(patent);
-                    });
-                    return patents;
-                  },
-                  itemBuilder: (context, String? suggestion) {
-                    return ListTile(
-                      title: Text(suggestion!),
-                    );
-                  },
-                  noItemsFoundBuilder: (context) {
-                    return ListTile(
-                      leading: Icon(Icons.add),
-                      title: Text('No se encontro la patente'),
-                      onTap: () {
-                        
-                      },
-                    );
-                  },
-                  transitionBuilder: (context, suggestionsBox, controller) {
-                    return suggestionsBox;
-                  },
-                  onSuggestionSelected: (String? suggestion) {
-                    _truckPatentController.text = suggestion!;
-                  },
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (_) {
-                    return NewShippingValidator.isTruckPatentValid(
-                        patent: _truckPatentController.text,
-                        driver: driver.firstWhere((element) =>
-                            element.name == _driverNameController.text));
-                  },
-                ),
-                Divider(),
-
-                TypeAheadFormField(
-                  textFieldConfiguration: TextFieldConfiguration(
-                    controller: this._chasisPatentController,
-                    decoration: InputDecoration(
-                        labelText: 'Patente del Chasis',
-                        border: InputBorder.none,
-                        icon: Icon(Icons.local_shipping_rounded)),
-                  ),
-                  suggestionsCallback: (pattern) {
-                    Driver actualDriver = driver.firstWhere((element) =>
-                        element.name == _driverNameController.text);
-                    int index = actualDriver.truckPatents.indexWhere(
-                        (element) => element == _truckPatentController.text);
-                    List<String?> patents = [];
-                    if (actualDriver.chasisPatents[index]
-                        .contains(_chasisPatentController.text)) {
-                      patents.add(actualDriver.chasisPatents[index]);
-                    }
-                    patents.add('Sin Chasis');
-                    return patents;
-                  },
-                  itemBuilder: (context, String? suggestion) {
-                    return ListTile(
-                      title: Text(suggestion!),
-                    );
-                  },
-                  noItemsFoundBuilder: (context) {
-                    return ListTile(
-                      leading: Icon(Icons.add),
-                      title: Text('No se encontro la patente'),
-                      onTap: () {
-                      },
-                    );
-                  },
-                  transitionBuilder: (context, suggestionsBox, controller) {
-                    return suggestionsBox;
-                  },
-                  onSuggestionSelected: (String? suggestion) {
-                    _chasisPatentController.text = suggestion!;
-                  },
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (_) {
-                    return NewShippingValidator.isChasisPatentValid(
-                        chasisPatent: _chasisPatentController.text,
-                        truckPatent: _truckPatentController.text,
-                        driver: driver.firstWhere((element) =>
-                            element.name == _driverNameController.text));
-                  },
-                ),
-                Divider(),
-
-                Text('             Peso',
-                    style:
-                        TextStyle(color: Colors.grey.shade700, fontSize: 13)),
-                Row(
-                  children: [
-                    Icon(Icons.location_searching_outlined),
-                    SizedBox(
-                      width: 20,
                     ),
-                    StreamBuilder(
-                      initialData: 'Weight',
-                      stream: _weightStream,
-                      builder: (context, AsyncSnapshot<String> snapshot) {
-                        _shipping.remiterTara = snapshot.data.toString();
-                        return Text(
-                          snapshot.data.toString(),
-                          style: TextStyle(fontSize: 25, color: Colors.red),
+                    Divider(),
+                    TextFormField(
+                      controller: this._locationController,
+                      decoration: InputDecoration(
+                          labelText: 'Ubicacion',
+                          border: InputBorder.none,
+                          icon: Icon(Icons.location_on)),
+                      enabled: false,
+                      autovalidateMode: AutovalidateMode.always,
+                      validator: (_) {
+                        return NewShippingValidator.isLocationValid(
+                            widget.authenticationRepository.user.location.name);
+                      },
+                    ),
+                    Divider(),
+                    TextFormField(
+                      controller: this._dateController,
+                      decoration: InputDecoration(
+                          labelText: 'Fecha',
+                          border: InputBorder.none,
+                          icon: Icon(Icons.calendar_today_outlined)),
+                      enabled: false,
+                    ),
+                    Divider(),
+
+                    /*DropdownButtonFormField(
+                      value: cosechaValue,
+                      style: TextStyle(fontSize: 14, color: Colors.black),
+                      decoration: InputDecoration(labelText: 'Cosecha', border: InputBorder.none, icon: Icon(Icons.done_outline_outlined)),
+                      onChanged: (dynamic newValue ){
+                        setState(() {
+                          cosechaValue = newValue;
+                        });
+                      },
+                      items: <String>[
+                        'CAMPAÑA 20-21','CAMPAÑA 21-22',
+                      ].map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
                         );
+                      }).toList(),
+                    ),
+                    Divider(),*/
+
+                    DropdownButtonFormField(
+                      value: partidaValue,
+                      style: TextStyle(fontSize: 14, color: Colors.black),
+                      decoration: InputDecoration(
+                          labelText: 'Cosecha/Partida',
+                          border: InputBorder.none,
+                          icon: Icon(Icons.description_sharp)),
+                      onChanged: (dynamic newValue) {
+                        setState(() {
+                          partidaValue = newValue;
+                          cosechaValue = newValue;
+                        });
+                      },
+                      items: <String>[
+                        'CAMPAÑA 20-21',
+                        'CAMPAÑA 21-22',
+                      ].map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                    DropdownButtonFormField<String>(
+                      value: destination.name,
+                      decoration: InputDecoration(
+                          labelText: 'Destino',
+                          border: InputBorder.none,
+                          icon: Icon(Icons.location_on)),
+                      style: TextStyle(fontSize: 14, color: Colors.black),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (_) {
+                        return NewShippingValidator.isLocationValid(
+                            destination.name);
+                      },
+                      onChanged: (dynamic newValue) {
+                        setState(() {
+                          destination = Location.fromName(newValue);
+                        });
+                      },
+                      items: widget.localDataBase.locationDB
+                          .map<DropdownMenuItem<String>>((value) {
+                        return DropdownMenuItem<String>(
+                          value: value.name,
+                          child: Text(
+                            value.name,
+                            overflow: TextOverflow.visible,
+                          ),
+                        );
+                      }).toList(),
+                      selectedItemBuilder: (context) {
+                        return widget.localDataBase.locationDB
+                            .map((value) => Container(
+                                  child: Text(value.name,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      softWrap: true),
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.7,
+                                ))
+                            .toList();
+                      },
+                    ),
+                    Divider(),
+                    TypeAheadFormField(
+                      textFieldConfiguration: TextFieldConfiguration(
+                        controller: this._driverNameController,
+                        decoration: InputDecoration(
+                            labelText: 'Nombre del Conductor',
+                            border: InputBorder.none,
+                            icon: Icon(Icons.contacts_outlined)),
+                      ),
+                      suggestionsCallback: (pattern) {
+                        List<String?> names = [];
+                        driver.forEach((element) {
+                          if (element.name.toLowerCase().contains(
+                              _driverNameController.text.toLowerCase()))
+                            names.add(element.name);
+                        });
+                        return names;
+                      },
+                      itemBuilder: (context, String? suggestion) {
+                        return ListTile(
+                          title: Text(suggestion!),
+                        );
+                      },
+                      noItemsFoundBuilder: (context) {
+                        return ListTile(
+                          leading: Icon(Icons.add),
+                          title: Text('No se encontro al conductor'),
+                          onTap: () {},
+                        );
+                      },
+                      transitionBuilder: (context, suggestionsBox, controller) {
+                        return suggestionsBox;
+                      },
+                      onSuggestionSelected: (String? suggestion) {
+                        _driverNameController.text = suggestion!;
+                      },
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (_) {
+                        //TODO: IMPLEMENT VALIDATION
+                      },
+                    ),
+                    Divider(),
+                    TypeAheadFormField(
+                      textFieldConfiguration: TextFieldConfiguration(
+                        controller: this._truckPatentController,
+                        decoration: InputDecoration(
+                            labelText: 'Patente del Camion',
+                            border: InputBorder.none,
+                            icon: Icon(Icons.local_shipping_rounded)),
+                      ),
+                      suggestionsCallback: (pattern) {
+                        Driver actualDriver = driver.firstWhere((element) =>
+                            element.name == _driverNameController.text);
+                        List<String?> patents = [];
+                        actualDriver.truckPatents.forEach((patent) {
+                          if (patent.toLowerCase().contains(
+                              _truckPatentController.text.toLowerCase()))
+                            patents.add(patent);
+                        });
+                        return patents;
+                      },
+                      itemBuilder: (context, String? suggestion) {
+                        return ListTile(
+                          title: Text(suggestion!),
+                        );
+                      },
+                      noItemsFoundBuilder: (context) {
+                        return ListTile(
+                          leading: Icon(Icons.add),
+                          title: Text('No se encontro la patente'),
+                          onTap: () {},
+                        );
+                      },
+                      transitionBuilder: (context, suggestionsBox, controller) {
+                        return suggestionsBox;
+                      },
+                      onSuggestionSelected: (String? suggestion) {
+                        _truckPatentController.text = suggestion!;
+                      },
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (_) {
+                        return NewShippingValidator.isTruckPatentValid(
+                            patent: _truckPatentController.text,
+                            driver: driver.firstWhere((element) =>
+                                element.name == _driverNameController.text));
+                      },
+                    ),
+                    Divider(),
+                    TypeAheadFormField(
+                      textFieldConfiguration: TextFieldConfiguration(
+                        controller: this._chasisPatentController,
+                        decoration: InputDecoration(
+                            labelText: 'Patente del Chasis',
+                            border: InputBorder.none,
+                            icon: Icon(Icons.local_shipping_rounded)),
+                      ),
+                      suggestionsCallback: (pattern) {
+                        Driver actualDriver = driver.firstWhere((element) =>
+                            element.name == _driverNameController.text);
+                        int index = actualDriver.truckPatents.indexWhere(
+                            (element) =>
+                                element == _truckPatentController.text);
+                        List<String?> patents = [];
+                        if (actualDriver.chasisPatents[index]
+                            .contains(_chasisPatentController.text)) {
+                          patents.add(actualDriver.chasisPatents[index]);
+                        }
+                        patents.add('Sin Chasis');
+                        return patents;
+                      },
+                      itemBuilder: (context, String? suggestion) {
+                        return ListTile(
+                          title: Text(suggestion!),
+                        );
+                      },
+                      noItemsFoundBuilder: (context) {
+                        return ListTile(
+                          leading: Icon(Icons.add),
+                          title: Text('No se encontro la patente'),
+                          onTap: () {},
+                        );
+                      },
+                      transitionBuilder: (context, suggestionsBox, controller) {
+                        return suggestionsBox;
+                      },
+                      onSuggestionSelected: (String? suggestion) {
+                        _chasisPatentController.text = suggestion!;
+                      },
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (_) {
+                        return NewShippingValidator.isChasisPatentValid(
+                          chasisPatent: _chasisPatentController.text,
+                          truckPatent: _truckPatentController.text,
+                          driver: driver.firstWhere(
+                            (element) =>
+                                element.name == _driverNameController.text,
+                          ),
+                        );
+                      },
+                    ),
+                    Divider(),
+                    TextFormField(
+                      controller: TextEditingController(text: state.data),
+                      decoration: InputDecoration(
+                          labelText: 'Peso Tara',
+                          border: InputBorder.none,
+                          icon: Icon(Icons.calendar_today_outlined)),
+                      enabled: false,
+                    ),
+                    Divider(),
+                    Divider(),
+                    ElevatedButton(
+                      child: Text('Agregar Nuevo Envio'),
+                      style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          primary: Colors.red.shade700),
+                      onPressed: () {
+                        BlocProvider.of<BluetoothCubit>(context)
+                            .requestWeight(patent: "123456789", comand: "T");
+                        if (formKey.currentState!.validate()) {
+                          _showConfirmationAlert();
+                        }
                       },
                     ),
                   ],
                 ),
-                Divider(),
-
-                ElevatedButton(
-                  child: Text('Agregar Nuevo Envio'),
-                  style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25)),
-                      primary: Colors.red.shade700),
-                  onPressed: () {
-                    BlocProvider.of<BluetoothCubit>(context).requestWeight(patent: "123456789", comand: "T");
-                    if (formKey.currentState!.validate()) {
-                      _showConfirmationAlert();
-                    }
-                  },
-                ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

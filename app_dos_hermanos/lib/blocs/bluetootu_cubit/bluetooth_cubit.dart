@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:app_dos_hermanos/classes/bluetooth_routines.dart';
 import 'package:bloc/bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:meta/meta.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
 part 'bluetooth_state.dart';
@@ -16,11 +15,6 @@ class BluetoothCubit extends Cubit<MyBluetoothState> {
 
   late StreamSubscription<Uint8List> bluetoothSubscription;
 
-  String? adress = '';
-  String? name = '';
-
-  bool isConnecting = true;
-  bool isDisconnecting = true;
   var connection;
 
   void initBlutetooth() async {
@@ -31,55 +25,73 @@ class BluetoothCubit extends Cubit<MyBluetoothState> {
           ? false
           : await Future.delayed(Duration(milliseconds: 500)).then((_) => true);
     }).then((_) async {
-      adress = await FlutterBluetoothSerial.instance.address;
-      name = await FlutterBluetoothSerial.instance.name;
 
       FlutterBluetoothSerial.instance
-          .onStateChanged()
-          .listen((BluetoothState state) {
+      .onStateChanged()
+      .listen((BluetoothState state) {
         bluetoothState = state;
+        if (state == BluetoothState.STATE_OFF){
+          emit(DisconnectedBluetooth());
+        }
       });
+
     });
   }
 
-  void connectBluetooth() {}
-
-  void requresData() {}
-
   void entableConection(BluetoothDevice selectedDevice) async {
-    // ignore: unnecessary_null_comparison
-    if (selectedDevice != null) {
+    if (!selectedDevice.isConnected) {
       print('Discovery -> selected ' + selectedDevice.address);
-      BluetoothConnection.toAddress(selectedDevice.address).then(( _connection) {
+      try {
+        BluetoothConnection.toAddress(selectedDevice.address).catchError((e){print(e);}).then(( _connection) {
         print('Connected to the device');
         connection = _connection;
-        isConnecting = false;
-        isDisconnecting = false;
 
-        bluetoothSubscription = connection.input.listen(_reciveData);
-        emit(ConnectedBluetooth());
-      });
+        bluetoothSubscription = connection.input.listen(_reciveData).onDone((){
+          if (state.isDiconnecting) {
+          print('Disconnecting locally!');
+        } else {
+          print('Disconnected remotely!');
+        }
+        });
+        emit(ConnectedBluetooth(data: 'Conectado'));
+      });  
+      } catch (e) {
+        print('Cannot enable connection: $e');
+      }
+      
     } else {
-      print('Discovery -> no device selected');
+      print('Discovery -> device no ready');
+      emit(ConnectedBluetooth(data: 'Reinicie el Bluetooth'));
     }
   }
 
   void _reciveData(Uint8List data){
-    print('Data recived: $data');
+    emit(ConnectedBluetooth(data: String.fromCharCodes(data)));
+    print('Data recived: ${String.fromCharCodes(data)}');
   }
 
-  void requestWeight({required String comand, required String patent}){
+  void requestWeight({required String comand, required String patent}) async {
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('yyyy-MM-dd kk:mm').format(now);
-    print(formattedDate);
-    connection.output.add(Uint8List.fromList(
-      [0x02]
-      + utf8.encode(comand).toList()
-      + utf8.encode(patent).toList()
-      + [0x0D, 0x0A]
-      + utf8.encode(formattedDate.toString()).toList()
-      + [0x0D, 0x0A]
-      + [0x03]
-    ));
+    print('Request Weight -- Comand:$comand, Patent:$patent, date: $formattedDate');
+    try {
+      connection.output.add(BluetoothRoutines.btSendBuffer(comand, patent, formattedDate));
+      await connection.output.allSent;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void disconectBluetooth() async {
+    if (connection != null && connection.isConnected){
+      emit(ChangingBluetoothState(isConnecting: false, isDiconnecting: true));
+      try {
+        await connection.dispose();
+        connection = null;
+        emit(DisconnectedBluetooth());
+      } catch (e) {
+        print('Error in disconnection: $e');
+      }
+    }
   }
 }

@@ -1,16 +1,32 @@
 part of 'bluetooth_cubit.dart';
 
-@immutable
 abstract class MyBluetoothState {
+  MyBluetoothState({required this.isConnecting, required this.isDiconnecting, required this.data});
 
-  MyBluetoothState();
+  bool isConnecting;
+  bool isDiconnecting;
 
+  String data;
 }
 
-class BluetoothInitial extends MyBluetoothState {}
+class ChangingBluetoothState extends MyBluetoothState {
+  ChangingBluetoothState ({required this.isConnecting, required this.isDiconnecting})
+  : super(isConnecting: isConnecting, isDiconnecting: isDiconnecting, data: 'No Conectado');
 
-class DisconnectedBluetooth extends MyBluetoothState {}
+  final bool isConnecting;
+  final bool isDiconnecting;
+}
 
-class ConectingBluetooth extends MyBluetoothState {}
+class BluetoothInitial extends MyBluetoothState {
+  BluetoothInitial() : super(data: 'No Conectado', isConnecting: false, isDiconnecting: false);
+}
 
-class ConnectedBluetooth extends MyBluetoothState {}
+class DisconnectedBluetooth extends MyBluetoothState {
+  DisconnectedBluetooth() : super(isConnecting: false, isDiconnecting: false, data: 'No Conectado');
+}
+
+class ConnectedBluetooth extends MyBluetoothState {
+  ConnectedBluetooth({required this.data}) : super (isConnecting: false, isDiconnecting: false, data: data);
+
+  String data;
+}
