@@ -1,19 +1,17 @@
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'dart:async';
-import 'dart:math';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
-import 'package:app_dos_hermanos/blocs/bluetootu_cubit/bluetooth_cubit.dart';
-import 'package:app_dos_hermanos/classes/driver.dart';
-import 'package:app_dos_hermanos/classes/locations.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:app_dos_hermanos/classes/shipping.dart';
-import 'package:app_dos_hermanos/local_repository/local_data_base.dart';
-import 'package:app_dos_hermanos/repository/authentication_repository.dart';
-import 'package:app_dos_hermanos/repository/location_repository.dart';
-import 'package:app_dos_hermanos/validations/new_shipping_validators.dart';
+import 'package:app_dos_hermanos/classes/locations.dart';
 import 'package:app_dos_hermanos/widgets/shipping_data.dart';
+import 'package:app_dos_hermanos/repository/location_repository.dart';
+import 'package:app_dos_hermanos/local_repository/local_data_base.dart';
+import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
+import 'package:app_dos_hermanos/repository/authentication_repository.dart';
+import 'package:app_dos_hermanos/blocs/bluetootu_cubit/bluetooth_cubit.dart';
+import 'package:app_dos_hermanos/validations/new_shipping_validators.dart';
 
 class NewShipping extends StatefulWidget {
   final Shipping? shipping;
@@ -51,37 +49,6 @@ class _NewShippingState extends State<NewShipping> {
 
   Location destination = Location(name: 'SELECCIONAR');
 
-  List<Driver> driver = [
-    Driver(
-        name: 'tomi',
-        cuil: '1234',
-        chasisPatents: ['asd123', 'asd234'],
-        driverShippings: [''],
-        truckPatents: ['dfg345', '234dfdg'],
-        did: '12341234'),
-    Driver(
-        name: 'tadeo',
-        cuil: '1234',
-        chasisPatents: ['1234sd'],
-        truckPatents: ['asdfwre'],
-        did: 'qwer',
-        driverShippings: ['']),
-    Driver(
-        name: 'fede',
-        cuil: '',
-        chasisPatents: ['12341'],
-        truckPatents: ['sdf234'],
-        driverShippings: [''],
-        did: ''),
-    Driver(
-        name: 'fernando',
-        cuil: '',
-        chasisPatents: ['asdf2'],
-        truckPatents: ['asdf'],
-        driverShippings: [''],
-        did: '')
-  ];
-
   @override
   void initState() {
     _truckPatentController = TextEditingController();
@@ -95,6 +62,7 @@ class _NewShippingState extends State<NewShipping> {
 
     _shipping = widget.shipping ??
         Shipping(
+          isOnLine: false,
             driverName: '',
             truckPatent: '',
             chasisPatent: '',
@@ -250,11 +218,11 @@ class _NewShippingState extends State<NewShipping> {
                       ),
                       suggestionsCallback: (pattern) {
                         List<String?> names = [];
-                        driver.forEach((element) {
+                        /*driver.forEach((element) {
                           if (element.name.toLowerCase().contains(
                               _driverNameController.text.toLowerCase()))
                             names.add(element.name);
-                        });
+                        });*/
                         return names;
                       },
                       itemBuilder: (context, String? suggestion) {
@@ -290,14 +258,14 @@ class _NewShippingState extends State<NewShipping> {
                             icon: Icon(Icons.local_shipping_rounded)),
                       ),
                       suggestionsCallback: (pattern) {
-                        Driver actualDriver = driver.firstWhere((element) =>
-                            element.name == _driverNameController.text);
+                        //Driver actualDriver = driver.firstWhere((element) =>
+                        //    element.name == _driverNameController.text);
                         List<String?> patents = [];
-                        actualDriver.truckPatents.forEach((patent) {
-                          if (patent.toLowerCase().contains(
-                              _truckPatentController.text.toLowerCase()))
-                            patents.add(patent);
-                        });
+                        //actualDriver.truckPatents.forEach((patent) {
+                          //if (patent.toLowerCase().contains(
+                            //  _truckPatentController.text.toLowerCase()))
+                            //patents.add(patent);
+                        //});
                         return patents;
                       },
                       itemBuilder: (context, String? suggestion) {
@@ -320,10 +288,10 @@ class _NewShippingState extends State<NewShipping> {
                       },
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       validator: (_) {
-                        return NewShippingValidator.isTruckPatentValid(
-                            patent: _truckPatentController.text,
-                            driver: driver.firstWhere((element) =>
-                                element.name == _driverNameController.text));
+                        //return NewShippingValidator.isTruckPatentValid(
+                          //  patent: _truckPatentController.text,
+                          //  driver: driver.firstWhere((element) =>
+                            //    element.name == _driverNameController.text));
                       },
                     ),
                     Divider(),
@@ -336,16 +304,16 @@ class _NewShippingState extends State<NewShipping> {
                             icon: Icon(Icons.local_shipping_rounded)),
                       ),
                       suggestionsCallback: (pattern) {
-                        Driver actualDriver = driver.firstWhere((element) =>
-                            element.name == _driverNameController.text);
-                        int index = actualDriver.truckPatents.indexWhere(
-                            (element) =>
-                                element == _truckPatentController.text);
+                        //Driver actualDriver = driver.firstWhere((element) =>
+                          //  element.name == _driverNameController.text);
+                        //int index = actualDriver.truckPatents.indexWhere(
+                          //  (element) =>
+                            //    element == _truckPatentController.text);
                         List<String?> patents = [];
-                        if (actualDriver.chasisPatents[index]
-                            .contains(_chasisPatentController.text)) {
-                          patents.add(actualDriver.chasisPatents[index]);
-                        }
+                        //if (actualDriver.chasisPatents[index]
+                          //  .contains(_chasisPatentController.text)) {
+                          //patents.add(actualDriver.chasisPatents[index]);
+                        //}
                         patents.add('Sin Chasis');
                         return patents;
                       },
@@ -369,14 +337,14 @@ class _NewShippingState extends State<NewShipping> {
                       },
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       validator: (_) {
-                        return NewShippingValidator.isChasisPatentValid(
-                          chasisPatent: _chasisPatentController.text,
-                          truckPatent: _truckPatentController.text,
-                          driver: driver.firstWhere(
-                            (element) =>
-                                element.name == _driverNameController.text,
-                          ),
-                        );
+                        //return NewShippingValidator.isChasisPatentValid(
+                          //chasisPatent: _chasisPatentController.text,
+                          //truckPatent: _truckPatentController.text,
+                          //driver: driver.firstWhere(
+                            //(element) =>
+                              //  element.name == _driverNameController.text,
+                          //),
+                        //);
                       },
                     ),
                     Divider(),

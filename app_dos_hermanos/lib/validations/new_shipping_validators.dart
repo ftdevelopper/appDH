@@ -1,4 +1,3 @@
-import 'package:app_dos_hermanos/classes/driver.dart';
 import 'package:app_dos_hermanos/repository/drivers_repository.dart';
 
 class NewShippingValidator {
@@ -32,24 +31,24 @@ class NewShippingValidator {
     }
   }
 
-  static String? isTruckPatentValid({required String patent, required Driver driver}){
+  static String? isTruckPatentValid({required String patent}){
     bool existPatent = false;
-    driver.truckPatents.forEach((element) { 
+    /*driver.truckPatents.forEach((element) { 
       if (element == patent){
         existPatent = true;
       }
-    });
+    });*/
     if (!existPatent){
       return 'No existe esta patente';
     }
   }
 
-  static String? isChasisPatentValid({required String chasisPatent, required String truckPatent, required Driver driver}){
+  static String? isChasisPatentValid({required String chasisPatent, required String truckPatent}){
     List<int> indexs = [];
     int index = 0;
     bool existPatent = false;
 
-    driver.truckPatents.forEach((element) {
+    /*driver.truckPatents.forEach((element) {
       if (element == truckPatent){
         indexs.add(index);
       }
@@ -60,7 +59,7 @@ class NewShippingValidator {
       if (driver.chasisPatents[element] == chasisPatent){
         existPatent = true;
       }
-    });
+    });*/
 
     if(chasisPatent == 'Sin Chasis'){
       existPatent = true;

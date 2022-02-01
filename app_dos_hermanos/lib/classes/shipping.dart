@@ -18,6 +18,8 @@ class Shipping {
   String? remiterWetWeight, remiterDryWeight;
   String? reciverWetWeight, reciverDryWeight;
 
+  bool isOnLine;
+
   Shipping({
     required this.driverName,
     required this.shippingState,
@@ -31,6 +33,7 @@ class Shipping {
     this. actions, this.userActions, this.dateActions,
     this.remiterWetWeight, this.remiterDryWeight,
     this.reciverWetWeight, this.reciverDryWeight,
+    required this.isOnLine
   });
 
   static Shipping fromSnapShot(DocumentSnapshot snapshot) {
@@ -66,6 +69,7 @@ class Shipping {
       reciverWetWeight: data['reciverWetWeight'],
       remiterDryWeight: data['remiterDryWeight'],
       remiterWetWeight: data['remiterWetWeight'],
+      isOnLine: true,
     );
   }
 
