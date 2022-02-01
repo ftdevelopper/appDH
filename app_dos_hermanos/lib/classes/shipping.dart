@@ -12,6 +12,12 @@ class Shipping {
   String? remiterLocation, reciverLocation;
   String? riceType, id, crop, departure, humidity;
 
+  List<String?>? actions;
+  List<String?>? userActions;
+  List<String?>? dateActions;
+  String? remiterWetWeight, remiterDryWeight;
+  String? reciverWetWeight, reciverDryWeight;
+
   Shipping({
     required this.driverName,
     required this.shippingState,
@@ -21,7 +27,10 @@ class Shipping {
     this.remiterTaraTime, this.remiterFullWeightTime, this.reciverTaraTime, this.reciverFullWeightTime, 
     this.remiterTaraUser, this.remiterFullWeightUser, this.reciverTaraUser, this.reciverFullWeightUser, 
     this.remiterLocation, this.reciverLocation, 
-    this.riceType, this.id, this.crop, this.departure, this.humidity
+    this.riceType, this.id, this.crop, this.departure, this.humidity,
+    this. actions, this.userActions, this.dateActions,
+    this.remiterWetWeight, this.remiterDryWeight,
+    this.reciverWetWeight, this.reciverDryWeight,
   });
 
   static Shipping fromSnapShot(DocumentSnapshot snapshot) {
@@ -49,8 +58,21 @@ class Shipping {
       id: data['id'],
       crop: data['crop'],
       departure: data['departure'],
-      humidity: data['humidity']
+      humidity: data['humidity'],
+      actions: data['actions'] ?? [],
+      userActions: data['userActions'] ?? [],
+      dateActions: data['dateActions'] ?? [],
+      reciverDryWeight: data['reciverDryWeight'],
+      reciverWetWeight: data['reciverWetWeight'],
+      remiterDryWeight: data['remiterDryWeight'],
+      remiterWetWeight: data['remiterWetWeight'],
     );
+  }
+
+  void addAction ({required String action, required String user, required String date}){
+    actions == null ? actions = [action] : actions!.add(action);
+    userActions == null ? userActions = [user] : userActions!.add(user);
+    dateActions == null ? dateActions = [date] : dateActions!.add(date);
   }
 
   String get getStatus {
