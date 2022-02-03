@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:app_dos_hermanos/classes/shipping.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -52,6 +54,14 @@ class ShippingRepository {
       'crop': shipping.crop ?? '',
       'departure': shipping.departure ?? '',
       'humidity': shipping.humidity ?? '',
+      'reciverDryWeight': shipping.reciverDryWeight ?? '',
+      'reciverWetWeight': shipping.reciverWetWeight ?? '',
+      'remiterDryWeight': shipping.remiterDryWeight ?? '',
+      'remiterWetWeight': shipping.remiterWetWeight ?? '',
+      'isOnLine': json.encode(shipping.isOnLine),
+      'actions': json.encode(shipping.actions),
+      'userActions': json.encode(shipping.userActions),
+      'dateActions': json.encode(shipping.dateActions),
     };
     return _shippingMap;
   }

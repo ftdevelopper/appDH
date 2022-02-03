@@ -68,7 +68,7 @@ class _NewShippingState extends State<NewShipping> {
             chasisPatent: '',
             shippingState: ShippingStatus.newShipping);
     _date = DateTime.now();
-    _formatedDate = DateFormat('dd-MM-yyyy').format(_date);
+    _formatedDate = DateFormat('yyyy-MM-dd kk:mm').format(_date);
     _dateController = TextEditingController(text: _formatedDate);
     super.initState();
   }
@@ -357,21 +357,40 @@ class _NewShippingState extends State<NewShipping> {
                       enabled: false,
                     ),
                     Divider(),
-                    Divider(),
-                    ElevatedButton(
-                      child: Text('Agregar Nuevo Envio'),
-                      style: ElevatedButton.styleFrom(
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 50),
+                      child: ElevatedButton(
+                        child: Text('Pesar'),
+                        style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(25),
                           ),
-                          primary: Colors.red.shade700),
-                      onPressed: () {
-                        BlocProvider.of<BluetoothCubit>(context)
-                            .requestWeight(patent: "123456789", comand: "T");
-                        if (formKey.currentState!.validate()) {
-                          _showConfirmationAlert();
+                          primary: Colors.red.shade700,
+                        ),
+                        onPressed:() async {
+                          BlocProvider.of<BluetoothCubit>(context)
+                              .requestWeight(patent: _truckPatentController.text, comand: "T", date: _formatedDate);
                         }
-                      },
+                      ),
+                    ),
+                    Divider(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 50),
+                      child: ElevatedButton(
+                        child: Text('Agregar Nuevo Envio'),
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          primary: Colors.red.shade700,
+                        ),
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            _shipping.remiterTara = state.data;
+                            _showConfirmationAlert();
+                          }
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -449,6 +468,7 @@ class _NewShippingState extends State<NewShipping> {
     _shipping.remiterTaraTime = _date;
     _shipping.truckPatent = _truckPatentController.text;
     _shipping.remiterLocation = _locationController.text;
+    _shipping.addAction(action: 'Taro', user: _userController.text, date: _formatedDate);
 
     BlocProvider.of<ShippingsBloc>(context)
         .add(AddShipping(shipping: _shipping));

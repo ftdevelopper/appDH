@@ -17,7 +17,7 @@ class ShippingData extends StatelessWidget {
       children: <Widget>[
         SizedBox(width: 20,),
         Container(
-          width: MediaQuery.of(context).size.width * 0.2,
+          width: MediaQuery.of(context).size.width * 0.22,
           child: Text(title + ':')
         ),
         Container(

@@ -1,10 +1,9 @@
 import 'dart:async';
 import 'dart:typed_data';
-
-import 'package:app_dos_hermanos/classes/bluetooth_routines.dart';
 import 'package:bloc/bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:app_dos_hermanos/classes/bluetooth_routines.dart';
+import 'package:intl/intl.dart';
 
 part 'bluetooth_state.dart';
 
@@ -43,6 +42,10 @@ class BluetoothCubit extends Cubit<MyBluetoothState> {
       print('Discovery -> selected ' + selectedDevice.address);
       try {
         await bluetoothSubscription.cancel();
+      } catch (e) {
+        print(e);
+      }
+      try {
         BluetoothConnection.toAddress(selectedDevice.address).catchError((e){print(e);}).then(( _connection) {
         print('Connected to the device');
         connection = _connection;
@@ -71,12 +74,10 @@ class BluetoothCubit extends Cubit<MyBluetoothState> {
     print('Data recived: ${String.fromCharCodes(data)}');
   }
 
-  void requestWeight({required String comand, required String patent}) async {
-    DateTime now = DateTime.now();
-    String formattedDate = DateFormat('yyyy-MM-dd kk:mm').format(now);
-    print('Request Weight -- Comand:$comand, Patent:$patent, date: $formattedDate');
+  void requestWeight({required String comand, required String patent, required String date}) async {
+    print('Request Weight --> Comand:$comand, Patent:$patent, date: $date');
     try {
-      connection.output.add(BluetoothRoutines.btSendBuffer(comand, patent, formattedDate));
+      connection.output.add(BluetoothRoutines.btSendBuffer(comand, patent, date));
       await connection.output.allSent;
     } catch (e) {
       print(e);

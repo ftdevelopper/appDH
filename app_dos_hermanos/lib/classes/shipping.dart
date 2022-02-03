@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -62,14 +64,14 @@ class Shipping {
       crop: data['crop'],
       departure: data['departure'],
       humidity: data['humidity'],
-      actions: data['actions'] ?? [],
-      userActions: data['userActions'] ?? [],
-      dateActions: data['dateActions'] ?? [],
+      actions: json.decode(data['actions'] ?? []),
+      userActions: json.decode(data['userActions'] ?? []),
+      dateActions: json.decode(data['dateActions'] ?? []),
       reciverDryWeight: data['reciverDryWeight'],
       reciverWetWeight: data['reciverWetWeight'],
       remiterDryWeight: data['remiterDryWeight'],
       remiterWetWeight: data['remiterWetWeight'],
-      isOnLine: true,
+      isOnLine: json.decode('isOnLine'),
     );
   }
 
@@ -77,6 +79,17 @@ class Shipping {
     actions == null ? actions = [action] : actions!.add(action);
     userActions == null ? userActions = [user] : userActions!.add(user);
     dateActions == null ? dateActions = [date] : dateActions!.add(date);
+  }
+
+  double getDryWeight({required double humidity, required double weight}){
+    double dryWeight = 0;
+    if (humidity <= 13){
+      dryWeight = weight;
+    } else if (13 < humidity && humidity < 32.0){
+      //TODO: CHEQUEAR FORMULA
+      dryWeight = weight * (((humidity / 100) * 0.12 + 0.845));
+    }
+    return dryWeight;
   }
 
   String get getStatus {
