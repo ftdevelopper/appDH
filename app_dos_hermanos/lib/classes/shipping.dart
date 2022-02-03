@@ -14,9 +14,9 @@ class Shipping {
   String? remiterLocation, reciverLocation;
   String? riceType, id, crop, departure, humidity;
 
-  List<String?>? actions;
-  List<String?>? userActions;
-  List<String?>? dateActions;
+  List<dynamic>? actions;
+  List<dynamic>? userActions;
+  List<dynamic>? dateActions;
   String? remiterWetWeight, remiterDryWeight;
   String? reciverWetWeight, reciverDryWeight;
 
@@ -64,14 +64,14 @@ class Shipping {
       crop: data['crop'],
       departure: data['departure'],
       humidity: data['humidity'],
-      actions: json.decode(data['actions'] ?? []),
-      userActions: json.decode(data['userActions'] ?? []),
-      dateActions: json.decode(data['dateActions'] ?? []),
+      actions: json.decode(data['actions'] ?? '[]'),
+      userActions: json.decode(data['userActions'] ?? '[]'),
+      dateActions: json.decode(data['dateActions'] ?? '[]'),
       reciverDryWeight: data['reciverDryWeight'],
       reciverWetWeight: data['reciverWetWeight'],
       remiterDryWeight: data['remiterDryWeight'],
       remiterWetWeight: data['remiterWetWeight'],
-      isOnLine: json.decode('isOnLine'),
+      isOnLine: json.decode(data['isOnLine'] ?? 'true'),
     );
   }
 
