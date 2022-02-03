@@ -2,28 +2,31 @@ part of 'filter_bloc.dart';
 
 @immutable
 abstract class FilterState extends Equatable {
-  FilterState({required this.days, required this.destination, required this.origin});
+  FilterState({required this.filter, required this.days});
+  int days;
+  Filter filter;
 
-  final int days;
-  final String? destination;
-  final String? origin;
+  @override
+  // TODO: implement props
+  List<Object?> get props => [this.filter, this.days];
 }
 
 class FilterInitial extends FilterState {
-  FilterInitial() : super(days: 2, destination: null, origin: null);
+  FilterInitial() : super(filter: Filter(duration: Duration(days: 3)),days: 3);
+
+  Filter filter = Filter(duration: Duration(days: 3));
 
   @override
-  List<Object?> get props => [this.days, this.destination, this.origin];
+  List<Object?> get props => [this.filter];
 }
 
-class UpdateFilter extends FilterState {
-  UpdateFilter({required this.days, this.destination, this.origin}) 
-  : super(days: days, destination: destination, origin: origin);
+class UpdatedFilter extends FilterState {
+  UpdatedFilter({required this.filter, required this.days}) 
+  : super(filter: filter, days: days);
 
-  final int days;
-  final String? destination;
-  final String? origin;
+  Filter filter;
+  final days;
   
   @override
-  List<Object?> get props => [this.days, this.destination, this.origin];
+  List<Object?> get props => [this.filter, this.days];
 }

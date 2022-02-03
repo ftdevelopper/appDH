@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app_dos_hermanos/classes/filter.dart';
 import 'package:app_dos_hermanos/classes/shipping.dart';
 import 'package:app_dos_hermanos/repository/shipping_repository.dart';
 import 'package:bloc/bloc.dart';
@@ -10,22 +11,26 @@ part 'shippings_event.dart';
 part 'shippings_state.dart';
 
 class ShippingsBloc extends Bloc<ShippingsEvent, ShippingsState> {
+
   final ShippingRepository shippingRepository;
   late StreamSubscription? _shippingsSubscription;
 
-  ShippingsBloc({required this.shippingRepository}) : super(ShippingsLoading()) {
-
-    _shippingsSubscription = shippingRepository.getShippings(duration: Duration(days: 2)).listen((event) {});
+  ShippingsBloc({required this.shippingRepository}) : super(ShippingsLoading(filter: Filter(duration: Duration(days: 3)))) {
 
     on<LoadShippings>((event, emit) async {
-      _shippingsSubscription?.cancel();
-      emit(ShippingsLoading());
       try {
+        _shippingsSubscription?.cancel();  
+      } catch (e) {
+        print(e);
+      }
+      emit(ShippingsLoading(filter: event.filter));
+      try {
+        print('state filter: ${state.filter?.duration}, ${state.filter?.destination}');
         _shippingsSubscription = shippingRepository.getShippings(
-          duration: event.duration ?? Duration(days: 2),
+          duration: state.filter?.duration ?? Duration(days: 3),
         ).listen(
           (shippings){
-            return add(ShippingsUpdated(shippingList: filterShippings(shippings: shippings, event: event)));
+            return add(ShippingsUpdated(shippingList: filterShippings(shippings: shippings, filter: state.filter)));
           }
         );
       } catch (e) {
@@ -50,10 +55,10 @@ class ShippingsBloc extends Bloc<ShippingsEvent, ShippingsState> {
   }
 }
 
-List<Shipping> filterShippings({required List<Shipping> shippings, required LoadShippings event}){
+List<Shipping> filterShippings({required List<Shipping> shippings, required Filter? filter}){
 
-  String? destination = event.reciverLocation == 'SELECCIONAR' ? null : event.reciverLocation;
-  String? origin = event.remiterLocation == 'SELECCIONAR' ? null : event.remiterLocation;
+  String? destination = filter?.origin == 'SELECCIONAR' ? null : filter?.origin;
+  String? origin = filter?.destination == 'SELECCIONAR' ? null : filter?.destination;
 
   if (destination == null && origin == null){
     return shippings;
