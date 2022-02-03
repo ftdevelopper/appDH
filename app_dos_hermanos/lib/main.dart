@@ -88,6 +88,7 @@ class _AppViewState extends State<AppView> {
           navigatorKey: _navigatorKey,
           debugShowCheckedModeBanner: false,
           builder: (context, child) {
+            BlocProvider.of<ShippingsBloc>(context).add(LoadShippings());
             return BlocListener<AuthenticationBloc, AuthenticationState>(
               listener: (context, state) {
                 switch (state.status) {

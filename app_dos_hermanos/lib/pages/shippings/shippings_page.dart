@@ -47,7 +47,6 @@ class _ShippingsPageState extends State<ShippingsPage>
   @override
   Widget build(BuildContext context) {
     BlocProvider.of<InternetCubit>(context).initInternetCheck();
-    BlocProvider.of<ShippingsBloc>(context).add(LoadShippings());
     return BlocBuilder<BluetoothCubit, MyBluetoothState>(
       builder: (context, state) {
         return BlocListener<BluetoothCubit, MyBluetoothState>(
@@ -340,15 +339,15 @@ class _ShippingsPageState extends State<ShippingsPage>
                       NumberPicker(
                         maxValue: 900,
                         minValue: 0,
-                        value: state.days,
+                        value: state.filter.duration!.inDays,
                         step: 1,
                         onChanged: (newValue) {
-                          BlocProvider.of<FilterBloc>(context)
+                          context.read<FilterBloc>()
                               .add(ChangeDays(days: newValue));
                         },
                       ),
                       DropdownButtonFormField<String>(
-                        value: state.origin,
+                        value: state.filter.origin,
                         decoration: InputDecoration(
                             labelText: 'Origen',
                             border: InputBorder.none,
@@ -382,7 +381,7 @@ class _ShippingsPageState extends State<ShippingsPage>
                         },
                       ),
                       DropdownButtonFormField<String>(
-                        value: state.destination,
+                        value: state.filter.destination,
                         decoration: InputDecoration(
                             labelText: 'Destino',
                             border: InputBorder.none,
@@ -419,11 +418,10 @@ class _ShippingsPageState extends State<ShippingsPage>
                         child: Text('Guardar y Filtrar'),
                         onPressed: () {
                           Navigator.pop(context);
-                          BlocProvider.of<ShippingsBloc>(context).add(
+                          context.read<ShippingsBloc>().add(
                               LoadShippings(
-                                  duration: Duration(days: state.days),
-                                  reciverLocation: state.destination,
-                                  remiterLocation: state.origin));
+                                filter: state.filter
+                              ));
                         },
                       ),
                     ],
