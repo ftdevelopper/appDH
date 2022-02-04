@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.app_dos_hermanos">
    <application
-        android:label="app_dos_hermanos"
+        android:label="Envios"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
