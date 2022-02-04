@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:app_dos_hermanos/classes/drivers.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,9 +49,11 @@ class _NewShippingState extends State<NewShipping> {
   String partidaValue = 'CAMPAÑA 20-21';
 
   Location destination = Location(name: 'SELECCIONAR');
+  late List<Driver> drivers;
 
   @override
   void initState() {
+    drivers = widget.localDataBase.driversDB;
     _truckPatentController = TextEditingController();
     _chasisPatentController = TextEditingController();
 
@@ -218,11 +221,11 @@ class _NewShippingState extends State<NewShipping> {
                       ),
                       suggestionsCallback: (pattern) {
                         List<String?> names = [];
-                        /*driver.forEach((element) {
+                        drivers.forEach((element) {
                           if (element.name.toLowerCase().contains(
                               _driverNameController.text.toLowerCase()))
                             names.add(element.name);
-                        });*/
+                        });
                         return names;
                       },
                       itemBuilder: (context, String? suggestion) {
@@ -242,6 +245,8 @@ class _NewShippingState extends State<NewShipping> {
                       },
                       onSuggestionSelected: (String? suggestion) {
                         _driverNameController.text = suggestion!;
+                        _truckPatentController.text = drivers.firstWhere((element) => element.name == _driverNameController.text).patent;
+                        _chasisPatentController.text = drivers.firstWhere((element) => element.name == _driverNameController.text).chasisPatent;
                       },
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       validator: (_) {
@@ -249,103 +254,24 @@ class _NewShippingState extends State<NewShipping> {
                       },
                     ),
                     Divider(),
-                    TypeAheadFormField(
-                      textFieldConfiguration: TextFieldConfiguration(
-                        controller: this._truckPatentController,
-                        decoration: InputDecoration(
-                            labelText: 'Patente del Camion',
-                            border: InputBorder.none,
-                            icon: Icon(Icons.local_shipping_rounded)),
+                    TextFormField(
+                      enabled: false,
+                      controller: this._truckPatentController,
+                      decoration: InputDecoration(
+                        labelText: 'Patente del Camion',
+                        border: InputBorder.none,
+                        icon: Icon(Icons.local_shipping_rounded),
                       ),
-                      suggestionsCallback: (pattern) {
-                        //Driver actualDriver = driver.firstWhere((element) =>
-                        //    element.name == _driverNameController.text);
-                        List<String?> patents = [];
-                        //actualDriver.truckPatents.forEach((patent) {
-                          //if (patent.toLowerCase().contains(
-                            //  _truckPatentController.text.toLowerCase()))
-                            //patents.add(patent);
-                        //});
-                        return patents;
-                      },
-                      itemBuilder: (context, String? suggestion) {
-                        return ListTile(
-                          title: Text(suggestion!),
-                        );
-                      },
-                      noItemsFoundBuilder: (context) {
-                        return ListTile(
-                          leading: Icon(Icons.add),
-                          title: Text('No se encontro la patente'),
-                          onTap: () {},
-                        );
-                      },
-                      transitionBuilder: (context, suggestionsBox, controller) {
-                        return suggestionsBox;
-                      },
-                      onSuggestionSelected: (String? suggestion) {
-                        _truckPatentController.text = suggestion!;
-                      },
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      validator: (_) {
-                        //return NewShippingValidator.isTruckPatentValid(
-                          //  patent: _truckPatentController.text,
-                          //  driver: driver.firstWhere((element) =>
-                            //    element.name == _driverNameController.text));
-                      },
                     ),
                     Divider(),
-                    TypeAheadFormField(
-                      textFieldConfiguration: TextFieldConfiguration(
-                        controller: this._chasisPatentController,
-                        decoration: InputDecoration(
-                            labelText: 'Patente del Chasis',
-                            border: InputBorder.none,
-                            icon: Icon(Icons.local_shipping_rounded)),
+                    TextFormField(
+                      enabled: false,
+                      controller: this._chasisPatentController,
+                      decoration: InputDecoration(
+                        labelText: 'Patente del Chasis',
+                        border: InputBorder.none,
+                        icon: Icon(Icons.local_shipping_rounded),
                       ),
-                      suggestionsCallback: (pattern) {
-                        //Driver actualDriver = driver.firstWhere((element) =>
-                          //  element.name == _driverNameController.text);
-                        //int index = actualDriver.truckPatents.indexWhere(
-                          //  (element) =>
-                            //    element == _truckPatentController.text);
-                        List<String?> patents = [];
-                        //if (actualDriver.chasisPatents[index]
-                          //  .contains(_chasisPatentController.text)) {
-                          //patents.add(actualDriver.chasisPatents[index]);
-                        //}
-                        patents.add('Sin Chasis');
-                        return patents;
-                      },
-                      itemBuilder: (context, String? suggestion) {
-                        return ListTile(
-                          title: Text(suggestion!),
-                        );
-                      },
-                      noItemsFoundBuilder: (context) {
-                        return ListTile(
-                          leading: Icon(Icons.add),
-                          title: Text('No se encontro la patente'),
-                          onTap: () {},
-                        );
-                      },
-                      transitionBuilder: (context, suggestionsBox, controller) {
-                        return suggestionsBox;
-                      },
-                      onSuggestionSelected: (String? suggestion) {
-                        _chasisPatentController.text = suggestion!;
-                      },
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      validator: (_) {
-                        //return NewShippingValidator.isChasisPatentValid(
-                          //chasisPatent: _chasisPatentController.text,
-                          //truckPatent: _truckPatentController.text,
-                          //driver: driver.firstWhere(
-                            //(element) =>
-                              //  element.name == _driverNameController.text,
-                          //),
-                        //);
-                      },
                     ),
                     Divider(),
                     TextFormField(
@@ -354,7 +280,7 @@ class _NewShippingState extends State<NewShipping> {
                           labelText: 'Peso Tara',
                           border: InputBorder.none,
                           icon: Icon(Icons.calendar_today_outlined)),
-                      enabled: false,
+                      enabled: true,
                     ),
                     Divider(),
                     Padding(

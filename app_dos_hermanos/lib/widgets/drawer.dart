@@ -94,7 +94,7 @@ class LoadedDrawer extends StatelessWidget {
                 ),
                 ListTile(
                   title: Text('Tipos de Arroz:'),
-                  subtitle: Text('Mis tipos de Arroz'),
+                  subtitle: Text('Toque para ver los tipos de arroz'),
                   leading: Icon(Icons.rice_bowl_rounded),
                   onTap: () {
                     _showRiceTypes(context);
@@ -107,8 +107,8 @@ class LoadedDrawer extends StatelessWidget {
                   onTap: () {},
                 ),
                 ListTile(
-                  title: Text('Drivers'),
-                  subtitle: Text('Testing...'),
+                  title: Text('Choferes'),
+                  subtitle: Text('Toque para ver choferes cargados'),
                   leading: Icon(
                     Icons.text_snippet_outlined,
                   ),

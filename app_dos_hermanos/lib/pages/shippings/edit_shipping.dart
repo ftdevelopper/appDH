@@ -173,7 +173,7 @@ class _EditShippingState extends State<EditShipping> {
                             decoration: InputDecoration(
                                 labelText: 'Peso Bruto - Procedencia',
                                 icon: Icon(Icons.filter_2)),
-                            enabled: false,
+                            enabled: true,
                           ),
                         ],
                       ),
@@ -204,7 +204,7 @@ class _EditShippingState extends State<EditShipping> {
                             decoration: InputDecoration(
                                 labelText: 'Peso Bruto - Destino',
                                 icon: Icon(Icons.filter_3)),
-                            enabled: false,
+                            enabled: true,
                           ),
                         ],
                       ),
@@ -244,7 +244,7 @@ class _EditShippingState extends State<EditShipping> {
                             decoration: InputDecoration(
                                 labelText: 'Peso Tara - Destino',
                                 icon: Icon(Icons.filter_3)),
-                            enabled: false,
+                            enabled: true,
                           ),
                         ],
                       ),

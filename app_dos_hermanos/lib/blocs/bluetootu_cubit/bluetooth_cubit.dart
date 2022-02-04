@@ -75,6 +75,9 @@ class BluetoothCubit extends Cubit<MyBluetoothState> {
   }
 
   void requestWeight({required String comand, required String patent, required String date}) async {
+    while (patent.length < 9) {
+      patent = patent + '_';
+    }
     print('Request Weight --> Comand:$comand, Patent:$patent, date: $date');
     try {
       connection.output.add(BluetoothRoutines.btSendBuffer(comand, patent, date));
