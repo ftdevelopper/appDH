@@ -1,4 +1,5 @@
 import 'package:app_dos_hermanos/blocs/bluetootu_cubit/bluetooth_cubit.dart';
+import 'package:app_dos_hermanos/classes/lote.dart';
 import 'package:app_dos_hermanos/classes/shipping.dart';
 import 'package:app_dos_hermanos/local_repository/local_data_base.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
@@ -7,6 +8,7 @@ import 'package:app_dos_hermanos/validations/new_shipping_validators.dart';
 import 'package:app_dos_hermanos/widgets/shipping_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:intl/intl.dart';
 
 // ignore: must_be_immutable
@@ -32,7 +34,10 @@ class _EditShippingState extends State<EditShipping> {
   late String _formatedDate;
 
   late TextEditingController _humidityController;
+  late TextEditingController _riceController;
+  late TextEditingController _loteController;
   late String riceValue = 'Tipo de Arroz';
+  late List<Lote> lotesDB;
 
   @override
   void initState() {
@@ -40,6 +45,9 @@ class _EditShippingState extends State<EditShipping> {
     _date = DateTime.now();
     _formatedDate = DateFormat('yyyy-MM-dd kk:mm').format(_date);
     _humidityController = TextEditingController();
+    lotesDB = widget.localDataBase.loteDB;
+    _loteController = TextEditingController();
+    _riceController = TextEditingController();
     super.initState();
   }
 
@@ -96,48 +104,61 @@ class _EditShippingState extends State<EditShipping> {
                     if (_shipping.shippingState == ShippingStatus.newShipping)
                       Column(
                         children: [
+                          TypeAheadField(
+                            textFieldConfiguration: TextFieldConfiguration(
+                              controller: this._loteController,
+                              decoration: InputDecoration(
+                                  labelText: 'Lote',
+                                  border: InputBorder.none,
+                                  icon: Icon(Icons.document_scanner),
+                              ),
+                            ),
+                            suggestionsCallback: (pattern) {
+                              List<String?> lotes = [];
+                              lotesDB.forEach((lote) {
+                                if (lote.lote.toLowerCase().contains(
+                                    _loteController.text.toLowerCase()))
+                                  lotes.add(lote.lote);
+                              });
+                              return lotes;
+                            },
+                            itemBuilder: (context, String? suggestion) {
+                              return ListTile(
+                                title: Text(suggestion!),
+                              );
+                            },
+                            noItemsFoundBuilder: (context) {
+                              return ListTile(
+                                leading: Icon(Icons.add),
+                                title: Text('No se encontro lote'),
+                                onTap: () {},
+                              );
+                            },
+                            transitionBuilder:
+                                (context, suggestionsBox, controller) {
+                              return suggestionsBox;
+                            },
+                            onSuggestionSelected: (String? suggestion) {
+                              _loteController.text = suggestion!;
+                              setState(() {  
+                                _riceController.text = lotesDB
+                                    .firstWhere((element) =>
+                                        element.lote ==
+                                        suggestion)
+                                    .riceType;
+                              });
+                              print('Tipo de arroz: ${_riceController.text}');
+                            },
+                          ),
                           Divider(),
-                          DropdownButtonFormField<String>(
-                            value: riceValue,
+                          TextFormField(
+                            enabled: false,
+                            controller: _riceController,
                             decoration: InputDecoration(
                                 labelText: 'Tipo de arroz',
                                 border: InputBorder.none,
                                 icon: Icon(Icons.rice_bowl)),
                             style: TextStyle(fontSize: 14, color: Colors.black),
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            validator: (_) {
-                              return NewShippingValidator.isRiceValid(
-                                  riceValue);
-                            },
-                            onChanged: (dynamic newValue) {
-                              setState(() {
-                                riceValue = newValue;
-                              });
-                            },
-                            items: widget.localDataBase.riceDB
-                                .map<DropdownMenuItem<String>>((value) {
-                              return DropdownMenuItem<String>(
-                                value: value.type,
-                                child: Text(
-                                  value.type,
-                                  overflow: TextOverflow.visible,
-                                ),
-                              );
-                            }).toList(),
-                            selectedItemBuilder: (context) {
-                              return widget.localDataBase.riceDB
-                                  .map((value) => Container(
-                                        child: Text(value.type,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                            softWrap: true),
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.7,
-                                      ))
-                                  .toList();
-                            },
                           ),
                           Divider(),
                           TextFormField(
@@ -274,18 +295,37 @@ class _EditShippingState extends State<EditShipping> {
                           case ShippingStatus.newShipping:
                             _shipping.remiterFullWeight = state.data;
                             _shipping.humidity = _humidityController.text;
-                            _shipping.remiterWetWeight = (double.tryParse(_shipping.remiterFullWeight!)! - double.tryParse(_shipping.remiterTara!)!).toStringAsFixed(3);
-                            _shipping.remiterDryWeight = _shipping.getDryWeight(humidity: double.tryParse(_shipping.humidity!)!, weight: double.tryParse(_shipping.remiterWetWeight!)!).toStringAsFixed(3);
-                          break;
+                            _shipping.remiterWetWeight = (double.tryParse(
+                                        _shipping.remiterFullWeight ?? '0')! -
+                                    double.tryParse(_shipping.remiterTara ?? '0')!)
+                                .toStringAsFixed(3);
+                            _shipping.remiterDryWeight = _shipping
+                                .getDryWeight(
+                                    humidity:
+                                        double.tryParse(_shipping.humidity ?? '0')!,
+                                    weight: double.tryParse(
+                                        _shipping.remiterWetWeight ?? '0')!)
+                                .toStringAsFixed(3);
+                            break;
                           case ShippingStatus.inTravelShipping:
                             _shipping.reciverFullWeight = state.data;
-                          break;
+                            break;
                           case ShippingStatus.downloadedShipping:
                             _shipping.reciverTara = state.data;
-                            _shipping.reciverWetWeight = (double.tryParse(_shipping.reciverFullWeight!)! - double.tryParse(_shipping.reciverTara!)!).toString();
-                            _shipping.reciverDryWeight = _shipping.getDryWeight(humidity: double.tryParse(_shipping.humidity!)!, weight: double.tryParse(_shipping.reciverWetWeight!)!).toStringAsFixed(3);
-                          break;
-                          default: break;
+                            _shipping.reciverWetWeight = (double.tryParse(
+                                        _shipping.reciverFullWeight ?? '0')! -
+                                    double.tryParse(_shipping.reciverTara ?? '0')!)
+                                .toString();
+                            _shipping.reciverDryWeight = _shipping
+                                .getDryWeight(
+                                    humidity:
+                                        double.tryParse(_shipping.humidity ?? '0')!,
+                                    weight: double.tryParse(
+                                        _shipping.reciverWetWeight ?? '0')!)
+                                .toStringAsFixed(3);
+                            break;
+                          default:
+                            break;
                         }
                         _showConfirmationAlert();
                       },
@@ -326,7 +366,8 @@ class _EditShippingState extends State<EditShipping> {
                     data: widget.authenticationRepository.user.location.name),
                 ShippingData(title: 'Arroz', data: riceValue),
                 if (_shipping.shippingState == ShippingStatus.newShipping)
-                ShippingData(title: 'Humedad', data: _humidityController.text),
+                  ShippingData(
+                      title: 'Humedad', data: _humidityController.text),
                 ShippingData(title: 'Chofer', data: _shipping.driverName),
                 ShippingData(title: 'Camion', data: _shipping.truckPatent),
                 ShippingData(title: 'Chasis', data: _shipping.chasisPatent),
@@ -375,14 +416,23 @@ class _EditShippingState extends State<EditShipping> {
                   onPressed: () {
                     switch (_shipping.shippingState) {
                       case ShippingStatus.newShipping:
-                        _shipping.addAction(action: 'Peso Bruto Inicial', user: widget.authenticationRepository.user.id, date: _formatedDate);
-                      break;
+                        _shipping.addAction(
+                            action: 'Peso Bruto Inicial',
+                            user: widget.authenticationRepository.user.id,
+                            date: _formatedDate);
+                        break;
                       case ShippingStatus.inTravelShipping:
-                        _shipping.addAction(action: 'Peso Bruto Recepcion', user: widget.authenticationRepository.user.id, date: _formatedDate);
-                      break;
+                        _shipping.addAction(
+                            action: 'Peso Bruto Recepcion',
+                            user: widget.authenticationRepository.user.id,
+                            date: _formatedDate);
+                        break;
                       case ShippingStatus.downloadedShipping:
-                        _shipping.addAction(action: 'Taro Recepcion', user: widget.authenticationRepository.user.id, date: _formatedDate);
-                      break;
+                        _shipping.addAction(
+                            action: 'Taro Recepcion',
+                            user: widget.authenticationRepository.user.id,
+                            date: _formatedDate);
+                        break;
                       default:
                     }
                     uploadShipping();
@@ -411,8 +461,9 @@ class _EditShippingState extends State<EditShipping> {
         _shipping.remiterFullWeightTime = _date;
         _shipping.remiterFullWeightUser =
             widget.authenticationRepository.user.id;
-        _shipping.riceType = riceValue;
+        _shipping.riceType = _riceController.text;
         _shipping.humidity = _humidityController.text;
+        _shipping.lote = _loteController.text;
         break;
       case ShippingStatus.inTravelShipping:
         _shipping.reciverFullWeightTime = _date;

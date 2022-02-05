@@ -22,7 +22,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'blocs/authentication_bloc/authenticaiton_bloc.dart';
 import 'blocs/drawer_bloc/drawer_bloc.dart';
 import 'blocs/simple_bloc_observer.dart';
-import 'classes/rice.dart';
+import 'classes/lote.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,7 +31,7 @@ void main() async {
   BlocOverrides.runZoned(() async {
     LocalDataBase localDataBase = LocalDataBase(
       locationDB: [Location(name: 'SELECCIONAR')], 
-      riceDB: [Rice(type:'Tipo de Arroz'),], 
+      loteDB: [Lote(riceType:'Tipo de Arroz', lote: 'lote'),], 
       driversDB: [Driver(active: false, chasisPatent: '',code: '',company: '',name: '',patent: '')]
     );
     await localDataBase.loadDB();

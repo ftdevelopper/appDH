@@ -3,20 +3,20 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:app_dos_hermanos/classes/drivers.dart';
 import 'package:app_dos_hermanos/classes/locations.dart';
-import 'package:app_dos_hermanos/classes/rice.dart';
+import 'package:app_dos_hermanos/classes/lote.dart';
 import 'package:path_provider/path_provider.dart';
 
 class LocalDataBase {
   // Listas de objetos a guardar en DB
-  List<Rice> riceDB;
+  List<Lote> loteDB;
   List<Location> locationDB;
   List<Driver> driversDB;
 
-  LocalDataBase({required this.locationDB, required this.riceDB, required this.driversDB});
+  LocalDataBase({required this.locationDB, required this.loteDB, required this.driversDB});
 
   // Transformar las listas de objetos a formato Json como distintos valores de un Mapa
   Map<String, dynamic> toJson() => {
-    "riceTypes": List<dynamic>.from(riceDB.map((riceType) => riceType.toJson())),
+    "riceTypes": List<dynamic>.from(loteDB.map((lote) => lote.toJson())),
     "locations": List<dynamic>.from(locationDB.map((locaiton) => locaiton.toJson())),
     "drivers": List<dynamic>.from(driversDB.map((driver) => driver.toJson())),
   };
@@ -25,7 +25,7 @@ class LocalDataBase {
   // Construye la base de datos desde el json guardado en el dispositivo.
   factory LocalDataBase.fromJson(Map<String, dynamic> jsonDB) {
     return LocalDataBase(
-      riceDB: List<Rice>.from(jsonDB["riceTypes"].map((element) => Rice.fromJson(element))),
+      loteDB: List<Lote>.from(jsonDB["riceTypes"].map((element) => Lote.fromJson(element))),
       locationDB: List<Location>.from(jsonDB["locations"].map((element) => Location.fromJson(element))),
       driversDB: List<Driver>.from(jsonDB["drivers"].map((element) => Driver.fromJson(element))),
     );
@@ -35,8 +35,8 @@ class LocalDataBase {
     try {
       await DataBaseFileRoutines().readDataBase().then((jsonDB) {
         LocalDataBase _localDabtaBase = databaseFromJson(jsonDB);
-        riceDB = _localDabtaBase.riceDB;
-        print('riceBD: $riceDB');
+        loteDB = _localDabtaBase.loteDB;
+        print('loteBD: $loteDB');
         locationDB = _localDabtaBase.locationDB;
         print('locationDB: $locationDB');
         driversDB = _localDabtaBase.driversDB;

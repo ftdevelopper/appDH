@@ -1,17 +1,20 @@
-class Rice {
-  final String type;
+class Lote {
+  final String riceType;
+  final String lote;
 
-  Rice({required this.type});
+  Lote({required this.riceType, required this.lote});
 
-  factory Rice.fromJson(Map<String, dynamic> json){
-    return Rice(
-      type: json["type"]
+  factory Lote.fromJson(Map<String, dynamic> json){
+    return Lote(
+      riceType: json["variedad"],
+      lote: json["lote"].toString()
     );
   }
 
   Map<String, String> toJson(){
     return {
-      "type":type,
+      "riceType":riceType,
+      "lote": lote,
     };
   }
 

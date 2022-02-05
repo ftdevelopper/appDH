@@ -62,6 +62,7 @@ class ShippingRepository {
       'actions': json.encode(shipping.actions),
       'userActions': json.encode(shipping.userActions),
       'dateActions': json.encode(shipping.dateActions),
+      'lote': shipping.lote ?? '',
     };
     return _shippingMap;
   }

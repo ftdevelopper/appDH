@@ -19,6 +19,7 @@ class Shipping {
   List<dynamic>? dateActions;
   String? remiterWetWeight, remiterDryWeight;
   String? reciverWetWeight, reciverDryWeight;
+  String? lote;
 
   bool isOnLine;
 
@@ -35,7 +36,8 @@ class Shipping {
     this. actions, this.userActions, this.dateActions,
     this.remiterWetWeight, this.remiterDryWeight,
     this.reciverWetWeight, this.reciverDryWeight,
-    required this.isOnLine
+    required this.isOnLine,
+    this.lote,
   });
 
   static Shipping fromSnapShot(DocumentSnapshot snapshot) {
@@ -72,6 +74,7 @@ class Shipping {
       remiterDryWeight: data['remiterDryWeight'],
       remiterWetWeight: data['remiterWetWeight'],
       isOnLine: json.decode(data['isOnLine'] ?? 'true'),
+      lote: data['lote'],
     );
   }
 

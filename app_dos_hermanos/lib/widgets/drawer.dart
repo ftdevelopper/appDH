@@ -4,7 +4,7 @@ import 'package:app_dos_hermanos/blocs/authentication_bloc/authenticaiton_bloc.d
 import 'package:app_dos_hermanos/blocs/drawer_bloc/drawer_bloc.dart';
 import 'package:app_dos_hermanos/classes/drivers.dart';
 import 'package:app_dos_hermanos/classes/locations.dart';
-import 'package:app_dos_hermanos/classes/rice.dart';
+import 'package:app_dos_hermanos/classes/lote.dart';
 import 'package:app_dos_hermanos/classes/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -93,8 +93,8 @@ class LoadedDrawer extends StatelessWidget {
                   leading: Icon(Icons.person),
                 ),
                 ListTile(
-                  title: Text('Tipos de Arroz:'),
-                  subtitle: Text('Toque para ver los tipos de arroz'),
+                  title: Text('Lotes:'),
+                  subtitle: Text('Toque para ver los lotes y tipos de arroz'),
                   leading: Icon(Icons.rice_bowl_rounded),
                   onTap: () {
                     _showRiceTypes(context);
@@ -281,7 +281,7 @@ class LoadedDrawer extends StatelessWidget {
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
             title: Text(
-              'Tipos de Arroz',
+              'Lotes',
               textAlign: TextAlign.center,
             ),
             actionsPadding: EdgeInsets.zero,
@@ -305,13 +305,14 @@ class LoadedDrawer extends StatelessWidget {
                   if (state is LoadingRices) {
                     return Center(child: CircularProgressIndicator());
                   } else {
-                    List<Rice> rices = state.localDataBase.riceDB;
+                    List<Lote> lote = state.localDataBase.loteDB;
                     return ListView.builder(
-                      itemCount: rices.length,
+                      itemCount: lote.length,
                       itemBuilder: (_, index) {
                         return ListTile(
                           leading: Icon(Icons.rice_bowl_rounded),
-                          title: Text(rices[index].type),
+                          title: Text(lote[index].lote),
+                          subtitle: Text(lote[index].riceType),
                         );
                       },
                     );
