@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:app_dos_hermanos/classes/drivers.dart';
 import 'package:app_dos_hermanos/classes/locations.dart';
 import 'package:app_dos_hermanos/classes/lote.dart';
+import 'package:app_dos_hermanos/classes/shipping.dart';
 import 'package:path_provider/path_provider.dart';
 
 class LocalDataBase {
@@ -11,14 +12,16 @@ class LocalDataBase {
   List<Lote> loteDB;
   List<Location> locationDB;
   List<Driver> driversDB;
+  List<Shipping> shippingsDB;
 
-  LocalDataBase({required this.locationDB, required this.loteDB, required this.driversDB});
+  LocalDataBase({required this.locationDB, required this.loteDB, required this.driversDB, required this.shippingsDB});
 
   // Transformar las listas de objetos a formato Json como distintos valores de un Mapa
   Map<String, dynamic> toJson() => {
     "riceTypes": List<dynamic>.from(loteDB.map((lote) => lote.toJson())),
     "locations": List<dynamic>.from(locationDB.map((locaiton) => locaiton.toJson())),
     "drivers": List<dynamic>.from(driversDB.map((driver) => driver.toJson())),
+    "shippings": List<dynamic>.from(shippingsDB.map((shipping) => shipping.toJson()))
   };
 
 
@@ -28,6 +31,7 @@ class LocalDataBase {
       loteDB: List<Lote>.from(jsonDB["riceTypes"].map((element) => Lote.fromJson(element))),
       locationDB: List<Location>.from(jsonDB["locations"].map((element) => Location.fromJson(element))),
       driversDB: List<Driver>.from(jsonDB["drivers"].map((element) => Driver.fromJson(element))),
+      shippingsDB: List<Shipping>.from(jsonDB["shippings"].map((element) => Shipping.fromJson(element)))
     );
   }
 
@@ -41,11 +45,22 @@ class LocalDataBase {
         print('locationDB: $locationDB');
         driversDB = _localDabtaBase.driversDB;
         print('driversDB: $driversDB');
+        shippingsDB = _localDabtaBase.shippingsDB;
+        print('shpping in local memory: $shippingsDB');
       });  
     } catch (e) {
       print(e);
     }
     
+  }
+
+  factory LocalDataBase.empty(){
+    return LocalDataBase(
+      locationDB: [],
+      loteDB: [],
+      driversDB: [],
+      shippingsDB: [],
+    );
   }
 }
 
@@ -83,7 +98,7 @@ class DataBaseFileRoutines {
       final file = await _localFile;
       if(!file.existsSync()){
         print('File does not exist: ${file.absolute}');
-        await writeDataBase('{"locations:[{"name":name}]","riceTypes":["type":type],"drivers":["driver": driver]}');
+        await writeDataBase('{"locations":[{"name":name}],"riceTypes":["type":type],"drivers":["driver": driver],"shippings":["shipping": shipping]}');
       }
       String content = await file.readAsString();
       return content;

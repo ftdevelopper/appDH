@@ -3,8 +3,6 @@ import 'package:app_dos_hermanos/blocs/filter_bloc/filter_bloc.dart';
 import 'package:app_dos_hermanos/blocs/internet_cubit/internet_cubit.dart';
 import 'package:app_dos_hermanos/blocs/login_bloc/login_bloc.dart';
 import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
-import 'package:app_dos_hermanos/classes/drivers.dart';
-import 'package:app_dos_hermanos/classes/locations.dart';
 import 'package:app_dos_hermanos/classes/user.dart';
 import 'package:app_dos_hermanos/local_repository/local_data_base.dart';
 import 'package:app_dos_hermanos/pages/login/login.dart';
@@ -18,22 +16,16 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'blocs/authentication_bloc/authenticaiton_bloc.dart';
 import 'blocs/drawer_bloc/drawer_bloc.dart';
 import 'blocs/simple_bloc_observer.dart';
-import 'classes/lote.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   EquatableConfig.stringify = kDebugMode;
   BlocOverrides.runZoned(() async {
-    LocalDataBase localDataBase = LocalDataBase(
-      locationDB: [Location(name: 'SELECCIONAR')], 
-      loteDB: [Lote(riceType:'Tipo de Arroz', lote: 'lote'),], 
-      driversDB: [Driver(active: false, chasisPatent: '',code: '',company: '',name: '',patent: '')]
-    );
+    LocalDataBase localDataBase = LocalDataBase.empty();
     await localDataBase.loadDB();
     runApp(MyApp(authenticationRepository: AuthenticationRepository(user: User.empty()), localDataBase: localDataBase,));
   }, blocObserver: SimpleBlocObserver());

@@ -153,6 +153,81 @@ class Shipping {
       break;
     }
   }
+
+  static Shipping fromJson(Map<String, dynamic> jsonShipping){
+    return Shipping(
+      shippingState: statusFromString(jsonShipping['shippingState']),
+      truckPatent: jsonShipping['truckPatent'],
+      driverName: jsonShipping['driverName'],
+      chasisPatent: jsonShipping['chasisPatent'],
+      remiterFullWeight: jsonShipping['remiterFullWeight'],
+      remiterFullWeightTime: DateTime.tryParse(jsonShipping['remiterFullWeightTime']),
+      remiterFullWeightUser: jsonShipping['remiterFullWeightUser'],
+      remiterLocation: jsonShipping['remiterLocation'],
+      remiterTara: jsonShipping['remiterTara'],
+      remiterTaraTime: DateTime.tryParse(jsonShipping['remiterTaraTime']),
+      remiterTaraUser: jsonShipping['remiterTaraUser'],
+      reciverFullWeight: jsonShipping['reciverFullWeight'],
+      reciverFullWeightTime: DateTime.tryParse(jsonShipping['reciverFullWeightTime']),
+      reciverFullWeightUser: jsonShipping['reciverFullWeightUser'],
+      reciverLocation: jsonShipping['reciverLocation'],
+      reciverTara: jsonShipping['reciverTara'],
+      reciverTaraTime: DateTime.tryParse(jsonShipping['reciverTaraTime']),
+      reciverTaraUser: jsonShipping['reciverTaraUser'],
+      riceType: jsonShipping['riceType'],
+      id: jsonShipping['id'],
+      crop: jsonShipping['crop'],
+      departure: jsonShipping['departure'],
+      humidity: jsonShipping['humidity'],
+      actions: json.decode(jsonShipping['actions'] ?? '[]'),
+      userActions: json.decode(jsonShipping['userActions'] ?? '[]'),
+      dateActions: json.decode(jsonShipping['dateActions'] ?? '[]'),
+      reciverDryWeight: jsonShipping['reciverDryWeight'],
+      reciverWetWeight: jsonShipping['reciverWetWeight'],
+      remiterDryWeight: jsonShipping['remiterDryWeight'],
+      remiterWetWeight: jsonShipping['remiterWetWeight'],
+      isOnLine: json.decode(jsonShipping['isOnLine'] ?? 'true'),
+      lote: jsonShipping['lote'],
+    );
+  }
+
+  Map<String, String> toJson(){
+    Map<String, String> jsonShipping = {
+      "shippingState": shippingState.toString(),
+      "truckPatent": truckPatent,
+      "driverName": driverName,
+      "chasisPatent": chasisPatent,
+      "remiterFullWeight": remiterFullWeight ?? '',
+      "remiterFullWeightTime": remiterFullWeightTime.toString(),
+      "remiterFullWeightUser": remiterFullWeightUser ?? '',
+      "remiterLocation": remiterLocation ?? '',
+      "remiterTara": remiterTara ?? '',
+      "remiterTaraTime": remiterTaraTime.toString(),
+      "remiterTaraUser": remiterTaraUser ?? '',
+      "reciverFullWeight": reciverFullWeight ?? '',
+      "reciverFullWeightTime": reciverFullWeightTime.toString(),
+      "reciverFullWeightUser": reciverFullWeightUser ?? '',
+      "reciverLocation": reciverLocation ?? '',
+      "reciverTara": reciverTara ?? '',
+      "reciverTaraTime": reciverTaraTime.toString(),
+      "reciverTaraUser": reciverTaraUser ?? '',
+      "riceType": riceType ?? '',
+      "id": id ?? '',
+      "crop": crop ?? '',
+      "departure": departure ?? '',
+      "humidity": humidity ?? '',
+      "actions": json.encode(actions),
+      "userActions": json.encode(userActions),
+      "dateActions": json.encode(dateActions),
+      "reciverDryWeight": reciverDryWeight ?? '',
+      "reciverWetWeight": reciverWetWeight ?? '',
+      "remiterDryWeight": remiterDryWeight ?? '',
+      "remiterWetWeight": remiterWetWeight ?? '',
+      "isOnLine": json.encode(isOnLine),
+      "lote": lote ?? '',
+    };
+    return jsonShipping;
+  }
 }
 
 ShippingStatus statusFromString(String string){
