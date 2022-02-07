@@ -1,11 +1,12 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 enum ShippingStatus{newShipping, completedShipping, inTravelShipping, downloadedShipping, unknownStatus, deletedShipping}
 
-class Shipping {
+class Shipping extends Equatable{
   String truckPatent, chasisPatent, driverName;
   ShippingStatus shippingState;
   String? remiterTara, remiterFullWeight, reciverTara, reciverFullWeight;
@@ -193,7 +194,7 @@ class Shipping {
 
   Map<String, String> toJson(){
     Map<String, String> jsonShipping = {
-      "shippingState": shippingState.toString(),
+      "shippingState": getStatus,
       "truckPatent": truckPatent,
       "driverName": driverName,
       "chasisPatent": chasisPatent,
@@ -228,6 +229,9 @@ class Shipping {
     };
     return jsonShipping;
   }
+
+  @override
+  List<Object?> get props => [this.remiterTaraTime, this.driverName, this.remiterTara, this.shippingState, this.isOnLine];
 }
 
 ShippingStatus statusFromString(String string){

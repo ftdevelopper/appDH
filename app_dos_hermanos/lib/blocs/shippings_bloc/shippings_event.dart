@@ -10,7 +10,7 @@ abstract class ShippingsEvent extends Equatable{
 
 class LoadShippings extends ShippingsEvent {
   LoadShippings({this.filter});
-  Filter? filter;
+  final Filter? filter;
 
   @override
   List<Object?> get props => [filter];
@@ -38,4 +38,13 @@ class ShippingsUpdated extends ShippingsEvent {
 
   @override
   String toString() => 'Updated Shippings';
+}
+
+class UpdateShipping extends ShippingsEvent {
+  UpdateShipping({required this.shipping});
+
+  final Shipping shipping;
+
+  @override
+  List<Object?> get props => [shipping];
 }

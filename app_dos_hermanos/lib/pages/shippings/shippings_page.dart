@@ -57,73 +57,75 @@ class _ShippingsPageState extends State<ShippingsPage>
             length: 5,
             initialIndex: 0,
             child: Scaffold(
-                appBar: AppBar(
-                  title: Text('Envios'),
-                  centerTitle: true,
-                  bottom: TabBar(
-                    controller: _tabController,
-                    tabs: <Widget>[
-                      Tab(text: 'Todo', icon: Icon(Icons.home)),
-                      Tab(text: 'Nuevo', icon: Icon(Icons.fiber_new_outlined)),
-                      Tab(text: 'En Camino', icon: Icon(Icons.send)),
-                      Tab(text: 'Recivido', icon: Icon(Icons.call_received)),
-                      Tab(text: 'Conpletado', icon: Icon(Icons.done))
-                    ],
-                  ),
-                  actions: <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.filter_alt_rounded),
-                      onPressed: () {
-                        _showFilter(context);
-                      },
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.bluetooth,
-                        color: (state is ConnectedBluetooth)
-                            ? Colors.blue
-                            : Colors.grey,
-                      ),
-                      onPressed: () async {
-                        if (state is ConnectedBluetooth) {
-                          BlocProvider.of<BluetoothCubit>(context).disconectBluetooth();
-                        } else {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => DiscoveryPage()));
-                        }
-                      },
-                    ),
+              appBar: AppBar(
+                title: Text('Envios'),
+                centerTitle: true,
+                bottom: TabBar(
+                  controller: _tabController,
+                  tabs: <Widget>[
+                    Tab(text: 'Todo', icon: Icon(Icons.home)),
+                    Tab(text: 'Nuevo', icon: Icon(Icons.fiber_new_outlined)),
+                    Tab(text: 'En Camino', icon: Icon(Icons.send)),
+                    Tab(text: 'Recivido', icon: Icon(Icons.call_received)),
+                    Tab(text: 'Conpletado', icon: Icon(Icons.done))
                   ],
                 ),
-                body: BlocBuilder<ShippingsBloc, ShippingsState>(
-                    builder: (context, state) {
-                  if (state is ShippingsLoading) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  if (state is ShippingsNotLoaded) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Icon(Icons.error),
-                          Text('No se pudieron cargar los envios'),
-                          ElevatedButton(
-                            onPressed: () {
-                              BlocProvider.of<ShippingsBloc>(context)
-                                  .add(LoadShippings());
-                            },
-                            child: Text('Recargar'),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                  if (state is ShippingsLoaded) {
-                    shippingList = state.shippings;
-                    return TabBarView(controller: _tabController, children: <
-                        Widget>[
+                actions: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.filter_alt_rounded),
+                    onPressed: () {
+                      _showFilter(context);
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.bluetooth,
+                      color: (state is ConnectedBluetooth)
+                          ? Colors.blue
+                          : Colors.grey,
+                    ),
+                    onPressed: () async {
+                      if (state is ConnectedBluetooth) {
+                        BlocProvider.of<BluetoothCubit>(context)
+                            .disconectBluetooth();
+                      } else {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => DiscoveryPage()));
+                      }
+                    },
+                  ),
+                ],
+              ),
+              body: BlocBuilder<ShippingsBloc, ShippingsState>(
+                  builder: (context, state) {
+                if (state is ShippingsLoading) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (state is ShippingsNotLoaded) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(Icons.error),
+                        Text('No se pudieron cargar los envios'),
+                        ElevatedButton(
+                          onPressed: () {
+                            BlocProvider.of<ShippingsBloc>(context)
+                                .add(LoadShippings());
+                          },
+                          child: Text('Recargar'),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                if (state is ShippingsLoaded) {
+                  shippingList = state.shippings;
+                  return TabBarView(
+                    controller: _tabController,
+                    children: <Widget>[
                       Container(
                           child: shippingList.length == 0
                               ? Center(
@@ -206,49 +208,52 @@ class _ShippingsPageState extends State<ShippingsPage>
                                       },
                                     )),
                       Container(
-                          child:
-                              filterShippings(ShippingStatus.completedShipping)
-                                          .length ==
-                                      0
-                                  ? Center(
-                                      child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                          Text('No hay envios completados'),
-                                        ]))
-                                  : ListView.builder(
-                                      itemCount: filterShippings(
-                                              ShippingStatus.completedShipping)
-                                          .length,
-                                      itemBuilder: (_, index) {
-                                        return shippingsUI(
-                                            filterShippings(ShippingStatus
-                                                .completedShipping)[index],
-                                            context);
-                                      },
-                                    )),
-                    ]);
-                  } else {
-                    return Container();
+                        child: filterShippings(ShippingStatus.completedShipping)
+                                    .length ==
+                                0
+                            ? Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text('No hay envios completados'),
+                                  ],
+                                ),
+                              )
+                            : ListView.builder(
+                                itemCount: filterShippings(
+                                        ShippingStatus.completedShipping)
+                                    .length,
+                                itemBuilder: (_, index) {
+                                  return shippingsUI(
+                                    filterShippings(ShippingStatus
+                                        .completedShipping)[index],
+                                    context,
+                                  );
+                                },
+                              ),
+                      ),
+                    ],
+                  );
+                } else {
+                  return Container();
+                }
+              }),
+              floatingActionButton: FloatingActionButton(
+                child: Icon(Icons.add_box_outlined),
+                onPressed: () {
+                  if (_tabController.index <= 1) {
+                    Navigator.of(context).push<void>(MaterialPageRoute(
+                        builder: (_) => NewShipping(
+                              localDataBase: widget.localDataBase,
+                              authenticationRepository:
+                                  widget.authenticationRepository,
+                            )));
                   }
-                }),
-                floatingActionButton: FloatingActionButton(
-                  child: Icon(Icons.add_box_outlined),
-                  onPressed: () {
-                    if (_tabController.index <= 1) {
-                      Navigator.of(context).push<void>(MaterialPageRoute(
-                          builder: (_) => NewShipping(
-                                localDataBase: widget.localDataBase,
-                                authenticationRepository:
-                                    widget.authenticationRepository,
-                              )));
-                    }
-                  },
-                  tooltip: 'Nuevo Envio',
-                ),
-                drawer: BlocBuilder<DrawerBloc, DrawerState>(
-                    builder: (context, state) {
+                },
+                tooltip: 'Nuevo Envio',
+              ),
+              drawer: BlocBuilder<DrawerBloc, DrawerState>(
+                builder: (context, state) {
                   if (state is LoadingDrawer) {
                     return Drawer(
                       child: Center(child: CircularProgressIndicator()),
@@ -284,6 +289,8 @@ class _ShippingsPageState extends State<ShippingsPage>
                     'Patente: ${shipping.truckPatent}',
                     style: TextStyle(color: Colors.black),
                   ),
+                  if(!shipping.isOnLine)
+                  Icon(Icons.warning, color: Colors.red)
                 ],
               ),
               Text(
@@ -342,7 +349,8 @@ class _ShippingsPageState extends State<ShippingsPage>
                         value: state.filter.duration!.inDays,
                         step: 1,
                         onChanged: (newValue) {
-                          context.read<FilterBloc>()
+                          context
+                              .read<FilterBloc>()
                               .add(ChangeDays(days: newValue));
                         },
                       ),
@@ -418,10 +426,9 @@ class _ShippingsPageState extends State<ShippingsPage>
                         child: Text('Guardar y Filtrar'),
                         onPressed: () {
                           Navigator.pop(context);
-                          context.read<ShippingsBloc>().add(
-                              LoadShippings(
-                                filter: state.filter
-                              ));
+                          context
+                              .read<ShippingsBloc>()
+                              .add(LoadShippings(filter: state.filter));
                         },
                       ),
                     ],

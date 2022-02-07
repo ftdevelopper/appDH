@@ -62,6 +62,8 @@ class _AppViewState extends State<AppView> {
 
   NavigatorState? get _navigator => _navigatorKey.currentState;
 
+  InternetCubit internetCubit = InternetCubit();
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -69,8 +71,8 @@ class _AppViewState extends State<AppView> {
         BlocProvider(create: (context) => AuthenticationBloc(authenticationRepository: widget.authenticationRepository)),
         BlocProvider(create: (context) => LoginBloc(authenticationRepository: widget.authenticationRepository)),
         //BlocProvider(create: (context) => RegisterBloc(authenticationRepository: widget.authenticationRepository)),
-        BlocProvider(create: (context) => InternetCubit()),
-        BlocProvider(create: (context) => ShippingsBloc(shippingRepository: widget.shippingRepository)),
+        BlocProvider(create: (context) => internetCubit),
+        BlocProvider(create: (context) => ShippingsBloc(shippingRepository: widget.shippingRepository, localDataBase: widget.localDataBase,internetCubit: this.internetCubit)),
         BlocProvider(create: (context) => FilterBloc()),
         BlocProvider(create: (context) => DrawerBloc(authenticationRepository: widget.authenticationRepository, localDataBase: widget.localDataBase)),
         BlocProvider(create: (context) => BluetoothCubit())
@@ -80,11 +82,11 @@ class _AppViewState extends State<AppView> {
           navigatorKey: _navigatorKey,
           debugShowCheckedModeBanner: false,
           builder: (context, child) {
-            BlocProvider.of<ShippingsBloc>(context).add(LoadShippings());
             return BlocListener<AuthenticationBloc, AuthenticationState>(
               listener: (context, state) {
                 switch (state.status) {
                   case AuthenticationStatus.authenticated:
+                    context.read<ShippingsBloc>().add(LoadShippings());
                     _navigator!.pushAndRemoveUntil<void>(MaterialPageRoute(builder: (_) => ShippingsPage(authenticationRepository: widget.authenticationRepository, localDataBase: widget.localDataBase,)), (route) => false);
                   break;
                   case AuthenticationStatus.unknown:

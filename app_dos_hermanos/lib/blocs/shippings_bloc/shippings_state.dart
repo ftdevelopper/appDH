@@ -2,28 +2,29 @@ part of 'shippings_bloc.dart';
 
 @immutable
 abstract class ShippingsState extends Equatable {
-  ShippingsState({this.filter});
-
+  ShippingsState({this.filter, required this.shippingList});
+  List<Shipping> shippingList;
   Filter? filter;
   @override
-  List<Object?> get props => [filter];
+  List<Object?> get props => [filter, shippingList];
 }
 
 class ShippingsInitial extends ShippingsState {
-  ShippingsInitial() : super(filter: Filter());
+  ShippingsInitial() : super(filter: Filter(), shippingList: []);
   Filter? filter = Filter(duration: Duration(days: 3));
 }
 
 class ShippingsLoading extends ShippingsState {
-  ShippingsLoading({this.filter}) : super(filter: filter);
-
+  ShippingsLoading({this.filter, required this.shippingList}) : super(filter: filter, shippingList: shippingList);
+  
+  List<Shipping> shippingList;
   final Filter? filter;
   @override
   String toString() => 'Shippings Loading';
 }
 
 class ShippingsLoaded extends ShippingsState {
-  ShippingsLoaded({required this.shippings, this.filter});
+  ShippingsLoaded({required this.shippings, this.filter}) : super(shippingList: shippings, filter: filter);
 
   final List<Shipping> shippings;
   final Filter? filter;
@@ -36,7 +37,9 @@ class ShippingsLoaded extends ShippingsState {
 }
 
 class ShippingsNotLoaded extends ShippingsState {
-  ShippingsNotLoaded({this.filter}) : super(filter: filter);
+  ShippingsNotLoaded({this.filter, required this.shippingList}) : super(filter: filter, shippingList: shippingList);
+  
+  List<Shipping> shippingList;
   Filter? filter;
   @override
   String toString() => 'Shippings Not Loaded';

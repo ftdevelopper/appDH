@@ -312,7 +312,7 @@ class LoadedDrawer extends StatelessWidget {
                         return ListTile(
                           leading: Icon(Icons.rice_bowl_rounded),
                           title: Text(lote[index].lote),
-                          subtitle: Text(lote[index].riceType),
+                          subtitle: Text(lote[index].riceType.toString()),
                         );
                       },
                     );

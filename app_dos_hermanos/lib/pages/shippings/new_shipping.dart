@@ -65,7 +65,7 @@ class _NewShippingState extends State<NewShipping> {
 
     _shipping = widget.shipping ??
         Shipping(
-          isOnLine: false,
+          isOnLine: true,
             driverName: '',
             truckPatent: '',
             chasisPatent: '',
@@ -281,6 +281,9 @@ class _NewShippingState extends State<NewShipping> {
                           border: InputBorder.none,
                           icon: Icon(Icons.calendar_today_outlined)),
                       enabled: true,
+                      onChanged: (value){
+                        state.data = value;
+                      },
                     ),
                     Divider(),
                     Padding(

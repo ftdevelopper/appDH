@@ -1,4 +1,5 @@
 import 'package:app_dos_hermanos/blocs/bluetootu_cubit/bluetooth_cubit.dart';
+import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
 import 'package:app_dos_hermanos/classes/lote.dart';
 import 'package:app_dos_hermanos/classes/shipping.dart';
 import 'package:app_dos_hermanos/local_repository/local_data_base.dart';
@@ -195,6 +196,9 @@ class _EditShippingState extends State<EditShipping> {
                                 labelText: 'Peso Bruto - Procedencia',
                                 icon: Icon(Icons.filter_2)),
                             enabled: true,
+                            onChanged: (value){
+                              state.data = value;
+                            },
                           ),
                         ],
                       ),
@@ -226,6 +230,9 @@ class _EditShippingState extends State<EditShipping> {
                                 labelText: 'Peso Bruto - Destino',
                                 icon: Icon(Icons.filter_3)),
                             enabled: true,
+                            onChanged: (value){
+                              state.data = value;
+                            },
                           ),
                         ],
                       ),
@@ -266,6 +273,9 @@ class _EditShippingState extends State<EditShipping> {
                                 labelText: 'Peso Tara - Destino',
                                 icon: Icon(Icons.filter_3)),
                             enabled: true,
+                            onChanged: (value){
+                              state.data = value;
+                            },
                           ),
                         ],
                       ),
@@ -295,9 +305,9 @@ class _EditShippingState extends State<EditShipping> {
                           case ShippingStatus.newShipping:
                             _shipping.remiterFullWeight = state.data;
                             _shipping.humidity = _humidityController.text;
-                            _shipping.remiterWetWeight = (double.tryParse(
-                                        _shipping.remiterFullWeight ?? '0')! -
-                                    double.tryParse(_shipping.remiterTara ?? '0')!)
+                            _shipping.remiterWetWeight = ((double.tryParse(
+                                        _shipping.remiterFullWeight ?? '0') ?? 0) -
+                                    (double.tryParse(_shipping.remiterTara ?? '0') ?? 0))
                                 .toStringAsFixed(3);
                             _shipping.remiterDryWeight = _shipping
                                 .getDryWeight(
@@ -477,7 +487,7 @@ class _EditShippingState extends State<EditShipping> {
       default:
     }
     _shipping.nextStatus();
-    await ShippingRepository().updateParameter(shipping: _shipping);
+    context.read<ShippingsBloc>().add(UpdateShipping(shipping: _shipping));
     Navigator.pop(context);
   }
 
