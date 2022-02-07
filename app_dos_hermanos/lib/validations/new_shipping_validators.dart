@@ -3,9 +3,9 @@ import 'package:app_dos_hermanos/repository/drivers_repository.dart';
 class NewShippingValidator {
 
   static String? isHumidityValid(String value){
-    int intValue = int.parse(value);
+    double intValue = double.parse(value);
 
-    if (intValue <= 9 || intValue >= 35) {
+    if (intValue <= 12 || intValue >= 36) {
       return 'Rango de humedad invalido';
     } else {
       return null;
