@@ -44,6 +44,7 @@ class _NewShippingState extends State<NewShipping> {
 
   late DateTime _date;
   late String _formatedDate;
+  late String id;
 
   String cosechaValue = 'CAMPAÑA 20-21';
   String partidaValue = 'CAMPAÑA 20-21';
@@ -71,7 +72,8 @@ class _NewShippingState extends State<NewShipping> {
             chasisPatent: '',
             shippingState: ShippingStatus.newShipping);
     _date = DateTime.now();
-    _formatedDate = DateFormat('yyyy-MM-dd kk:mm').format(_date);
+    _formatedDate = DateFormat('yyyy-MM-dd kk:mm').format(_date).toString();
+    id = DateFormat('yy-MM-dd-kk:mm:ss').format(_date);
     _dateController = TextEditingController(text: _formatedDate);
     super.initState();
   }
@@ -387,9 +389,7 @@ class _NewShippingState extends State<NewShipping> {
   void uploadShipping() {
     _shipping.crop = cosechaValue;
     _shipping.departure = partidaValue;
-
     _shipping.reciverLocation = destination.name;
-
     _shipping.driverName = _driverNameController.text;
     _shipping.truckPatent = _truckPatentController.text;
     _shipping.chasisPatent = _chasisPatentController.text;
@@ -397,8 +397,8 @@ class _NewShippingState extends State<NewShipping> {
     _shipping.remiterTaraTime = _date;
     _shipping.truckPatent = _truckPatentController.text;
     _shipping.remiterLocation = _locationController.text;
+    _shipping.id = _shipping.truckPatent + this.id;
     _shipping.addAction(action: 'Taro', user: _userController.text, date: _formatedDate);
-
     BlocProvider.of<ShippingsBloc>(context)
         .add(AddShipping(shipping: _shipping));
     Navigator.pop(context);

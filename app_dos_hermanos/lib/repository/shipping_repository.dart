@@ -16,20 +16,18 @@ class ShippingRepository {
   }
 
   Future<void> putShipping(Shipping shipping) async {
-    await databaseReference.add(
-      _mapShipping(shipping, this.databaseReference.id)
-    ).then((value) {
-      databaseReference.doc(value.id).update({'id':value.id});
-    });
+    await databaseReference.doc(shipping.id).set(
+      _mapShipping(shipping)
+    );
   }
 
   Future<void> updateParameter({required Shipping shipping}) async {
     databaseReference.doc(shipping.id).update(
-      _mapShipping(shipping, shipping.id!)
+      _mapShipping(shipping)
     );
   }
 
-  Map<String, String>_mapShipping(Shipping shipping, String id){
+  Map<String, String>_mapShipping(Shipping shipping){
     Map<String, String> _shippingMap = {
       'shippingState': shipping.getStatus,
       'driverName': shipping.driverName,
@@ -50,7 +48,7 @@ class ShippingRepository {
       'reciverTaraTime': shipping.reciverTaraTime.toString(),
       'reciverTaraUser': shipping.reciverTaraUser ?? '',
       'riceType': shipping.riceType ?? '',
-      'id': id,
+      'id': shipping.id ?? DateTime.now().toString(),
       'crop': shipping.crop ?? '',
       'departure': shipping.departure ?? '',
       'humidity': shipping.humidity ?? '',
