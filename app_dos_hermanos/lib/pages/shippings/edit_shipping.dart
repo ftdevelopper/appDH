@@ -308,31 +308,31 @@ class _EditShippingState extends State<EditShipping> {
                             _shipping.remiterWetWeight = ((double.tryParse(
                                         _shipping.remiterFullWeight ?? '0') ?? 0) -
                                     (double.tryParse(_shipping.remiterTara ?? '0') ?? 0))
-                                .toStringAsFixed(3);
+                                .toStringAsFixed(0);
                             _shipping.remiterDryWeight = _shipping
                                 .getDryWeight(
                                     humidity:
-                                        double.tryParse(_shipping.humidity ?? '0')!,
+                                        double.tryParse(_shipping.humidity ?? '12') ?? 12,
                                     weight: double.tryParse(
-                                        _shipping.remiterWetWeight ?? '0')!)
-                                .toStringAsFixed(3);
+                                        _shipping.remiterWetWeight ?? '0') ?? 0)
+                                .toStringAsFixed(0);
                             break;
                           case ShippingStatus.inTravelShipping:
                             _shipping.reciverFullWeight = state.data;
                             break;
                           case ShippingStatus.downloadedShipping:
                             _shipping.reciverTara = state.data;
-                            _shipping.reciverWetWeight = (double.tryParse(
-                                        _shipping.reciverFullWeight ?? '0')! -
-                                    double.tryParse(_shipping.reciverTara ?? '0')!)
-                                .toString();
+                            _shipping.reciverWetWeight = ((double.tryParse(
+                                        _shipping.reciverFullWeight ?? '0') ?? 0) -
+                                    (double.tryParse(_shipping.reciverTara ?? '0') ?? 0))
+                                .toStringAsFixed(0);
                             _shipping.reciverDryWeight = _shipping
                                 .getDryWeight(
                                     humidity:
-                                        double.tryParse(_shipping.humidity ?? '0')!,
+                                        double.tryParse(_shipping.humidity ?? '0') ?? 12,
                                     weight: double.tryParse(
-                                        _shipping.reciverWetWeight ?? '0')!)
-                                .toStringAsFixed(3);
+                                        _shipping.reciverWetWeight ?? '0') ?? 0)
+                                .toStringAsFixed(0);
                             break;
                           default:
                             break;
