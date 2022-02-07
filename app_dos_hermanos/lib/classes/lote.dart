@@ -13,7 +13,7 @@ class Lote {
 
   Map<String, String> toJson(){
     return {
-      "riceType":riceType,
+      "variedad":riceType,
       "lote": lote,
     };
   }
