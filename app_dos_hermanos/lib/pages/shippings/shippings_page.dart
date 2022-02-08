@@ -323,6 +323,7 @@ class _ShippingsPageState extends State<ShippingsPage>
           Navigator.of(context).push<void>(
             MaterialPageRoute(
               builder: (_) => ResumePage(
+                authenticationRepository: widget.authenticationRepository,
                 shipping: shipping,
               )
             )

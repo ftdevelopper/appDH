@@ -1,16 +1,24 @@
 import 'package:app_dos_hermanos/classes/shipping.dart';
+import 'package:app_dos_hermanos/repository/authentication_repository.dart';
+import 'package:app_dos_hermanos/repository/shipping_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ResumePage extends StatelessWidget {
-  const ResumePage({Key? key, required this.shipping}) : super(key: key);
+  const ResumePage({Key? key, required this.shipping, required this.authenticationRepository}) : super(key: key);
 
   final Shipping shipping;
+  final AuthenticationRepository authenticationRepository;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Resumen'),
+        actions:<Widget> [shipping.shippingState == ShippingStatus.deletedShipping 
+          ? IconButton(icon: Icon(Icons.restore_from_trash_rounded, color: Colors.white,), onPressed: () async {await restoreShipping(context);})
+          : IconButton(icon: Icon(Icons.delete, color: Colors.white,), onPressed: () async {await deleteShipping(context);},)
+        ],
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -92,6 +100,34 @@ class ResumePage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> deleteShipping(BuildContext context) async {
+    shipping.actions!.add('Elimino');
+    shipping.userActions!.add(authenticationRepository.user.id);
+    shipping.dateActions!.add(DateFormat('yyyy-MM-dd kk:mm').format(DateTime.now()).toString());
+    shipping.shippingState = ShippingStatus.deletedShipping;
+    try {
+      print('Deleting Shiping');
+      await ShippingRepository().updateParameter(shipping: shipping);
+      Navigator.of(context).pop();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> restoreShipping(BuildContext context) async {
+    shipping.actions!.add('Restauro');
+    shipping.userActions!.add(authenticationRepository.user.id);
+    shipping.dateActions!.add(DateFormat('yyyy-MM-dd kk:mm').format(DateTime.now()).toString());
+    shipping.shippingState = shipping.getLastStatus();
+    try {
+      print('Deleting Shiping');
+      await ShippingRepository().updateParameter(shipping: shipping);
+      Navigator.of(context).pop();
+    } catch (e) {
+      print(e);
+    }
   }
 }
 

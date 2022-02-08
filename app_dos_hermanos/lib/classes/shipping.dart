@@ -243,6 +243,18 @@ class Shipping extends Equatable{
     return jsonShipping;
   }
 
+  ShippingStatus getLastStatus(){
+    if (reciverTara != null && reciverTara != ''){
+      return ShippingStatus.completedShipping;
+    } else if (reciverFullWeight != null && remiterFullWeight != ''){
+      return ShippingStatus.downloadedShipping;
+    } else if (remiterFullWeight != null && remiterFullWeight != '' &&remiterFullWeight != 'null'){
+      return ShippingStatus.inTravelShipping;
+    } else {
+      return ShippingStatus.newShipping;
+    }
+  }
+
   @override
   List<Object?> get props => [this.remiterTaraTime, this.driverName, this.remiterTara, this.shippingState, this.isOnLine];
 }
@@ -259,8 +271,8 @@ ShippingStatus statusFromString(String string){
       return ShippingStatus.downloadedShipping;
     case 'unknownStatus':
       return ShippingStatus.unknownStatus;
-    case 'deletedShiping': 
-      return ShippingStatus.unknownStatus;
+    case 'deletedShipping': 
+      return ShippingStatus.deletedShipping;
     default:
       return ShippingStatus.unknownStatus;
   }
