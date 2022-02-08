@@ -4,7 +4,6 @@ import 'package:app_dos_hermanos/classes/lote.dart';
 import 'package:app_dos_hermanos/classes/shipping.dart';
 import 'package:app_dos_hermanos/local_repository/local_data_base.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
-import 'package:app_dos_hermanos/repository/shipping_repository.dart';
 import 'package:app_dos_hermanos/validations/new_shipping_validators.dart';
 import 'package:app_dos_hermanos/widgets/shipping_data.dart';
 import 'package:flutter/material.dart';
@@ -279,67 +278,104 @@ class _EditShippingState extends State<EditShipping> {
                           ),
                         ],
                       ),
-                    ElevatedButton(
-                        child: Text('Pesar'),
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          primary: Colors.red.shade700,
-                        ),
-                        onPressed: () {
-                          BlocProvider.of<BluetoothCubit>(context)
-                              .requestWeight(
-                                  patent: _shipping.truckPatent,
-                                  comand: "T",
-                                  date: _formatedDate);
-                        }),
-                    ElevatedButton(
-                      child: Text('Actualizar Envio'),
-                      style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25)),
-                          primary: Colors.red.shade700),
-                      onPressed: () {
-                        switch (_shipping.shippingState) {
-                          case ShippingStatus.newShipping:
-                            _shipping.remiterFullWeight = state.data;
-                            _shipping.humidity = _humidityController.text;
-                            _shipping.remiterWetWeight = ((double.tryParse(
-                                        _shipping.remiterFullWeight ?? '0') ?? 0) -
-                                    (double.tryParse(_shipping.remiterTara ?? '0') ?? 0))
-                                .toStringAsFixed(0);
-                            _shipping.remiterDryWeight = _shipping
-                                .getDryWeight(
-                                    humidity:
-                                        double.tryParse(_shipping.humidity ?? '12') ?? 12,
-                                    weight: double.tryParse(
-                                        _shipping.remiterWetWeight ?? '0') ?? 0)
-                                .toStringAsFixed(0);
-                            break;
-                          case ShippingStatus.inTravelShipping:
-                            _shipping.reciverFullWeight = state.data;
-                            break;
-                          case ShippingStatus.downloadedShipping:
-                            _shipping.reciverTara = state.data;
-                            _shipping.reciverWetWeight = ((double.tryParse(
-                                        _shipping.reciverFullWeight ?? '0') ?? 0) -
-                                    (double.tryParse(_shipping.reciverTara ?? '0') ?? 0))
-                                .toStringAsFixed(0);
-                            _shipping.reciverDryWeight = _shipping
-                                .getDryWeight(
-                                    humidity:
-                                        double.tryParse(_shipping.humidity ?? '0') ?? 12,
-                                    weight: double.tryParse(
-                                        _shipping.reciverWetWeight ?? '0') ?? 0)
-                                .toStringAsFixed(0);
-                            break;
-                          default:
-                            break;
-                        }
-                        _showConfirmationAlert();
-                      },
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.6,
+                        child: ElevatedButton(
+                            child: Text('Pesar'),
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              primary: Colors.red.shade700,
+                            ),
+                            onPressed: () {
+                              BlocProvider.of<BluetoothCubit>(context)
+                                  .requestWeight(
+                                      patent: _shipping.truckPatent,
+                                      comand: "T",
+                                      date: _formatedDate);
+                            }),
+                      ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.6,
+                        child: ElevatedButton(
+                          child: Text('Actualizar Envio'),
+                          style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(25)),
+                              primary: Colors.red.shade700),
+                          onPressed: () {
+                            switch (_shipping.shippingState) {
+                              case ShippingStatus.newShipping:
+                                _shipping.remiterFullWeight = state.data;
+                                _shipping.humidity = _humidityController.text;
+                                _shipping.remiterWetWeight = ((double.tryParse(
+                                            _shipping.remiterFullWeight ?? '0') ?? 0) -
+                                        (double.tryParse(_shipping.remiterTara ?? '0') ?? 0))
+                                    .toStringAsFixed(0);
+                                _shipping.remiterDryWeight = _shipping
+                                    .getDryWeight(
+                                        humidity:
+                                            double.tryParse(_shipping.humidity ?? '12') ?? 12,
+                                        weight: double.tryParse(
+                                            _shipping.remiterWetWeight ?? '0') ?? 0)
+                                    .toStringAsFixed(0);
+                                break;
+                              case ShippingStatus.inTravelShipping:
+                                _shipping.reciverFullWeight = state.data;
+                                break;
+                              case ShippingStatus.downloadedShipping:
+                                _shipping.reciverTara = state.data;
+                                _shipping.reciverWetWeight = ((double.tryParse(
+                                            _shipping.reciverFullWeight ?? '0') ?? 0) -
+                                        (double.tryParse(_shipping.reciverTara ?? '0') ?? 0))
+                                    .toStringAsFixed(0);
+                                _shipping.reciverDryWeight = _shipping
+                                    .getDryWeight(
+                                        humidity:
+                                            double.tryParse(_shipping.humidity ?? '0') ?? 12,
+                                        weight: double.tryParse(
+                                            _shipping.reciverWetWeight ?? '0') ?? 0)
+                                    .toStringAsFixed(0);
+                                break;
+                              default:
+                                break;
+                            }
+                            _showConfirmationAlert();
+                          },
+                        ),
+                      ),
+                    ),
+                    if (_shipping.shippingState == ShippingStatus.inTravelShipping)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.6,
+                        child: ElevatedButton(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                 Text('Envio Recibido'),
+                                 Icon(Icons.warning)
+                              ],
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              primary: Colors.amber.shade700,
+                            ),
+                            onPressed: () {
+                              _showRecivedConfirmationAlert();
+                            },
+                          ),
+                    ),
+                      ),
                   ],
                 ),
               ),
@@ -363,64 +399,34 @@ class _EditShippingState extends State<EditShipping> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                ShippingData(
-                    title: 'Fecha',
-                    data: DateFormat('dd-MM-yyyy').format(_date)),
-                ShippingData(
-                    title: 'Hora', data: DateFormat.Hm().format(_date)),
-                ShippingData(
-                    title: 'Usuario',
-                    data: widget.authenticationRepository.user.name),
-                ShippingData(
-                    title: 'Ubicacion',
-                    data: widget.authenticationRepository.user.location.name),
+                ShippingData(title: 'Fecha',data: DateFormat('dd-MM-yyyy').format(_date)),
+                ShippingData(title: 'Hora', data: DateFormat.Hm().format(_date)),
+                ShippingData(title: 'Usuario', data: widget.authenticationRepository.user.name),
+                ShippingData(title: 'Ubicacion', data: widget.authenticationRepository.user.location.name),
                 ShippingData(title: 'Arroz', data: riceValue),
                 if (_shipping.shippingState == ShippingStatus.newShipping)
-                  ShippingData(
-                      title: 'Humedad', data: _humidityController.text),
+                  ShippingData(title: 'Humedad', data: _humidityController.text),
                 ShippingData(title: 'Chofer', data: _shipping.driverName),
                 ShippingData(title: 'Camion', data: _shipping.truckPatent),
                 ShippingData(title: 'Chasis', data: _shipping.chasisPatent),
                 if (_shipping.shippingState == ShippingStatus.newShipping)
-                  ShippingData(
-                      title: 'Peso Tara',
-                      data: _shipping.remiterTara.toString()),
+                  ShippingData(title: 'Peso Tara', data: _shipping.remiterTara.toString()),
                 if (_shipping.shippingState == ShippingStatus.newShipping)
-                  ShippingData(
-                      title: 'Peso Bruto',
-                      data: _shipping.remiterFullWeight.toString()),
+                  ShippingData(title: 'Peso Bruto', data: _shipping.remiterFullWeight.toString()),
                 if (_shipping.shippingState == ShippingStatus.newShipping)
-                  ShippingData(
-                      title: 'Peso Neto',
-                      data: _shipping.remiterWetWeight.toString()),
+                  ShippingData(title: 'Peso Neto', data: _shipping.remiterWetWeight.toString()),
                 if (_shipping.shippingState == ShippingStatus.newShipping)
-                  ShippingData(
-                      title: 'Peso Seco',
-                      data: _shipping.remiterDryWeight.toString()),
+                  ShippingData(title: 'Peso Seco', data: _shipping.remiterDryWeight.toString()),
                 if (_shipping.shippingState == ShippingStatus.inTravelShipping)
-                  ShippingData(
-                      title: 'Peso Bruto',
-                      data: _shipping.reciverFullWeight.toString()),
-                if (_shipping.shippingState ==
-                    ShippingStatus.downloadedShipping)
-                  ShippingData(
-                      title: 'Peso Bruto',
-                      data: _shipping.reciverFullWeight.toString()),
-                if (_shipping.shippingState ==
-                    ShippingStatus.downloadedShipping)
-                  ShippingData(
-                      title: 'Peso Tara',
-                      data: _shipping.reciverTara.toString()),
-                if (_shipping.shippingState ==
-                    ShippingStatus.downloadedShipping)
-                  ShippingData(
-                      title: 'Peso Neto',
-                      data: _shipping.reciverWetWeight.toString()),
-                if (_shipping.shippingState ==
-                    ShippingStatus.downloadedShipping)
-                  ShippingData(
-                      title: 'Peso Seco',
-                      data: _shipping.reciverDryWeight.toString()),
+                  ShippingData(title: 'Peso Bruto', data: _shipping.reciverFullWeight.toString()),
+                if (_shipping.shippingState == ShippingStatus.downloadedShipping)
+                  ShippingData(title: 'Peso Bruto', data: _shipping.reciverFullWeight.toString()),
+                if (_shipping.shippingState == ShippingStatus.downloadedShipping)
+                  ShippingData(title: 'Peso Tara', data: _shipping.reciverTara.toString()),
+                if (_shipping.shippingState == ShippingStatus.downloadedShipping)
+                  ShippingData(title: 'Peso Neto', data: _shipping.reciverWetWeight.toString()),
+                if (_shipping.shippingState == ShippingStatus.downloadedShipping)
+                  ShippingData(title: 'Peso Seco',data: _shipping.reciverDryWeight.toString()),
                 ElevatedButton(
                   child: Text('Confirmar'),
                   onPressed: () {
@@ -446,6 +452,65 @@ class _EditShippingState extends State<EditShipping> {
                       default:
                     }
                     uploadShipping();
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[],
+          actionsPadding: EdgeInsets.symmetric(),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+        );
+      },
+    );
+  }
+
+  Future<void> _showRecivedConfirmationAlert() async {
+    return showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text(
+            'Confirmar Recepcion de Envio',
+            textAlign: TextAlign.center,
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ShippingData(title: 'Fecha', data: DateFormat('dd-MM-yyyy').format(_date)),
+                ShippingData(title: 'Hora', data: DateFormat.Hm().format(_date)),
+                ShippingData(title: 'Usuario', data: widget.authenticationRepository.user.name),
+                ShippingData(title: 'Ubicacion', data: widget.authenticationRepository.user.location.name),
+                ShippingData(title: 'Arroz', data: riceValue),
+                ShippingData(title: 'Chofer', data: _shipping.driverName),
+                ShippingData(title: 'Camion', data: _shipping.truckPatent),
+                ShippingData(title: 'Chasis', data: _shipping.chasisPatent),
+                ShippingData(title: 'Peso Tara', data: _shipping.remiterTara.toString()),
+                ShippingData(title: 'Peso Bruto', data: _shipping.remiterFullWeight.toString()),
+                ShippingData(title: 'Peso Neto', data: _shipping.remiterWetWeight.toString()),
+                ShippingData(title: 'Humedad', data: _shipping.humidity.toString()),
+                ShippingData(title: 'Peso Seco', data: _shipping.remiterDryWeight.toString()),
+                ElevatedButton(
+                  child: Text('Confirmar'),
+                  onPressed: () {
+                    _shipping.addAction(
+                      action: 'Confirmo Recepcion',
+                      user: widget.authenticationRepository.user.id,
+                      date: _formatedDate
+                    );
+                    _shipping.shippingState = ShippingStatus.completedShipping;
+                    _shipping.reciverFullWeightTime = _date;
+                    _shipping.reciverFullWeightUser =
+                    widget.authenticationRepository.user.id;
+                    context.read<ShippingsBloc>().add(UpdateShipping(shipping: _shipping));
+                    Navigator.of(context).pop();
                     Navigator.of(context).pop();
                   },
                   style: ElevatedButton.styleFrom(
