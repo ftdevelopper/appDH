@@ -129,19 +129,19 @@ class Shipping extends Equatable{
   Icon get statusIcon {
     switch (shippingState){
       case ShippingStatus.newShipping:
-        return Icon(Icons.fiber_new_outlined,color: Colors.amber,);
+        return Icon(Icons.fiber_new_outlined,color: Colors.amber,size: 30);
       case ShippingStatus.completedShipping:
-        return Icon(Icons.done, color: Colors.green,);
+        return Icon(Icons.done, color: Colors.green,size: 30);
       case ShippingStatus.inTravelShipping:
-        return Icon(Icons.send, color: Colors.blueGrey,);
+        return Icon(Icons.send, color: Colors.blueGrey, size: 30);
       case ShippingStatus.downloadedShipping:
-        return Icon(Icons.call_received, color: Colors.blue);
+        return Icon(Icons.call_received, color: Colors.blue, size: 30);
       case ShippingStatus.unknownStatus:
-        return Icon(Icons.new_releases_outlined, color: Colors.red,);
+        return Icon(Icons.new_releases_outlined, color: Colors.red, size: 30);
       case ShippingStatus.deletedShipping:
-        return Icon(Icons.not_interested_sharp, color: Colors.redAccent);
+        return Icon(Icons.not_interested_sharp, color: Colors.redAccent, size: 30);
       default: 
-        return Icon(Icons.new_releases_outlined, color: Colors.red);
+        return Icon(Icons.new_releases_outlined, color: Colors.red, size: 30);
     }
   }
 

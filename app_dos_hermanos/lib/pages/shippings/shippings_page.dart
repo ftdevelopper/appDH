@@ -282,28 +282,26 @@ class _ShippingsPageState extends State<ShippingsPage>
         child: Container(
           padding: EdgeInsets.all(15),
           child: Column(
-            children: [
+            children: <Widget>[
               Row(
                 children: <Widget>[
-                  shipping.statusIcon,
-                  Text(
-                    'Patente: ${shipping.truckPatent}',
-                    style: TextStyle(color: Colors.black),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: shipping.statusIcon,
                   ),
-                  if (!shipping.isOnLine) Icon(Icons.warning, color: Colors.red)
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.65,
+                    child: Column(
+                      children:<Widget>[
+                        Text('Patente: ${shipping.truckPatent}',style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold), maxLines: 1,),
+                        Text('Destino: ${shipping.reciverLocation}',style: TextStyle(color: Colors.black), maxLines: 1,),
+                        Text('Origen: ${shipping.remiterLocation}',style: TextStyle(color: Colors.black), maxLines: 1,),
+                        Text('Hora Tara: ${shipping.remiterTaraTime}',style: TextStyle(color: Colors.black), maxLines: 1,),
+                      ]
+                    ),
+                  ),
+                  if (!shipping.isOnLine) Icon(Icons.warning, color: Colors.red, size: 30,)
                 ],
-              ),
-              Text(
-                'Destino: ${shipping.reciverLocation}',
-                style: TextStyle(color: Colors.black),
-              ),
-              Text(
-                'Origen: ${shipping.remiterLocation}',
-                style: TextStyle(color: Colors.black),
-              ),
-              Text(
-                'Hora Tara: ${shipping.remiterTaraTime}',
-                style: TextStyle(color: Colors.black),
               ),
             ],
           ),
