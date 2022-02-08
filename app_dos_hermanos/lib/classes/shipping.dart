@@ -109,6 +109,23 @@ class Shipping extends Equatable{
     }
   }
 
+  String get getStatusName {
+    switch (shippingState){
+      case ShippingStatus.newShipping:
+        return 'Camion Tarado';
+      case ShippingStatus.completedShipping:
+        return 'Envio Completo';
+      case ShippingStatus.inTravelShipping:
+        return 'Envio en Camino';
+      case ShippingStatus.downloadedShipping:
+        return 'Descargando Camion';
+      case ShippingStatus.unknownStatus:
+        return 'Estado Desconocido';
+      case ShippingStatus.deletedShipping:
+        return 'Envio Eliminado';
+    }
+  }
+
   Icon get statusIcon {
     switch (shippingState){
       case ShippingStatus.newShipping:

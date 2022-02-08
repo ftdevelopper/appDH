@@ -1,4 +1,5 @@
 import 'package:app_dos_hermanos/blocs/internet_cubit/internet_cubit.dart';
+import 'package:app_dos_hermanos/pages/shippings/resume_page.dart';
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -289,8 +290,7 @@ class _ShippingsPageState extends State<ShippingsPage>
                     'Patente: ${shipping.truckPatent}',
                     style: TextStyle(color: Colors.black),
                   ),
-                  if(!shipping.isOnLine)
-                  Icon(Icons.warning, color: Colors.red)
+                  if (!shipping.isOnLine) Icon(Icons.warning, color: Colors.red)
                 ],
               ),
               Text(
@@ -309,11 +309,24 @@ class _ShippingsPageState extends State<ShippingsPage>
           ),
         ),
         onPressed: () {
-          Navigator.of(context).push<void>(MaterialPageRoute(
+          Navigator.of(context).push<void>(
+            MaterialPageRoute(
               builder: (_) => EditShipping(
                   localDataBase: widget.localDataBase,
                   authenticationRepository: widget.authenticationRepository,
-                  shipping: shipping)));
+                  shipping: shipping,
+                ),
+            ),
+          );
+        },
+        onLongPress: () {
+          Navigator.of(context).push<void>(
+            MaterialPageRoute(
+              builder: (_) => ResumePage(
+                shipping: shipping,
+              )
+            )
+          );
         },
       ),
     );
