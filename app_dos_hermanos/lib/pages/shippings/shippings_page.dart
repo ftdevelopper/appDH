@@ -73,6 +73,12 @@ class _ShippingsPageState extends State<ShippingsPage>
                 ),
                 actions: <Widget>[
                   IconButton(
+                    icon: Image.asset('assets/excel-3-24.png', scale: 1.1,),
+                    onPressed: (){
+                      context.read<ShippingsBloc>().add(CreateExcel());
+                    },
+                  ),
+                  IconButton(
                     icon: Icon(Icons.filter_alt_rounded),
                     onPressed: () {
                       _showFilter(context);

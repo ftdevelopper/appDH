@@ -111,9 +111,9 @@ class DrawerBloc extends Bloc<DrawerEvent, DrawerState> {
             Response? paramResponse = await _driverProvider.callApi(endpoint: 'choferesapp/' + driversrepo.drivers[i].code, parameters: {"ACCESS_TOKEN": token.body});
             if(paramResponse!.statusCode == 200){
               Map<String,dynamic> parameters = json.decode(paramResponse.body);
-              driversrepo.drivers[i].patent = parameters["Patente"];
-              driversrepo.drivers[i].chasisPatent = parameters["PatenteAcoplado"];
-              driversrepo.drivers[i].company = parameters["Transportista"];
+              driversrepo.drivers[i].patent = parameters["Patente"] ?? '';
+              driversrepo.drivers[i].chasisPatent = parameters["PatenteAcoplado"] ?? '';
+              driversrepo.drivers[i].company = parameters["Transportista"] ?? '';
               print(i.toString());
             } else {
               print(paramResponse.statusCode);

@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:open_file/open_file.dart';
+import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 import 'package:app_dos_hermanos/blocs/internet_cubit/internet_cubit.dart';
 import 'package:app_dos_hermanos/classes/filter.dart';
 import 'package:app_dos_hermanos/classes/shipping.dart';
@@ -109,14 +112,48 @@ class ShippingsBloc extends Bloc<ShippingsEvent, ShippingsState> {
         DataBaseFileRoutines().writeDataBase(json.encode(localDataBase.toJson()));
       }
     });
+
+    on<CreateExcel>((event,emit) async {
+      final Workbook workbook = Workbook();
+      Worksheet sheet = workbook.worksheets[0];
+      
+      final List<int> bytes = workbook.saveAsStream();
+      workbook.dispose();
+
+      final String path = (await getApplicationDocumentsDirectory()).path;
+      final String fileName = '$path/Envios.xlsx';
+      print('Create new path: $fileName');
+      final File file = File(fileName);
+      await file.writeAsBytes(bytes, flush: true);
+      try {
+        await OpenFile.open(fileName);
+      } catch(e){
+        print(e);
+      }
+    });
+
   }
-
-
 
   @override
   Future<void> close() {
     _shippingsSubscription?.cancel();
     return super.close();
+  }
+
+  void putHeaders(Worksheet sheet){
+    sheet.getRangeByIndex(0, 0).setText('Id');
+    sheet.getRangeByIndex(0, 1).setText('Estado');
+    sheet.getRangeByIndex(0, 2).setText('Estado');
+    sheet.getRangeByIndex(0, 3).setText('Estado');
+    sheet.getRangeByIndex(0, 4).setText('Estado');
+    sheet.getRangeByIndex(0, 5).setText('Estado');
+    sheet.getRangeByIndex(0, 6).setText('Estado');
+    sheet.getRangeByIndex(0, 7).setText('Estado');
+    sheet.getRangeByIndex(0, 8).setText('Estado');
+    sheet.getRangeByIndex(0, 9).setText('Estado');
+    sheet.getRangeByIndex(0, 10).setText('Estado');
+    sheet.getRangeByIndex(0, 11).setText('Estado');
+    sheet.getRangeByIndex(0, 12).setText('Estado');
   }
 }
 

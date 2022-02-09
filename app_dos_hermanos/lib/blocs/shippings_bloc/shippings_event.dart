@@ -48,3 +48,5 @@ class UpdateShipping extends ShippingsEvent {
   @override
   List<Object?> get props => [shipping];
 }
+
+class CreateExcel extends ShippingsEvent {}
