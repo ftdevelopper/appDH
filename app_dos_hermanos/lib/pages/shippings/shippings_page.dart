@@ -67,7 +67,7 @@ class _ShippingsPageState extends State<ShippingsPage>
                     Tab(text: 'Todo', icon: Icon(Icons.home)),
                     Tab(text: 'Nuevo', icon: Icon(Icons.fiber_new_outlined)),
                     Tab(text: 'En Camino', icon: Icon(Icons.send)),
-                    Tab(text: 'Recivido', icon: Icon(Icons.call_received)),
+                    Tab(text: 'Recibido', icon: Icon(Icons.call_received)),
                     Tab(text: 'Conpletado', icon: Icon(Icons.done))
                   ],
                 ),

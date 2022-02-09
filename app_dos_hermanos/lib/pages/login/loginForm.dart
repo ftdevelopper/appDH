@@ -48,6 +48,7 @@ class _LoginFormState extends State<LoginForm> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[Text('Error al ingresar'), Icon(Icons.error)],
             ),
+            elevation: 6.0,
             backgroundColor: Colors.red,
           ));
         }
@@ -125,7 +126,7 @@ class _LoginFormState extends State<LoginForm> {
                         LoginButton(
                           onPressed: isLoginButtonEnabled(state)
                           ? _onFormSubmitted
-                          : null
+                          : (){}
                         ),
                         //GoogleLoginButton(),
                         //CreateAccountButton(authenticationRepository: _authenticationRepository),

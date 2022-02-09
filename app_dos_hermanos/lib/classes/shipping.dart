@@ -244,9 +244,9 @@ class Shipping extends Equatable{
   }
 
   ShippingStatus getLastStatus(){
-    if (reciverTara != null && reciverTara != ''){
+    if (reciverTara != null && reciverTara != '' && reciverTara != 'null'){
       return ShippingStatus.completedShipping;
-    } else if (reciverFullWeight != null && remiterFullWeight != ''){
+    } else if (reciverFullWeight != null && reciverFullWeight != '' && reciverFullWeight != 'null'){
       return ShippingStatus.downloadedShipping;
     } else if (remiterFullWeight != null && remiterFullWeight != '' &&remiterFullWeight != 'null'){
       return ShippingStatus.inTravelShipping;

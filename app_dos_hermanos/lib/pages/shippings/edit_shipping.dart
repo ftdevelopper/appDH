@@ -185,7 +185,7 @@ class _EditShippingState extends State<EditShipping> {
                               ..text = _shipping.remiterTara.toString(),
                             enabled: false,
                             decoration: InputDecoration(
-                                labelText: 'Peso Neto - Procedencia',
+                                labelText: 'Peso Tara - Procedencia',
                                 icon: Icon(Icons.filter_1)),
                           ),
                           Divider(),
