@@ -12,7 +12,7 @@ class BluetoothCubit extends Cubit<MyBluetoothState> {
 
   BluetoothState bluetoothState = BluetoothState.UNKNOWN;
 
-  late StreamSubscription<Uint8List> bluetoothSubscription;
+  late StreamSubscription<Uint8List>? bluetoothSubscription;
 
   var connection;
 
@@ -41,16 +41,16 @@ class BluetoothCubit extends Cubit<MyBluetoothState> {
     if (!selectedDevice.isConnected) {
       print('Discovery -> selected ' + selectedDevice.address);
       try {
-        await bluetoothSubscription.cancel();
+        await bluetoothSubscription?.cancel();
       } catch (e) {
         print(e);
       }
       try {
-        BluetoothConnection.toAddress(selectedDevice.address).catchError((e){print(e);}).then(( _connection) {
+        BluetoothConnection.toAddress(selectedDevice.address).catchError((e){print(e);}).then(( _connection) async {
         print('Connected to the device');
-        connection = _connection;
+        connection = await _connection;
 
-        bluetoothSubscription = connection.input.listen(_reciveData).onDone((){
+        bluetoothSubscription = await connection.input.listen(_reciveData).onDone((){
           if (state.isDiconnecting) {
           print('Disconnecting locally!');
         } else {
@@ -102,7 +102,7 @@ class BluetoothCubit extends Cubit<MyBluetoothState> {
 
   @override
   Future<void> close() async {
-    await bluetoothSubscription.cancel();
+    await bluetoothSubscription?.cancel();
     return super.close();
   }
 }
