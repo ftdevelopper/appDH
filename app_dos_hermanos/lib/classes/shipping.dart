@@ -256,7 +256,7 @@ class Shipping extends Equatable{
   }
 
   @override
-  List<Object?> get props => [this.remiterTaraTime, this.driverName, this.remiterTara, this.shippingState, this.isOnLine];
+  List<Object?> get props => [this.remiterTaraTime, this.driverName, this.remiterTara,  this.isOnLine];
 }
 
 ShippingStatus statusFromString(String string){
