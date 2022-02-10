@@ -3,20 +3,14 @@ import 'package:app_dos_hermanos/repository/drivers_repository.dart';
 class NewShippingValidator {
 
   static String? isHumidityValid(String value){
-    double intValue = double.parse(value);
+    double intValue = double.tryParse(value) ?? 0;
 
     if (intValue <= 12 || intValue >= 36) {
       return 'Rango de humedad invalido';
     } else {
       return null;
     }
-  }
-
-  static String? isRiceValid(String? value){
-    if (value == 'Tipo de Arroz'){
-      return 'Seleccione Tipo de Arroz';
-    }
-  }
+  } 
 
   static String? isNameValid({required String driver, required DriverRepository driverRepository}){
     bool containValue = false;

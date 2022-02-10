@@ -161,25 +161,6 @@ class _EditShippingState extends State<EditShipping> {
                             style: TextStyle(fontSize: 14, color: Colors.black),
                           ),
                           Divider(),
-                          TextFormField(
-                            decoration: InputDecoration(
-                                labelText: 'Humedad',
-                                border: InputBorder.none,
-                                icon: Icon(Icons.water_sharp)),
-                            controller: _humidityController,
-                            keyboardType: TextInputType.number,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            validator: (_) {
-                              String humidity;
-                              _humidityController.text.length == 0
-                                  ? humidity = '1'
-                                  : humidity = _humidityController.text;
-                              return NewShippingValidator.isHumidityValid(
-                                  humidity);
-                            },
-                          ),
-                          Divider(),
                           TextField(
                             controller: TextEditingController()
                               ..text = _shipping.remiterTara.toString(),
@@ -204,7 +185,26 @@ class _EditShippingState extends State<EditShipping> {
                     if (_shipping.shippingState ==
                         ShippingStatus.inTravelShipping)
                       Column(
-                        children: [
+                        children: <Widget>[
+                          TextFormField(
+                            decoration: InputDecoration(
+                                labelText: 'Humedad',
+                                border: InputBorder.none,
+                                icon: Icon(Icons.water_sharp)),
+                            controller: _humidityController,
+                            keyboardType: TextInputType.number,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (_) {
+                              String humidity;
+                              _humidityController.text.length == 0
+                                  ? humidity = '1'
+                                  : humidity = _humidityController.text;
+                              return NewShippingValidator.isHumidityValid(
+                                  humidity);
+                            },
+                          ),
+                          Divider(),
                           TextField(
                             controller: TextEditingController()
                               ..text = _shipping.remiterTara.toString(),
@@ -313,6 +313,8 @@ class _EditShippingState extends State<EditShipping> {
                             switch (_shipping.shippingState) {
                               case ShippingStatus.newShipping:
                                 _shipping.remiterFullWeight = state.data;
+                                break;
+                              case ShippingStatus.inTravelShipping:
                                 _shipping.humidity = _humidityController.text;
                                 _shipping.remiterWetWeight = ((double.tryParse(
                                             _shipping.remiterFullWeight ?? '0') ?? 0) -
@@ -325,12 +327,7 @@ class _EditShippingState extends State<EditShipping> {
                                         weight: double.tryParse(
                                             _shipping.remiterWetWeight ?? '0') ?? 0)
                                     .toStringAsFixed(0);
-                                break;
-                              case ShippingStatus.inTravelShipping:
                                 _shipping.reciverFullWeight = state.data;
-                                break;
-                              case ShippingStatus.downloadedShipping:
-                                _shipping.reciverTara = state.data;
                                 _shipping.reciverWetWeight = ((double.tryParse(
                                             _shipping.reciverFullWeight ?? '0') ?? 0) -
                                         (double.tryParse(_shipping.reciverTara ?? '0') ?? 0))
@@ -343,10 +340,13 @@ class _EditShippingState extends State<EditShipping> {
                                             _shipping.reciverWetWeight ?? '0') ?? 0)
                                     .toStringAsFixed(0);
                                 break;
+                              case ShippingStatus.downloadedShipping:
+                                _shipping.reciverTara = state.data;
+                                break;
                               default:
                                 break;
                             }
-                            _showConfirmationAlert();
+                            _showConfirmationAlert().then((_) => state.data = '');
                           },
                         ),
                       ),
@@ -404,7 +404,7 @@ class _EditShippingState extends State<EditShipping> {
                 ShippingData(title: 'Usuario', data: widget.authenticationRepository.user.name),
                 ShippingData(title: 'Ubicacion', data: widget.authenticationRepository.user.location.name),
                 ShippingData(title: 'Arroz', data: riceValue),
-                if (_shipping.shippingState == ShippingStatus.newShipping)
+                if (_shipping.shippingState == ShippingStatus.inTravelShipping)
                   ShippingData(title: 'Humedad', data: _humidityController.text),
                 ShippingData(title: 'Chofer', data: _shipping.driverName),
                 ShippingData(title: 'Camion', data: _shipping.truckPatent),
@@ -415,7 +415,9 @@ class _EditShippingState extends State<EditShipping> {
                   ShippingData(title: 'Peso Bruto', data: _shipping.remiterFullWeight.toString()),
                 if (_shipping.shippingState == ShippingStatus.newShipping)
                   ShippingData(title: 'Peso Neto', data: _shipping.remiterWetWeight.toString()),
-                if (_shipping.shippingState == ShippingStatus.newShipping)
+                  if (_shipping.shippingState == ShippingStatus.inTravelShipping)
+                  ShippingData(title: 'Peso Neto', data: _shipping.remiterWetWeight.toString()),
+                if (_shipping.shippingState == ShippingStatus.inTravelShipping)
                   ShippingData(title: 'Peso Seco', data: _shipping.remiterDryWeight.toString()),
                 if (_shipping.shippingState == ShippingStatus.inTravelShipping)
                   ShippingData(title: 'Peso Bruto', data: _shipping.reciverFullWeight.toString()),
@@ -442,7 +444,7 @@ class _EditShippingState extends State<EditShipping> {
                             action: 'Peso Bruto Recepcion',
                             user: widget.authenticationRepository.user.id,
                             date: _formatedDate);
-                        break;
+                      break;
                       case ShippingStatus.downloadedShipping:
                         _shipping.addAction(
                             action: 'Taro Recepcion',
@@ -537,10 +539,10 @@ class _EditShippingState extends State<EditShipping> {
         _shipping.remiterFullWeightUser =
             widget.authenticationRepository.user.id;
         _shipping.riceType = _riceController.text;
-        _shipping.humidity = _humidityController.text;
         _shipping.lote = _loteController.text;
         break;
       case ShippingStatus.inTravelShipping:
+        _shipping.humidity = _humidityController.text;
         _shipping.reciverFullWeightTime = _date;
         _shipping.reciverFullWeightUser =
             widget.authenticationRepository.user.id;
