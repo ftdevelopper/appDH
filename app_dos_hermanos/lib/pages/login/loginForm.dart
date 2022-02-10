@@ -60,6 +60,7 @@ class _LoginFormState extends State<LoginForm> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[Text('Ingresando...'), CircularProgressIndicator()],
             ),
+            backgroundColor: Colors.black
           ));
         }
         if (state is SuccesLogin){
@@ -73,6 +74,7 @@ class _LoginFormState extends State<LoginForm> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[Text('Ingresando...'), CircularProgressIndicator()],
             ),
+            backgroundColor: Colors.black
           ));
         }
       },
