@@ -40,7 +40,7 @@ class _ShippingsPageState extends State<ShippingsPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, initialIndex: 0, vsync: this);
+    _tabController = TabController(length: 6, initialIndex: 0, vsync: this);
     _user = widget.authenticationRepository.user;
     BlocProvider.of<BluetoothCubit>(context).initBlutetooth();
   }
@@ -55,7 +55,7 @@ class _ShippingsPageState extends State<ShippingsPage>
             if (state is ConnectedBluetooth) {}
           },
           child: DefaultTabController(
-            length: 5,
+            length: 6,
             initialIndex: 0,
             child: Scaffold(
               appBar: AppBar(
@@ -68,7 +68,8 @@ class _ShippingsPageState extends State<ShippingsPage>
                     Tab(text: 'Nuevo', icon: Icon(Icons.fiber_new_outlined)),
                     Tab(text: 'En Camino', icon: Icon(Icons.send)),
                     Tab(text: 'Recibido', icon: Icon(Icons.call_received)),
-                    Tab(text: 'Conpletado', icon: Icon(Icons.done))
+                    Tab(text: 'Conpletado', icon: Icon(Icons.done)),
+                    Tab(text: 'Eliminado', icon: Icon(Icons.delete_rounded))
                   ],
                 ),
                 actions: <Widget>[
@@ -134,16 +135,16 @@ class _ShippingsPageState extends State<ShippingsPage>
                     controller: _tabController,
                     children: <Widget>[
                       Container(
-                          child: shippingList.length == 0
+                          child: (filterShippings(ShippingStatus.newShipping) + filterShippings(ShippingStatus.inTravelShipping) + filterShippings(ShippingStatus.downloadedShipping) + filterShippings(ShippingStatus.completedShipping)).length == 0
                               ? Center(
                                   child: Column(children: [
                                   Text('No hay envios disponibles'),
                                 ]))
                               : ListView.builder(
-                                  itemCount: shippingList.length,
+                                  itemCount: (filterShippings(ShippingStatus.newShipping) + filterShippings(ShippingStatus.inTravelShipping) + filterShippings(ShippingStatus.downloadedShipping) + filterShippings(ShippingStatus.completedShipping)).length,
                                   itemBuilder: (_, index) {
                                     return shippingsUI(
-                                        shippingList[index], context);
+                                        (filterShippings(ShippingStatus.newShipping) + filterShippings(ShippingStatus.inTravelShipping) + filterShippings(ShippingStatus.downloadedShipping) + filterShippings(ShippingStatus.completedShipping))[index], context);
                                   },
                                 )),
                       Container(
@@ -234,6 +235,31 @@ class _ShippingsPageState extends State<ShippingsPage>
                                   return shippingsUI(
                                     filterShippings(ShippingStatus
                                         .completedShipping)[index],
+                                    context,
+                                  );
+                                },
+                              ),
+                      ),
+                      Container(
+                        child: filterShippings(ShippingStatus.deletedShipping)
+                                    .length ==
+                                0
+                            ? Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text('No hay envios completados'),
+                                  ],
+                                ),
+                              )
+                            : ListView.builder(
+                                itemCount: filterShippings(
+                                        ShippingStatus.deletedShipping)
+                                    .length,
+                                itemBuilder: (_, index) {
+                                  return shippingsUI(
+                                    filterShippings(ShippingStatus
+                                        .deletedShipping)[index],
                                     context,
                                   );
                                 },
