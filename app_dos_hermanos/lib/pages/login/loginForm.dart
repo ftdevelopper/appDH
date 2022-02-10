@@ -1,9 +1,6 @@
 import 'package:app_dos_hermanos/blocs/authentication_bloc/authenticaiton_bloc.dart';
 import 'package:app_dos_hermanos/blocs/login_bloc/login_bloc.dart';
-import 'package:app_dos_hermanos/classes/user.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
-import 'package:app_dos_hermanos/widgets/create_account_button.dart';
-import 'package:app_dos_hermanos/widgets/google_login_button.dart';
 import 'package:app_dos_hermanos/widgets/login_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,8 +46,9 @@ class _LoginFormState extends State<LoginForm> {
           ..showSnackBar(SnackBar(
             content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[Text('Login Failure'), Icon(Icons.error)],
+              children: <Widget>[Text('Error al ingresar'), Icon(Icons.error)],
             ),
+            elevation: 6.0,
             backgroundColor: Colors.red,
           ));
         }
@@ -60,12 +58,12 @@ class _LoginFormState extends State<LoginForm> {
           ..showSnackBar(SnackBar(
             content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[Text('Logging in...'), CircularProgressIndicator()],
+              children: <Widget>[Text('Ingresando...'), CircularProgressIndicator()],
             ),
           ));
         }
         if (state is SuccesLogin){
-          BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationUserChanged(User(email: _emailController.text,id: '',photo: '',name: '')));
+          BlocProvider.of<AuthenticationBloc>(context).add(AuthenticationUserChanged());
         }
         if (state is LoadingLogin){
           ScaffoldMessenger.of(context)
@@ -73,7 +71,7 @@ class _LoginFormState extends State<LoginForm> {
           ..showSnackBar(SnackBar(
             content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[Text('Logging in...'), CircularProgressIndicator()],
+              children: <Widget>[Text('Ingresando...'), CircularProgressIndicator()],
             ),
           ));
         }
@@ -100,22 +98,24 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                     keyboardType: TextInputType.emailAddress,
                     autocorrect: false,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (_){
-                      return !state.isEmailValid? 'Invalid Email' : '';
+                      return !state.isEmailValid? 'Email Invalido' : null;
                     },
                   ),
                   SizedBox(height: 20),
                   TextFormField(
                     controller: _passwordController,
                     decoration: InputDecoration(
-                      icon: Icon(Icons.password),
-                      labelText: 'Password',
+                      icon: Icon(Icons.lock),
+                      labelText: 'Contraseña',
                     ),
                     obscureText: true,
                     keyboardType: TextInputType.emailAddress,
                     autocorrect: false,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (_){
-                      return !state.isPasswordValid? 'Invalid Password' : '';
+                      return !state.isPasswordValid? 'Contraseña Invalida' : null;
                     },
                   ),
                   Padding(
@@ -126,10 +126,10 @@ class _LoginFormState extends State<LoginForm> {
                         LoginButton(
                           onPressed: isLoginButtonEnabled(state)
                           ? _onFormSubmitted
-                          : null
+                          : (){}
                         ),
-                        GoogleLoginButton(),
-                        CreateAccountButton(authenticationRepository: _authenticationRepository),
+                        //GoogleLoginButton(),
+                        //CreateAccountButton(authenticationRepository: _authenticationRepository),
                       ],
                     ),
                   ),
@@ -158,8 +158,9 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   void _onFormSubmitted(){
+    _authenticationRepository.user.email = _emailController.text;
     _loginBloc.add(
-      LoginWithCredentialPressed(email: _emailController.text, password: _passwordController.text)
+      LoginWithCredentialPressed(password: _passwordController.text)
     );
   }
 }
