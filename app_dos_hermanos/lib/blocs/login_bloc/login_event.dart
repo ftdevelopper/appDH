@@ -43,17 +43,16 @@ class Sumbitted extends LoginEvent {
   String toString() => 'Sumbbited: {email: $email, password: $password}';
 }
 
-class LoginWithGooglePressed extends LoginEvent {}
+//class LoginWithGooglePressed extends LoginEvent {}
 
 class LoginWithCredentialPressed extends LoginEvent {
-  final String email;
   final String password;
 
-  LoginWithCredentialPressed({required this.email, required this.password});
+  LoginWithCredentialPressed({required this.password});
 
   @override
-  List<Object> get props => [email, password];
+  List<Object> get props => [password];
 
   @override
-  String toString() => 'LoginWithCredential: {email: $email, password: $password}';
+  String toString() => 'LoginWithCredential: {password: $password}';
 }

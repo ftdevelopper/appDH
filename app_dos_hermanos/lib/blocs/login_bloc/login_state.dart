@@ -12,48 +12,37 @@ class LoginState extends Equatable {
   
   const LoginState({required this.isEmailValid, required this.isPasswordValid, required this.isSumbiting, required this.isSucces, required this.isFailure});
 
-  LoginState copyWith({
-    bool? isEmailValid,
-    bool? isPasswordValid,
-    bool? isSumbiting,
-    bool? isSucces,
-    bool? isFailure,
-  }){
-    return LoginState(
-      isEmailValid: isEmailValid ?? this.isEmailValid,
-      isPasswordValid: isPasswordValid ?? this.isPasswordValid,
-      isSumbiting: isSumbiting ?? this.isSumbiting,
-      isSucces: isSucces ?? this.isSucces,
-      isFailure: isFailure ?? this.isFailure
-    );
-  }
-
-  LoginState update({
-    bool? isEmailvalid,
-    bool? isPasswordBalid
-  }){
-    return copyWith(
-      isEmailValid: isEmailValid,
-      isPasswordValid: isPasswordValid,
-      isSumbiting: false,
-      isSucces: false,
-      isFailure: false
-    );
-  }
-
   String toString(){
-    return ''' LoginState {\n
-      isEmailValid: $isEmailValid \n
-      isPasswordValid: $isPasswordValid \n
-      isSumbiting: $isSumbiting \n
-      isSucces: $isSucces \n
-      isFailure: $isFailure \n
+    return ''' LoginState {
+      isEmailValid: $isEmailValid
+      isPasswordValid: $isPasswordValid
+      isSumbiting: $isSumbiting
+      isSucces: $isSucces
+      isFailure: $isFailure
       }''';
   }
   
   @override
-  List<Object> get props => [];
+  List<Object> get props => [isEmailValid, isPasswordValid, isFailure, isSucces, isSumbiting];
 }
+
+class UpdateLogin extends LoginState{
+
+  final bool isEmailValid;
+  final bool isPasswordValid;
+
+  UpdateLogin({required this.isEmailValid, required this.isPasswordValid}) : super(
+    isEmailValid: isEmailValid,
+    isPasswordValid: isPasswordValid,
+    isFailure: false,
+    isSucces: false,
+    isSumbiting: false
+  );
+
+  @override
+  List<Object> get props => [isEmailValid, isPasswordValid, isFailure, isSucces, isSumbiting];
+}
+
 
 class EmptyLogin extends LoginState {
   EmptyLogin() : super (

@@ -1,4 +1,4 @@
-import 'package:app_dos_hermanos/classes/validators.dart';
+import 'package:app_dos_hermanos/validations/login_validators.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -12,30 +12,32 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc({required this.authenticationRepository})
   : super(EmptyLogin()){
     on<EmailChanged>((event, emit) {
-      emit(state.update(
-        isEmailvalid: Validators.isValidEmail(event.email)
+      emit(new UpdateLogin(
+        isEmailValid: Validators.isValidEmail(event.email),
+        isPasswordValid: state.isPasswordValid
       ));
     });
 
     on<PasswordChanged>((event,emit){
-      emit(state.update(
-        isPasswordBalid: Validators.isValidPassword(event.password)
+      emit(new UpdateLogin(
+        isEmailValid: state.isEmailValid,
+        isPasswordValid: Validators.isValidPassword(event.password)
       ));
     });
 
-    on<LoginWithGooglePressed>((event, emit) async {
+    /*on<LoginWithGooglePressed>((event, emit) async {
       try {
         await authenticationRepository.logInWithGoogle();
         emit(SuccesLogin());
       } catch (_) {
         emit(FailLogin());
       }
-    });
+    });*/
 
     on<LoginWithCredentialPressed>((event, emit) async {
       emit(LoadingLogin());
       try {
-        await authenticationRepository.logInWithEmailAndPassword(email: event.email, password: event.password);
+        await authenticationRepository.logInWithEmailAndPassword(password: event.password);
         emit(SuccesLogin());
       } catch (_) {
         emit(FailLogin());

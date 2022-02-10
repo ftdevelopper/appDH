@@ -14,15 +14,25 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     : _authenticationRepository = authenticationRepository,
     super (AuthenticationInitialState()){
         
-      on<AuthenticationUserChanged>((event, emit){
+      on<AuthenticationUserChanged>((event, emit) async {
 
-        event.user != User.empty
-        ? emit(AuthenticatedUser(user: event.user))
-        : emit (UnknownUser());
+        if(authenticationRepository.isLoggedIn()){
+          await authenticationRepository.getUser;
+          emit(AuthenticatedUser(user: authenticationRepository.user));
+        } else {
+          emit (UnknownUser());
+        }
+
+          print('Authenticaiton User Changed with the following parameters:');
+          print('ID: ${authenticationRepository.user.id}, Name: ${authenticationRepository.user.name}, email: ${authenticationRepository.user.email}, photoURL ${authenticationRepository.user.photoURL}');
+
       });
 
       on<AuthenticationLogoutRequested>((event, emit){
+
         _authenticationRepository.logOut();
+        emit(UnaunthenticatedUser());
+        
       });
   }
 }
