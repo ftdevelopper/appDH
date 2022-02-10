@@ -1,0 +1,4 @@
+#Fri Jan 14 10:04:29 ART 2022
+base.0=C\:\\Users\\Equipo\\Documents\\Proyectos\\DosHermanos - Balanzas\\appDH\\app_bluetooth_test\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
+renamed.0=classes.dex
+path.0=classes.dex
