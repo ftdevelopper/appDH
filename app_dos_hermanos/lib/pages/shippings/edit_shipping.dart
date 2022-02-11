@@ -511,6 +511,10 @@ class _EditShippingState extends State<EditShipping> {
                     _shipping.reciverFullWeightTime = _date;
                     _shipping.reciverFullWeightUser =
                     widget.authenticationRepository.user.id;
+                    _shipping.reciverTara = _shipping.remiterTara;
+                    _shipping.reciverFullWeight = _shipping.remiterFullWeight;
+                    _shipping.reciverDryWeight = _shipping.remiterDryWeight;
+                    _shipping.reciverWetWeight = _shipping.remiterWetWeight;
                     context.read<ShippingsBloc>().add(UpdateShipping(shipping: _shipping));
                     Navigator.of(context).pop();
                     Navigator.of(context).pop();
