@@ -26,10 +26,10 @@ class DriversProvider {
     
 
     print('''Respuesta:
-      headers: ${response!.headers}
-      status code: ${response.statusCode}
-      reason parse: ${response.reasonPhrase}
-      body: ${response.body}
+      headers: ${response?.headers.toString()}
+      status code: ${response?.statusCode.toString()}
+      reason parse: ${response?.reasonPhrase.toString()}
+      body: ${response?.body.toString()}
     ''');
 
     return response;

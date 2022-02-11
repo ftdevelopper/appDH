@@ -49,4 +49,8 @@ class UpdateShipping extends ShippingsEvent {
   List<Object?> get props => [shipping];
 }
 
-class CreateExcel extends ShippingsEvent {}
+class CreateExcel extends ShippingsEvent {
+  CreateExcel({required this.shippingList});
+
+  List<Shipping> shippingList;
+}

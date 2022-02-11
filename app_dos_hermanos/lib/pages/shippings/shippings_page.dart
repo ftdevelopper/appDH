@@ -76,7 +76,7 @@ class _ShippingsPageState extends State<ShippingsPage>
                   IconButton(
                     icon: Image.asset('assets/excel-3-24.png', scale: 1.1,),
                     onPressed: (){
-                      context.read<ShippingsBloc>().add(CreateExcel());
+                      context.read<ShippingsBloc>().add(CreateExcel(shippingList: shippingList));
                     },
                   ),
                   IconButton(

@@ -116,6 +116,11 @@ class ShippingsBloc extends Bloc<ShippingsEvent, ShippingsState> {
     on<CreateExcel>((event,emit) async {
       final Workbook workbook = Workbook();
       Worksheet sheet = workbook.worksheets[0];
+
+      putHeaders(sheet);
+      print('Headers Seted');
+      putData(sheet, event.shippingList);
+      print('Data Seted');
       
       final List<int> bytes = workbook.saveAsStream();
       workbook.dispose();
@@ -141,19 +146,69 @@ class ShippingsBloc extends Bloc<ShippingsEvent, ShippingsState> {
   }
 
   void putHeaders(Worksheet sheet){
-    sheet.getRangeByIndex(0, 0).setText('Id');
-    sheet.getRangeByIndex(0, 1).setText('Estado');
-    sheet.getRangeByIndex(0, 2).setText('Estado');
-    sheet.getRangeByIndex(0, 3).setText('Estado');
-    sheet.getRangeByIndex(0, 4).setText('Estado');
-    sheet.getRangeByIndex(0, 5).setText('Estado');
-    sheet.getRangeByIndex(0, 6).setText('Estado');
-    sheet.getRangeByIndex(0, 7).setText('Estado');
-    sheet.getRangeByIndex(0, 8).setText('Estado');
-    sheet.getRangeByIndex(0, 9).setText('Estado');
-    sheet.getRangeByIndex(0, 10).setText('Estado');
-    sheet.getRangeByIndex(0, 11).setText('Estado');
-    sheet.getRangeByIndex(0, 12).setText('Estado');
+    sheet.getRangeByIndex(1, 1).setText('Id');
+    sheet.getRangeByIndex(1, 2).setText('Estado');
+    sheet.getRangeByIndex(1, 3).setText('Origen');
+    sheet.getRangeByIndex(1, 4).setText('Destino');
+    sheet.getRangeByIndex(1, 5).setText('Cosecha');
+    sheet.getRangeByIndex(1, 6).setText('Lote');
+    sheet.getRangeByIndex(1, 7).setText('Tipo de arroz');
+    sheet.getRangeByIndex(1, 8).setText('Chofer');
+    sheet.getRangeByIndex(1, 9).setText('Patente del camion');
+    sheet.getRangeByIndex(1, 10).setText('Patente del chasis');
+    sheet.getRangeByIndex(1, 11).setText('Esdado de conexion');
+    sheet.getRangeByIndex(1, 12).setText('Peso tara Origen');
+    sheet.getRangeByIndex(1, 13).setText('Usuario tara origen');
+    sheet.getRangeByIndex(1, 14).setText('Hora tara origen');
+    sheet.getRangeByIndex(1, 15).setText('Peso bruto origen');
+    sheet.getRangeByIndex(1, 16).setText('Usuario bruto origen');
+    sheet.getRangeByIndex(1, 17).setText('Hora bruto origen');
+    sheet.getRangeByIndex(1, 18).setText('Peso neto origen');
+    sheet.getRangeByIndex(1, 19).setText('Humedad');
+    sheet.getRangeByIndex(1, 20).setText('Peso seco origen');
+    sheet.getRangeByIndex(1, 21).setText('Peso tara destino');
+    sheet.getRangeByIndex(1, 22).setText('Usuario tara destino');
+    sheet.getRangeByIndex(1, 23).setText('Hora tara destion');
+    sheet.getRangeByIndex(1, 24).setText('Peso bruto destino');
+    sheet.getRangeByIndex(1, 25).setText('Usuario tara destino');
+    sheet.getRangeByIndex(1, 26).setText('Hora tara destino');
+    sheet.getRangeByIndex(1, 27).setText('Peso neto destino');
+    sheet.getRangeByIndex(1, 28).setText('Humedad');
+    sheet.getRangeByIndex(1, 29).setText('Peso seco destino');
+  }
+
+  void putData(Worksheet sheet, List<Shipping> shippingList){
+    for (int i = 0; i < shippingList.length; i++){
+      sheet.getRangeByIndex(i + 2, 1).setText(shippingList[i].id);
+      sheet.getRangeByIndex(i + 2, 2).setText(shippingList[i].getStatus);
+      sheet.getRangeByIndex(i + 2, 3).setText(shippingList[i].remiterLocation);
+      sheet.getRangeByIndex(i + 2, 4).setText(shippingList[i].reciverLocation);
+      sheet.getRangeByIndex(i + 2, 5).setText(shippingList[i].crop);
+      sheet.getRangeByIndex(i + 2, 6).setText(shippingList[i].lote);
+      sheet.getRangeByIndex(i + 2, 7).setText(shippingList[i].riceType);
+      sheet.getRangeByIndex(i + 2, 8).setText(shippingList[i].driverName);
+      sheet.getRangeByIndex(i + 2, 9).setText(shippingList[i].truckPatent);
+      sheet.getRangeByIndex(i + 2, 10).setText(shippingList[i].chasisPatent);
+      sheet.getRangeByIndex(i + 2, 11).setText(shippingList[i].isOnLine.toString());
+      sheet.getRangeByIndex(i + 2, 12).setText(shippingList[i].remiterTara);
+      sheet.getRangeByIndex(i + 2, 13).setText(shippingList[i].remiterTaraUser);
+      sheet.getRangeByIndex(i + 2, 14).setDateTime(shippingList[i].remiterTaraTime);
+      sheet.getRangeByIndex(i + 2, 15).setText(shippingList[i].remiterFullWeight);
+      sheet.getRangeByIndex(i + 2, 16).setText(shippingList[i].remiterFullWeightUser);
+      sheet.getRangeByIndex(i + 2, 17).setDateTime(shippingList[i].remiterFullWeightTime);
+      sheet.getRangeByIndex(i + 2, 18).setText(shippingList[i].remiterWetWeight);
+      sheet.getRangeByIndex(i + 2, 19).setText(shippingList[i].humidity);
+      sheet.getRangeByIndex(i + 2, 20).setText(shippingList[i].remiterDryWeight);
+      sheet.getRangeByIndex(i + 2, 21).setText(shippingList[i].reciverTara);
+      sheet.getRangeByIndex(i + 2, 22).setText(shippingList[i].reciverTaraUser);
+      sheet.getRangeByIndex(i + 2, 23).setDateTime(shippingList[i].reciverTaraTime);
+      sheet.getRangeByIndex(i + 2, 24).setText(shippingList[i].reciverFullWeight);
+      sheet.getRangeByIndex(i + 2, 25).setText(shippingList[i].reciverFullWeightUser);
+      sheet.getRangeByIndex(i + 2, 26).setDateTime(shippingList[i].reciverFullWeightTime);
+      sheet.getRangeByIndex(i + 2, 27).setText(shippingList[i].reciverWetWeight);
+      sheet.getRangeByIndex(i + 2, 28).setText(shippingList[i].humidity);
+      sheet.getRangeByIndex(i + 2, 29).setText(shippingList[i].reciverDryWeight);
+    }
   }
 }
 
