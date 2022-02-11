@@ -135,20 +135,20 @@ class _ShippingsPageState extends State<ShippingsPage>
                     controller: _tabController,
                     children: <Widget>[
                       Container(
-                          child: (filterShippings(ShippingStatus.newShipping) + filterShippings(ShippingStatus.inTravelShipping) + filterShippings(ShippingStatus.downloadedShipping) + filterShippings(ShippingStatus.completedShipping)).length == 0
+                          child: filterShippings(status: ShippingStatus.newShipping, status2: ShippingStatus.inTravelShipping, status3: ShippingStatus.downloadedShipping, status4: ShippingStatus.completedShipping).length == 0
                               ? Center(
                                   child: Column(children: [
                                   Text('No hay envios disponibles'),
                                 ]))
                               : ListView.builder(
-                                  itemCount: (filterShippings(ShippingStatus.newShipping) + filterShippings(ShippingStatus.inTravelShipping) + filterShippings(ShippingStatus.downloadedShipping) + filterShippings(ShippingStatus.completedShipping)).length,
+                                  itemCount: filterShippings(status: ShippingStatus.newShipping, status2: ShippingStatus.inTravelShipping, status3: ShippingStatus.downloadedShipping, status4: ShippingStatus.completedShipping).length,
                                   itemBuilder: (_, index) {
                                     return shippingsUI(
-                                        (filterShippings(ShippingStatus.newShipping) + filterShippings(ShippingStatus.inTravelShipping) + filterShippings(ShippingStatus.downloadedShipping) + filterShippings(ShippingStatus.completedShipping))[index], context);
+                                        filterShippings(status: ShippingStatus.newShipping, status2: ShippingStatus.inTravelShipping, status3: ShippingStatus.downloadedShipping, status4: ShippingStatus.completedShipping)[index], context);
                                   },
                                 )),
                       Container(
-                          child: filterShippings(ShippingStatus.newShipping)
+                          child: filterShippings(status: ShippingStatus.newShipping)
                                       .length ==
                                   0
                               ? Center(
@@ -160,18 +160,18 @@ class _ShippingsPageState extends State<ShippingsPage>
                                     ]))
                               : ListView.builder(
                                   itemCount: filterShippings(
-                                          ShippingStatus.newShipping)
+                                          status: ShippingStatus.newShipping)
                                       .length,
                                   itemBuilder: (_, index) {
                                     return shippingsUI(
                                         filterShippings(
-                                            ShippingStatus.newShipping)[index],
+                                            status: ShippingStatus.newShipping)[index],
                                         context);
                                   },
                                 )),
                       Container(
                           child:
-                              filterShippings(ShippingStatus.inTravelShipping)
+                              filterShippings(status: ShippingStatus.inTravelShipping)
                                           .length ==
                                       0
                                   ? Center(
@@ -183,18 +183,18 @@ class _ShippingsPageState extends State<ShippingsPage>
                                         ]))
                                   : ListView.builder(
                                       itemCount: filterShippings(
-                                              ShippingStatus.inTravelShipping)
+                                              status: ShippingStatus.inTravelShipping)
                                           .length,
                                       itemBuilder: (_, index) {
                                         return shippingsUI(
-                                            filterShippings(ShippingStatus
+                                            filterShippings(status: ShippingStatus
                                                 .inTravelShipping)[index],
                                             context);
                                       },
                                     )),
                       Container(
                           child:
-                              filterShippings(ShippingStatus.downloadedShipping)
+                              filterShippings(status: ShippingStatus.downloadedShipping)
                                           .length ==
                                       0
                                   ? Center(
@@ -206,17 +206,17 @@ class _ShippingsPageState extends State<ShippingsPage>
                                         ]))
                                   : ListView.builder(
                                       itemCount: filterShippings(
-                                              ShippingStatus.downloadedShipping)
+                                              status: ShippingStatus.downloadedShipping)
                                           .length,
                                       itemBuilder: (_, index) {
                                         return shippingsUI(
-                                            filterShippings(ShippingStatus
+                                            filterShippings(status: ShippingStatus
                                                 .downloadedShipping)[index],
                                             context);
                                       },
                                     )),
                       Container(
-                        child: filterShippings(ShippingStatus.completedShipping)
+                        child: filterShippings(status: ShippingStatus.completedShipping)
                                     .length ==
                                 0
                             ? Center(
@@ -228,12 +228,11 @@ class _ShippingsPageState extends State<ShippingsPage>
                                 ),
                               )
                             : ListView.builder(
-                                itemCount: filterShippings(
-                                        ShippingStatus.completedShipping)
+                                itemCount: filterShippings(status: ShippingStatus.completedShipping)
                                     .length,
                                 itemBuilder: (_, index) {
                                   return shippingsUI(
-                                    filterShippings(ShippingStatus
+                                    filterShippings(status: ShippingStatus
                                         .completedShipping)[index],
                                     context,
                                   );
@@ -241,7 +240,7 @@ class _ShippingsPageState extends State<ShippingsPage>
                               ),
                       ),
                       Container(
-                        child: filterShippings(ShippingStatus.deletedShipping)
+                        child: filterShippings(status: ShippingStatus.deletedShipping)
                                     .length ==
                                 0
                             ? Center(
@@ -254,11 +253,11 @@ class _ShippingsPageState extends State<ShippingsPage>
                               )
                             : ListView.builder(
                                 itemCount: filterShippings(
-                                        ShippingStatus.deletedShipping)
+                                        status: ShippingStatus.deletedShipping)
                                     .length,
                                 itemBuilder: (_, index) {
                                   return shippingsUI(
-                                    filterShippings(ShippingStatus
+                                    filterShippings(status: ShippingStatus
                                         .deletedShipping)[index],
                                     context,
                                   );
@@ -363,9 +362,9 @@ class _ShippingsPageState extends State<ShippingsPage>
     );
   }
 
-  List<Shipping> filterShippings(ShippingStatus status) {
+  List<Shipping> filterShippings({required ShippingStatus status, ShippingStatus? status2, ShippingStatus? status3, ShippingStatus? status4}) {
     return shippingList
-        .where((element) => element.shippingState == status)
+        .where((element) => (element.shippingState == status || element.shippingState == status2 || element.shippingState == status3 || element.shippingState == status4))
         .toList();
   }
 
