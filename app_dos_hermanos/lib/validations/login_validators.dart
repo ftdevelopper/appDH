@@ -1,10 +1,10 @@
 class Validators {
   static final RegExp _emailRegExp = RegExp(
-    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$ñ%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9.ñ-]+\.[a-zA-Z]+",
   );
 
   static final RegExp _passwordRegExp = RegExp(
-    r"^(?=.*[A-Za-z0-9])(?=.*\d)[A-Za-z\d]{6,}$",
+    r"^(?=.*[A-Za-z0-9.ñ])(?=.*\d)[A-Za-zñ\d]{6,}$",
   );
 
   static isValidEmail(String email){
