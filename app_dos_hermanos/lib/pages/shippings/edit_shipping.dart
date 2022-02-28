@@ -1,4 +1,4 @@
-import 'package:app_dos_hermanos/pages/shippings/update_shipping_button_widget.dart';
+import 'package:app_dos_hermanos/pages/shippings/widgets/update_shipping_button_widget.dart';
 import 'package:app_dos_hermanos/pages/shippings/widgets/downloaded_shipping_widget.dart';
 import 'package:app_dos_hermanos/pages/shippings/widgets/finish_shipping_widget.dart';
 import 'package:app_dos_hermanos/pages/shippings/widgets/intravel_shipping_widget.dart';
