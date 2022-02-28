@@ -1,5 +1,6 @@
 import 'package:app_dos_hermanos/pages/shippings/update_shipping_button_widget.dart';
 import 'package:app_dos_hermanos/pages/shippings/widgets/downloaded_shipping_widget.dart';
+import 'package:app_dos_hermanos/pages/shippings/widgets/finish_shipping_widget.dart';
 import 'package:app_dos_hermanos/pages/shippings/widgets/intravel_shipping_widget.dart';
 import 'package:app_dos_hermanos/pages/shippings/widgets/new_shipping_widget.dart';
 import 'package:app_dos_hermanos/pages/shippings/widgets/pesar_button_widget.dart';
@@ -13,8 +14,6 @@ import 'package:app_dos_hermanos/classes/shipping.dart';
 import 'package:app_dos_hermanos/local_repository/local_data_base.dart';
 import 'package:app_dos_hermanos/pages/shippings/widgets/edit_shipping_widget.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
-import 'package:app_dos_hermanos/validations/new_shipping_validators.dart';
-import 'package:app_dos_hermanos/widgets/shipping_data.dart';
 
 // ignore: must_be_immutable
 class EditShipping extends StatefulWidget {
@@ -93,30 +92,7 @@ class _EditShippingState extends State<EditShipping> {
                     UpdateShippingButtonWidget(),
                     
                     if (_shipping.shippingState == ShippingStatus.inTravelShipping)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10.0),
-                        child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.6,
-                        child: ElevatedButton(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                 Text('Envio Recibido'),
-                                 Icon(Icons.warning)
-                              ],
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25),
-                              ),
-                              primary: Colors.amber.shade700,
-                            ),
-                            onPressed: () {
-                              _showRecivedConfirmationAlert();
-                            },
-                          ),
-                    ),
-                      ),
+                      FinishShippingButtonWidget(),
                   ],
                 ),
               ),
@@ -127,68 +103,7 @@ class _EditShippingState extends State<EditShipping> {
     );
   }
 
-  Future<void> _showRecivedConfirmationAlert() async {
-    return showDialog<void>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text(
-            'Confirmar Recepcion de Envio',
-            textAlign: TextAlign.center,
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ShippingData(title: 'Fecha', data: DateFormat('dd-MM-yyyy').format(_date)),
-                ShippingData(title: 'Hora', data: DateFormat.Hm().format(_date)),
-                ShippingData(title: 'Usuario', data: widget.authenticationRepository.user.name),
-                ShippingData(title: 'Ubicacion', data: widget.authenticationRepository.user.location.name),
-                ShippingData(title: 'Arroz', data: riceValue),
-                ShippingData(title: 'Chofer', data: _shipping.driverName),
-                ShippingData(title: 'Camion', data: _shipping.truckPatent),
-                ShippingData(title: 'Chasis', data: _shipping.chasisPatent),
-                ShippingData(title: 'Peso Tara', data: _shipping.remiterTara.toString()),
-                ShippingData(title: 'Peso Bruto', data: _shipping.remiterFullWeight.toString()),
-                ShippingData(title: 'Peso Neto', data: _shipping.remiterWetWeight.toString()),
-                ShippingData(title: 'Humedad', data: _shipping.humidity.toString()),
-                ShippingData(title: 'Peso Seco', data: _shipping.remiterDryWeight.toString()),
-                ElevatedButton(
-                  child: Text('Confirmar'),
-                  onPressed: () {
-                    _shipping.addAction(
-                      action: 'Confirmo Recepcion',
-                      user: widget.authenticationRepository.user.id,
-                      date: _formatedDate
-                    );
-                    _shipping.shippingState = ShippingStatus.completedShipping;
-                    _shipping.reciverFullWeightTime = _date;
-                    _shipping.reciverFullWeightUser =
-                    widget.authenticationRepository.user.id;
-                    _shipping.reciverTara = _shipping.remiterTara;
-                    _shipping.reciverFullWeight = _shipping.remiterFullWeight;
-                    _shipping.reciverDryWeight = _shipping.remiterDryWeight;
-                    _shipping.reciverWetWeight = _shipping.remiterWetWeight;
-                    context.read<ShippingsBloc>().add(UpdateShipping(shipping: _shipping));
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pop();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15)),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: <Widget>[],
-          actionsPadding: EdgeInsets.symmetric(),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-        );
-      },
-    );
-  }
+  
 
   void uploadShipping() async {
     switch (_shipping.shippingState) {
