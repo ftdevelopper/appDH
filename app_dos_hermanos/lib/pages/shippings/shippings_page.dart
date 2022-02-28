@@ -331,7 +331,7 @@ class _ShippingsPageState extends State<ShippingsPage>
                       ]
                     ),
                   ),
-                  if (!shipping.isOnLine) Icon(Icons.warning, color: Colors.red, size: 30,)
+                  if (!(shipping.isOnLine ?? false)) Icon(Icons.warning, color: Colors.red, size: 30,)
                 ],
               ),
             ],

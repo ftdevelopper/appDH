@@ -397,7 +397,7 @@ class _NewShippingState extends State<NewShipping> {
     _shipping.remiterTaraTime = _date;
     _shipping.truckPatent = _truckPatentController.text;
     _shipping.remiterLocation = _locationController.text;
-    _shipping.id = _shipping.truckPatent + this.id;
+    _shipping.id = _shipping.truckPatent ?? '' + this.id;
     _shipping.addAction(action: 'Taro', user: widget.authenticationRepository.user.id, date: _formatedDate);
     BlocProvider.of<ShippingsBloc>(context)
         .add(AddShipping(shipping: _shipping));

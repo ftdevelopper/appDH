@@ -39,7 +39,7 @@ class ResumePage extends StatelessWidget {
             MyTextField(title: 'Chofer', body: checkedString(string: shipping.driverName)),
             MyTextField(title: 'Patente del camion', body: checkedString(string: shipping.truckPatent)),
             MyTextField(title: 'Patente del chasis', body: checkedString(string: shipping.chasisPatent)),
-            MyTextField(title: 'Estado de conexion', body: checkedString(string: shipping.isOnLine ? 'En Línea' : 'No Sincronizado')),
+            MyTextField(title: 'Estado de conexion', body: checkedString(string: (shipping.isOnLine ?? false) ? 'En Línea' : 'No Sincronizado')),
 
             Divider(),
             Text('Peso tara inicial', style: TextStyle(fontWeight: FontWeight.bold)),
