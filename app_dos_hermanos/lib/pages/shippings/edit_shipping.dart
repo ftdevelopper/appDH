@@ -1,3 +1,4 @@
+import 'package:app_dos_hermanos/pages/shippings/widgets/downloaded_shipping_widget.dart';
 import 'package:app_dos_hermanos/pages/shippings/widgets/intravel_shipping_widget.dart';
 import 'package:app_dos_hermanos/pages/shippings/widgets/new_shipping_widget.dart';
 import 'package:flutter/material.dart';
@@ -76,52 +77,15 @@ class _EditShippingState extends State<EditShipping> {
                     
                     if (_shipping.shippingState == ShippingStatus.newShipping)
                       NewShippingWidget(),
+
                     if (_shipping.shippingState ==
                         ShippingStatus.inTravelShipping)
                       IntravelShippingWidget(),
+
                     if (_shipping.shippingState ==
                         ShippingStatus.downloadedShipping)
-                      Column(
-                        children: [
-                          TextField(
-                            controller: TextEditingController()
-                              ..text = _shipping.remiterTara.toString(),
-                            enabled: false,
-                            decoration: InputDecoration(
-                                labelText: 'Peso Tara - Procedencia',
-                                icon: Icon(Icons.filter_1)),
-                          ),
-                          Divider(),
-                          TextField(
-                            controller: TextEditingController()
-                              ..text = _shipping.remiterFullWeight.toString(),
-                            enabled: false,
-                            decoration: InputDecoration(
-                                labelText: 'Peso Bruto - Procedencia',
-                                icon: Icon(Icons.filter_2)),
-                          ),
-                          Divider(),
-                          TextField(
-                            controller: TextEditingController()
-                              ..text = _shipping.reciverFullWeight.toString(),
-                            enabled: false,
-                            decoration: InputDecoration(
-                                labelText: 'Peso Bruto - Destino',
-                                icon: Icon(Icons.filter_3)),
-                          ),
-                          Divider(),
-                          TextFormField(
-                            controller: TextEditingController(text: state.data),
-                            decoration: InputDecoration(
-                                labelText: 'Peso Tara - Destino',
-                                icon: Icon(Icons.filter_3)),
-                            enabled: true,
-                            onChanged: (value){
-                              state.data = value;
-                            },
-                          ),
-                        ],
-                      ),
+                      DownloadedShippingWidget(),
+                      
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10.0),
                       child: SizedBox(
