@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 enum ShippingStatus{newShipping, completedShipping, inTravelShipping, downloadedShipping, unknownStatus, deletedShipping}
 
 class Shipping extends Equatable{
-  String truckPatent, chasisPatent, driverName;
-  ShippingStatus shippingState;
+  String? truckPatent, chasisPatent, driverName;
+  ShippingStatus? shippingState;
   String? remiterTara, remiterFullWeight, reciverTara, reciverFullWeight;
   DateTime? remiterTaraTime, remiterFullWeightTime, reciverTaraTime, reciverFullWeightTime;
   String? remiterTaraUser, remiterFullWeightUser, reciverTaraUser, reciverFullWeightUser;
@@ -23,13 +23,13 @@ class Shipping extends Equatable{
   String? reciverWetWeight, reciverDryWeight;
   String? lote;
 
-  bool isOnLine;
+  bool? isOnLine;
 
   Shipping({
-    required this.driverName,
-    required this.shippingState,
-    required this.truckPatent,
-    required this.chasisPatent,
+    this.driverName,
+    this.shippingState,
+    this.truckPatent,
+    this.chasisPatent,
     this.remiterTara, this.remiterFullWeight, this.reciverTara, this.reciverFullWeight, 
     this.remiterTaraTime, this.remiterFullWeightTime, this.reciverTaraTime, this.reciverFullWeightTime, 
     this.remiterTaraUser, this.remiterFullWeightUser, this.reciverTaraUser, this.reciverFullWeightUser, 
@@ -38,7 +38,7 @@ class Shipping extends Equatable{
     this. actions, this.userActions, this.dateActions,
     this.remiterWetWeight, this.remiterDryWeight,
     this.reciverWetWeight, this.reciverDryWeight,
-    required this.isOnLine,
+    this.isOnLine,
     this.lote,
   });
 
@@ -106,6 +106,7 @@ class Shipping extends Equatable{
         return 'unknownStatus';
       case ShippingStatus.deletedShipping:
         return 'deletedShipping';
+      default: return 'unknownStatus';
     }
   }
 
@@ -123,6 +124,7 @@ class Shipping extends Equatable{
         return 'Estado Desconocido';
       case ShippingStatus.deletedShipping:
         return 'Envio Eliminado';
+      default: return 'Estado Desconocido';
     }
   }
 
@@ -165,6 +167,7 @@ class Shipping extends Equatable{
       case ShippingStatus.deletedShipping:
         shippingState = ShippingStatus.deletedShipping;
       break;
+      default: shippingState = ShippingStatus.unknownStatus;
     }
   }
 
@@ -205,40 +208,40 @@ class Shipping extends Equatable{
     );
   }
 
-  Map<String, String> toJson(){
-    Map<String, String> jsonShipping = {
+  Map<String, String?> toJson(){
+    Map<String, String?> jsonShipping = {
       "shippingState": getStatus,
       "truckPatent": truckPatent,
       "driverName": driverName,
       "chasisPatent": chasisPatent,
-      "remiterFullWeight": remiterFullWeight ?? '',
+      "remiterFullWeight": remiterFullWeight,
       "remiterFullWeightTime": remiterFullWeightTime.toString(),
-      "remiterFullWeightUser": remiterFullWeightUser ?? '',
-      "remiterLocation": remiterLocation ?? '',
-      "remiterTara": remiterTara ?? '',
+      "remiterFullWeightUser": remiterFullWeightUser,
+      "remiterLocation": remiterLocation,
+      "remiterTara": remiterTara,
       "remiterTaraTime": remiterTaraTime.toString(),
-      "remiterTaraUser": remiterTaraUser ?? '',
-      "reciverFullWeight": reciverFullWeight ?? '',
+      "remiterTaraUser": remiterTaraUser,
+      "reciverFullWeight": reciverFullWeight,
       "reciverFullWeightTime": reciverFullWeightTime.toString(),
-      "reciverFullWeightUser": reciverFullWeightUser ?? '',
-      "reciverLocation": reciverLocation ?? '',
-      "reciverTara": reciverTara ?? '',
+      "reciverFullWeightUser": reciverFullWeightUser,
+      "reciverLocation": reciverLocation,
+      "reciverTara": reciverTara,
       "reciverTaraTime": reciverTaraTime.toString(),
-      "reciverTaraUser": reciverTaraUser ?? '',
-      "riceType": riceType ?? '',
-      "id": id ?? '',
-      "crop": crop ?? '',
-      "departure": departure ?? '',
-      "humidity": humidity ?? '',
+      "reciverTaraUser": reciverTaraUser,
+      "riceType": riceType,
+      "id": id,
+      "crop": crop,
+      "departure": departure,
+      "humidity": humidity,
       "actions": json.encode(actions),
       "userActions": json.encode(userActions),
       "dateActions": json.encode(dateActions),
-      "reciverDryWeight": reciverDryWeight ?? '',
-      "reciverWetWeight": reciverWetWeight ?? '',
-      "remiterDryWeight": remiterDryWeight ?? '',
-      "remiterWetWeight": remiterWetWeight ?? '',
+      "reciverDryWeight": reciverDryWeight,
+      "reciverWetWeight": reciverWetWeight,
+      "remiterDryWeight": remiterDryWeight,
+      "remiterWetWeight": remiterWetWeight,
       "isOnLine": json.encode(isOnLine),
-      "lote": lote ?? '',
+      "lote": lote,
     };
     return jsonShipping;
   }
@@ -253,6 +256,43 @@ class Shipping extends Equatable{
     } else {
       return ShippingStatus.newShipping;
     }
+  }
+
+  Shipping copyWith(Shipping shipping){
+    return Shipping(
+      actions: shipping.actions ?? this.actions,
+      chasisPatent: shipping.chasisPatent ?? this.chasisPatent,
+      crop: shipping.crop ?? this.crop,
+      dateActions: shipping.dateActions ?? this.dateActions,
+      departure: shipping.departure ?? this.departure,
+      driverName: shipping.driverName ?? this.driverName,
+      humidity: shipping.humidity ?? this.humidity,
+      id: shipping.id ?? this.id,
+      isOnLine: shipping.isOnLine ?? this.isOnLine,
+      lote: shipping.lote ?? this.lote,
+      reciverDryWeight: shipping.reciverDryWeight ?? this.reciverDryWeight,
+      reciverWetWeight: shipping.reciverWetWeight ?? this.reciverWetWeight,
+      reciverFullWeight: shipping.reciverFullWeight ?? this.reciverFullWeight,
+      reciverFullWeightTime: shipping.reciverFullWeightTime ?? this.reciverFullWeightTime,
+      reciverFullWeightUser: shipping.reciverFullWeightUser ?? this.reciverFullWeightUser,
+      reciverLocation: shipping.reciverLocation ?? this.reciverLocation,
+      remiterDryWeight: shipping.remiterDryWeight ?? this.remiterDryWeight,
+      remiterFullWeight: shipping.remiterFullWeight ?? this.remiterFullWeight,
+      remiterFullWeightTime: shipping.remiterFullWeightTime ?? this.remiterFullWeightTime,
+      remiterFullWeightUser: shipping.remiterFullWeightUser ?? this.remiterFullWeightUser,
+      reciverTara: shipping.reciverTara ?? this.reciverTara,
+      reciverTaraTime: shipping.reciverTaraTime ?? this.reciverTaraTime,
+      reciverTaraUser: shipping.reciverTaraUser ?? this.reciverTaraUser,
+      remiterTara: shipping.remiterTara ?? this.remiterTara,
+      remiterTaraTime: shipping.remiterTaraTime ?? this.remiterTaraTime,
+      remiterTaraUser: shipping.remiterTaraUser ?? this.remiterTaraUser,
+      remiterWetWeight: shipping.remiterWetWeight ?? this.remiterWetWeight,
+      remiterLocation: shipping.remiterLocation ?? this.remiterLocation,
+      riceType: shipping.riceType ?? this.riceType,
+      shippingState: shipping.shippingState ?? this.shippingState,
+      truckPatent: shipping.truckPatent ?? this.truckPatent,
+      userActions: shipping.userActions ?? this.userActions,
+    );
   }
 
   @override
