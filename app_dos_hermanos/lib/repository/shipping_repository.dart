@@ -4,7 +4,7 @@ import 'package:app_dos_hermanos/classes/shipping.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ShippingRepository {
-  final databaseReference = FirebaseFirestore.instance.collection("shippings");
+  final databaseReference = FirebaseFirestore.instance.collection("shippingsTest");
 
   Stream<List<Shipping>> getShippings({required Duration duration}) {
     return databaseReference
