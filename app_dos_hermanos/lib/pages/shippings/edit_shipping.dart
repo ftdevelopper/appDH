@@ -3,6 +3,7 @@ import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
 import 'package:app_dos_hermanos/classes/lote.dart';
 import 'package:app_dos_hermanos/classes/shipping.dart';
 import 'package:app_dos_hermanos/local_repository/local_data_base.dart';
+import 'package:app_dos_hermanos/pages/shippings/widgets/edit_shipping_widget.dart';
 import 'package:app_dos_hermanos/repository/authentication_repository.dart';
 import 'package:app_dos_hermanos/validations/new_shipping_validators.dart';
 import 'package:app_dos_hermanos/widgets/shipping_data.dart';
@@ -66,41 +67,12 @@ class _EditShippingState extends State<EditShipping> {
                 padding: EdgeInsets.all(25),
                 child: Column(
                   children: <Widget>[
-                    TextField(
-                      controller: TextEditingController()..text = _formatedDate,
-                      enabled: false,
-                      decoration: InputDecoration(
-                          labelText: 'Fecha',
-                          icon: Icon(Icons.calendar_today_outlined)),
+
+                    EditShippingWidget(shipping: 
+                      _shipping, 
+                      formatedDate: _formatedDate,
                     ),
-                    Divider(),
-                    TextField(
-                      controller: TextEditingController()
-                        ..text = _shipping.driverName,
-                      enabled: false,
-                      decoration: InputDecoration(
-                          labelText: 'Chofer',
-                          icon: Icon(Icons.contacts_outlined)),
-                    ),
-                    Divider(),
-                    TextField(
-                      controller: TextEditingController()
-                        ..text = _shipping.truckPatent,
-                      enabled: false,
-                      decoration: InputDecoration(
-                          labelText: 'Patente del Camion',
-                          icon: Icon(Icons.local_shipping_rounded)),
-                    ),
-                    Divider(),
-                    TextField(
-                      controller: TextEditingController()
-                        ..text = _shipping.chasisPatent,
-                      enabled: false,
-                      decoration: InputDecoration(
-                          labelText: 'Patente del Chasis',
-                          icon: Icon(Icons.local_shipping_rounded)),
-                    ),
-                    Divider(),
+                    
                     if (_shipping.shippingState == ShippingStatus.newShipping)
                       Column(
                         children: [
