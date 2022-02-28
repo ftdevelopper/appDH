@@ -1,6 +1,7 @@
 import 'package:app_dos_hermanos/pages/shippings/widgets/downloaded_shipping_widget.dart';
 import 'package:app_dos_hermanos/pages/shippings/widgets/intravel_shipping_widget.dart';
 import 'package:app_dos_hermanos/pages/shippings/widgets/new_shipping_widget.dart';
+import 'package:app_dos_hermanos/pages/shippings/widgets/pesar_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -85,28 +86,8 @@ class _EditShippingState extends State<EditShipping> {
                     if (_shipping.shippingState ==
                         ShippingStatus.downloadedShipping)
                       DownloadedShippingWidget(),
-                      
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.6,
-                        child: ElevatedButton(
-                            child: Text('Pesar'),
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25),
-                              ),
-                              primary: Colors.red.shade700,
-                            ),
-                            onPressed: () {
-                              BlocProvider.of<BluetoothCubit>(context)
-                                  .requestWeight(
-                                      patent: _shipping.truckPatent,
-                                      comand: "T",
-                                      date: _formatedDate);
-                            }),
-                      ),
-                    ),
+
+                    PesarButtonWidget(),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10.0),
                       child: SizedBox(
