@@ -1,6 +1,8 @@
-import 'package:app_dos_hermanos/blocs/bluetootu_cubit/bluetooth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:app_dos_hermanos/blocs/bluetootu_cubit/bluetooth_cubit.dart';
+import 'package:app_dos_hermanos/pages/shippings/edit_shipping_cubit/edit_shipping_cubit.dart';
+import 'package:intl/intl.dart';
 
 class PesarButtonWidget extends StatelessWidget {
   const PesarButtonWidget({Key? key}) : super(key: key);
@@ -20,10 +22,11 @@ class PesarButtonWidget extends StatelessWidget {
               primary: Colors.red.shade700,
             ),
             onPressed: () {
-              BlocProvider.of<BluetoothCubit>(context).requestWeight(
-                  patent: _shipping.truckPatent,
-                  comand: "T",
-                  date: _formatedDate);
+              context.read<BluetoothCubit>().requestWeight(
+                comand: "T",
+                patent: context.read<EditShippingState>().shipping.truckPatent ?? '',
+                date: DateFormat('yyyy-MM-dd kk:mm').format(DateTime.now()),
+              );
             }),
       ),
     );
