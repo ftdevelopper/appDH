@@ -1,18 +1,33 @@
 import 'dart:convert';
 
-import 'package:app_dos_hermanos/classes/humidity_calculation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-enum ShippingStatus{newShipping, completedShipping, inTravelShipping, downloadedShipping, unknownStatus, deletedShipping}
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
 
-class Shipping extends Equatable{
+import 'package:app_dos_hermanos/repositories/models/humidity_calculation.dart';
+
+enum ShippingStatus {
+  newShipping,
+  completedShipping,
+  inTravelShipping,
+  downloadedShipping,
+  unknownStatus,
+  deletedShipping
+}
+
+class Shipping extends Equatable {
   String? truckPatent, chasisPatent, driverName;
   ShippingStatus? shippingState;
   String? remiterTara, remiterFullWeight, reciverTara, reciverFullWeight;
-  DateTime? remiterTaraTime, remiterFullWeightTime, reciverTaraTime, reciverFullWeightTime;
-  String? remiterTaraUser, remiterFullWeightUser, reciverTaraUser, reciverFullWeightUser;
+  DateTime? remiterTaraTime,
+      remiterFullWeightTime,
+      reciverTaraTime,
+      reciverFullWeightTime;
+  String? remiterTaraUser,
+      remiterFullWeightUser,
+      reciverTaraUser,
+      reciverFullWeightUser;
   String? remiterLocation, reciverLocation;
   String? riceType, id, crop, departure, humidity;
 
@@ -30,14 +45,32 @@ class Shipping extends Equatable{
     this.shippingState,
     this.truckPatent,
     this.chasisPatent,
-    this.remiterTara, this.remiterFullWeight, this.reciverTara, this.reciverFullWeight, 
-    this.remiterTaraTime, this.remiterFullWeightTime, this.reciverTaraTime, this.reciverFullWeightTime, 
-    this.remiterTaraUser, this.remiterFullWeightUser, this.reciverTaraUser, this.reciverFullWeightUser, 
-    this.remiterLocation, this.reciverLocation, 
-    this.riceType, this.id, this.crop, this.departure, this.humidity,
-    this. actions, this.userActions, this.dateActions,
-    this.remiterWetWeight, this.remiterDryWeight,
-    this.reciverWetWeight, this.reciverDryWeight,
+    this.remiterTara,
+    this.remiterFullWeight,
+    this.reciverTara,
+    this.reciverFullWeight,
+    this.remiterTaraTime,
+    this.remiterFullWeightTime,
+    this.reciverTaraTime,
+    this.reciverFullWeightTime,
+    this.remiterTaraUser,
+    this.remiterFullWeightUser,
+    this.reciverTaraUser,
+    this.reciverFullWeightUser,
+    this.remiterLocation,
+    this.reciverLocation,
+    this.riceType,
+    this.id,
+    this.crop,
+    this.departure,
+    this.humidity,
+    this.actions,
+    this.userActions,
+    this.dateActions,
+    this.remiterWetWeight,
+    this.remiterDryWeight,
+    this.reciverWetWeight,
+    this.reciverDryWeight,
     this.isOnLine,
     this.lote,
   });
@@ -50,14 +83,16 @@ class Shipping extends Equatable{
       driverName: data['driverName'],
       chasisPatent: data['chasisPatent'],
       remiterFullWeight: data['remiterFullWeight'],
-      remiterFullWeightTime: DateTime.tryParse(data['remiterFullWeightTime'] ?? ''),
+      remiterFullWeightTime:
+          DateTime.tryParse(data['remiterFullWeightTime'] ?? ''),
       remiterFullWeightUser: data['remiterFullWeightUser'],
       remiterLocation: data['remiterLocation'],
       remiterTara: data['remiterTara'],
       remiterTaraTime: DateTime.tryParse(data['remiterTaraTime'] ?? ''),
       remiterTaraUser: data['remiterTaraUser'],
       reciverFullWeight: data['reciverFullWeight'],
-      reciverFullWeightTime: DateTime.tryParse(data['reciverFullWeightTime'] ?? ''),
+      reciverFullWeightTime:
+          DateTime.tryParse(data['reciverFullWeightTime'] ?? ''),
       reciverFullWeightUser: data['reciverFullWeightUser'],
       reciverLocation: data['reciverLocation'],
       reciverTara: data['reciverTara'],
@@ -80,20 +115,21 @@ class Shipping extends Equatable{
     );
   }
 
-  void addAction ({required String action, required String user, required String date}){
+  void addAction(
+      {required String action, required String user, required String date}) {
     actions == null ? actions = [action] : actions!.add(action);
     userActions == null ? userActions = [user] : userActions!.add(user);
     dateActions == null ? dateActions = [date] : dateActions!.add(date);
   }
 
-  double getDryWeight({required double humidity, required double weight}){
+  double getDryWeight({required double humidity, required double weight}) {
     double dryWeight = 0;
     dryWeight = weight * HumidityCalculaiton.getMerme(humidity);
     return dryWeight;
   }
 
   String get getStatus {
-    switch (shippingState){
+    switch (shippingState) {
       case ShippingStatus.newShipping:
         return 'newShipping';
       case ShippingStatus.completedShipping:
@@ -106,12 +142,13 @@ class Shipping extends Equatable{
         return 'unknownStatus';
       case ShippingStatus.deletedShipping:
         return 'deletedShipping';
-      default: return 'unknownStatus';
+      default:
+        return 'unknownStatus';
     }
   }
 
   String get getStatusName {
-    switch (shippingState){
+    switch (shippingState) {
       case ShippingStatus.newShipping:
         return 'Camion Tarado';
       case ShippingStatus.completedShipping:
@@ -124,16 +161,17 @@ class Shipping extends Equatable{
         return 'Estado Desconocido';
       case ShippingStatus.deletedShipping:
         return 'Envio Eliminado';
-      default: return 'Estado Desconocido';
+      default:
+        return 'Estado Desconocido';
     }
   }
 
   Icon get statusIcon {
-    switch (shippingState){
+    switch (shippingState) {
       case ShippingStatus.newShipping:
-        return Icon(Icons.fiber_new_outlined,color: Colors.amber,size: 30);
+        return Icon(Icons.fiber_new_outlined, color: Colors.amber, size: 30);
       case ShippingStatus.completedShipping:
-        return Icon(Icons.done, color: Colors.green,size: 30);
+        return Icon(Icons.done, color: Colors.green, size: 30);
       case ShippingStatus.inTravelShipping:
         return Icon(Icons.send, color: Colors.blueGrey, size: 30);
       case ShippingStatus.downloadedShipping:
@@ -141,51 +179,55 @@ class Shipping extends Equatable{
       case ShippingStatus.unknownStatus:
         return Icon(Icons.new_releases_outlined, color: Colors.red, size: 30);
       case ShippingStatus.deletedShipping:
-        return Icon(Icons.not_interested_sharp, color: Colors.redAccent, size: 30);
-      default: 
+        return Icon(Icons.not_interested_sharp,
+            color: Colors.redAccent, size: 30);
+      default:
         return Icon(Icons.new_releases_outlined, color: Colors.red, size: 30);
     }
   }
 
-  void nextStatus (){
-    switch (shippingState){
+  void nextStatus() {
+    switch (shippingState) {
       case ShippingStatus.newShipping:
         shippingState = ShippingStatus.inTravelShipping;
-      break;
+        break;
       case ShippingStatus.inTravelShipping:
         shippingState = ShippingStatus.downloadedShipping;
-      break;
+        break;
       case ShippingStatus.downloadedShipping:
         shippingState = ShippingStatus.completedShipping;
-      break;
+        break;
       case ShippingStatus.completedShipping:
         shippingState = ShippingStatus.completedShipping;
-      break;
+        break;
       case ShippingStatus.unknownStatus:
         shippingState = ShippingStatus.unknownStatus;
-      break;
+        break;
       case ShippingStatus.deletedShipping:
         shippingState = ShippingStatus.deletedShipping;
-      break;
-      default: shippingState = ShippingStatus.unknownStatus;
+        break;
+      default:
+        shippingState = ShippingStatus.unknownStatus;
     }
   }
 
-  static Shipping fromJson(Map<String, dynamic> jsonShipping){
+  static Shipping fromJson(Map<String, dynamic> jsonShipping) {
     return Shipping(
       shippingState: statusFromString(jsonShipping['shippingState']),
       truckPatent: jsonShipping['truckPatent'],
       driverName: jsonShipping['driverName'],
       chasisPatent: jsonShipping['chasisPatent'],
       remiterFullWeight: jsonShipping['remiterFullWeight'],
-      remiterFullWeightTime: DateTime.tryParse(jsonShipping['remiterFullWeightTime']),
+      remiterFullWeightTime:
+          DateTime.tryParse(jsonShipping['remiterFullWeightTime']),
       remiterFullWeightUser: jsonShipping['remiterFullWeightUser'],
       remiterLocation: jsonShipping['remiterLocation'],
       remiterTara: jsonShipping['remiterTara'],
       remiterTaraTime: DateTime.tryParse(jsonShipping['remiterTaraTime']),
       remiterTaraUser: jsonShipping['remiterTaraUser'],
       reciverFullWeight: jsonShipping['reciverFullWeight'],
-      reciverFullWeightTime: DateTime.tryParse(jsonShipping['reciverFullWeightTime']),
+      reciverFullWeightTime:
+          DateTime.tryParse(jsonShipping['reciverFullWeightTime']),
       reciverFullWeightUser: jsonShipping['reciverFullWeightUser'],
       reciverLocation: jsonShipping['reciverLocation'],
       reciverTara: jsonShipping['reciverTara'],
@@ -208,7 +250,7 @@ class Shipping extends Equatable{
     );
   }
 
-  Map<String, String?> toJson(){
+  Map<String, String?> toJson() {
     Map<String, String?> jsonShipping = {
       "shippingState": getStatus,
       "truckPatent": truckPatent,
@@ -246,19 +288,23 @@ class Shipping extends Equatable{
     return jsonShipping;
   }
 
-  ShippingStatus getLastStatus(){
-    if (reciverTara != null && reciverTara != '' && reciverTara != 'null'){
+  ShippingStatus getLastStatus() {
+    if (reciverTara != null && reciverTara != '' && reciverTara != 'null') {
       return ShippingStatus.completedShipping;
-    } else if (reciverFullWeight != null && reciverFullWeight != '' && reciverFullWeight != 'null'){
+    } else if (reciverFullWeight != null &&
+        reciverFullWeight != '' &&
+        reciverFullWeight != 'null') {
       return ShippingStatus.downloadedShipping;
-    } else if (remiterFullWeight != null && remiterFullWeight != '' &&remiterFullWeight != 'null'){
+    } else if (remiterFullWeight != null &&
+        remiterFullWeight != '' &&
+        remiterFullWeight != 'null') {
       return ShippingStatus.inTravelShipping;
     } else {
       return ShippingStatus.newShipping;
     }
   }
 
-  Shipping copyWith(Shipping shipping){
+  Shipping copyWith(Shipping shipping) {
     return Shipping(
       actions: shipping.actions ?? this.actions,
       chasisPatent: shipping.chasisPatent ?? this.chasisPatent,
@@ -273,13 +319,17 @@ class Shipping extends Equatable{
       reciverDryWeight: shipping.reciverDryWeight ?? this.reciverDryWeight,
       reciverWetWeight: shipping.reciverWetWeight ?? this.reciverWetWeight,
       reciverFullWeight: shipping.reciverFullWeight ?? this.reciverFullWeight,
-      reciverFullWeightTime: shipping.reciverFullWeightTime ?? this.reciverFullWeightTime,
-      reciverFullWeightUser: shipping.reciverFullWeightUser ?? this.reciverFullWeightUser,
+      reciverFullWeightTime:
+          shipping.reciverFullWeightTime ?? this.reciverFullWeightTime,
+      reciverFullWeightUser:
+          shipping.reciverFullWeightUser ?? this.reciverFullWeightUser,
       reciverLocation: shipping.reciverLocation ?? this.reciverLocation,
       remiterDryWeight: shipping.remiterDryWeight ?? this.remiterDryWeight,
       remiterFullWeight: shipping.remiterFullWeight ?? this.remiterFullWeight,
-      remiterFullWeightTime: shipping.remiterFullWeightTime ?? this.remiterFullWeightTime,
-      remiterFullWeightUser: shipping.remiterFullWeightUser ?? this.remiterFullWeightUser,
+      remiterFullWeightTime:
+          shipping.remiterFullWeightTime ?? this.remiterFullWeightTime,
+      remiterFullWeightUser:
+          shipping.remiterFullWeightUser ?? this.remiterFullWeightUser,
       reciverTara: shipping.reciverTara ?? this.reciverTara,
       reciverTaraTime: shipping.reciverTaraTime ?? this.reciverTaraTime,
       reciverTaraUser: shipping.reciverTaraUser ?? this.reciverTaraUser,
@@ -297,25 +347,43 @@ class Shipping extends Equatable{
 
   @override
   List<Object?> get props => [
-    this.driverName,
-    this.shippingState,
-    this.truckPatent,
-    this.chasisPatent,
-    this.remiterTara, this.remiterFullWeight, this.reciverTara, this.reciverFullWeight, 
-    this.remiterTaraTime, this.remiterFullWeightTime, this.reciverTaraTime, this.reciverFullWeightTime, 
-    this.remiterTaraUser, this.remiterFullWeightUser, this.reciverTaraUser, this.reciverFullWeightUser, 
-    this.remiterLocation, this.reciverLocation, 
-    this.riceType, this.id, this.crop, this.departure, this.humidity,
-    this. actions, this.userActions, this.dateActions,
-    this.remiterWetWeight, this.remiterDryWeight,
-    this.reciverWetWeight, this.reciverDryWeight,
-    this.isOnLine,
-    this.lote,
-  ];
+        this.driverName,
+        this.shippingState,
+        this.truckPatent,
+        this.chasisPatent,
+        this.remiterTara,
+        this.remiterFullWeight,
+        this.reciverTara,
+        this.reciverFullWeight,
+        this.remiterTaraTime,
+        this.remiterFullWeightTime,
+        this.reciverTaraTime,
+        this.reciverFullWeightTime,
+        this.remiterTaraUser,
+        this.remiterFullWeightUser,
+        this.reciverTaraUser,
+        this.reciverFullWeightUser,
+        this.remiterLocation,
+        this.reciverLocation,
+        this.riceType,
+        this.id,
+        this.crop,
+        this.departure,
+        this.humidity,
+        this.actions,
+        this.userActions,
+        this.dateActions,
+        this.remiterWetWeight,
+        this.remiterDryWeight,
+        this.reciverWetWeight,
+        this.reciverDryWeight,
+        this.isOnLine,
+        this.lote,
+      ];
 }
 
-ShippingStatus statusFromString(String string){
-  switch (string){
+ShippingStatus statusFromString(String string) {
+  switch (string) {
     case 'newShipping':
       return ShippingStatus.newShipping;
     case 'completedShipping':
@@ -326,7 +394,7 @@ ShippingStatus statusFromString(String string){
       return ShippingStatus.downloadedShipping;
     case 'unknownStatus':
       return ShippingStatus.unknownStatus;
-    case 'deletedShipping': 
+    case 'deletedShipping':
       return ShippingStatus.deletedShipping;
     default:
       return ShippingStatus.unknownStatus;

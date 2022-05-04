@@ -1,10 +1,11 @@
-import 'package:app_dos_hermanos/features/connect_bluetooth_feature/cubit/bluetootu_cubit/bluetooth_cubit.dart';
-import 'package:app_dos_hermanos/features/get_shippings_feature/cubit/shippings_bloc/shippings_bloc.dart';
-import 'package:app_dos_hermanos/features/connect_bluetooth_feature/pages/discovery_page.dart';
-import 'package:app_dos_hermanos/features/get_shippings_feature/widgets/filter_dialog.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:app_dos_hermanos/features/connect_bluetooth_feature/cubit/bluetootu_cubit/bluetooth_cubit.dart';
+import 'package:app_dos_hermanos/features/connect_bluetooth_feature/pages/discovery_page.dart';
+import 'package:app_dos_hermanos/features/get_shippings_feature/cubit/shippings_bloc/shippings_bloc.dart';
+import 'package:app_dos_hermanos/features/get_shippings_feature/widgets/filter_dialog.dart';
 import 'filter_dialog.dart';
 
 class AppBarWidget extends StatelessWidget with PreferredSizeWidget{

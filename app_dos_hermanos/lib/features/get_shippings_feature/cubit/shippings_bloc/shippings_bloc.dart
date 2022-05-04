@@ -1,17 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
+
+import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
 import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart';
+
 import 'package:app_dos_hermanos/features/get_shippings_feature/models/filter.dart';
 import 'package:app_dos_hermanos/features/get_shippings_feature/models/shipping.dart';
 import 'package:app_dos_hermanos/repositories/local_data_base.dart';
 import 'package:app_dos_hermanos/repositories/shipping_repository.dart';
-import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
-
 import '../../../../utils/internet_cubit/internet_cubit.dart';
 
 part 'shippings_event.dart';

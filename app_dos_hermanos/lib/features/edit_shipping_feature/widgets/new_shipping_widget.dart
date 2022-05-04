@@ -1,10 +1,12 @@
-import 'package:app_dos_hermanos/classes/humidity_calculation.dart';
-import 'package:app_dos_hermanos/features/get_shippings_feature/models/shipping.dart';
-import 'package:app_dos_hermanos/features/edit_shipping_feature/cubit/edit_shipping_cubit/edit_shipping_cubit.dart';
-import 'package:app_dos_hermanos/local_repository/local_data_base.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+
+import 'package:app_dos_hermanos/features/edit_shipping_feature/cubit/edit_shipping_cubit/edit_shipping_cubit.dart';
+import 'package:app_dos_hermanos/features/get_shippings_feature/models/shipping.dart';
+import 'package:app_dos_hermanos/repositories/local_data_base.dart';
+import 'package:app_dos_hermanos/repositories/models/humidity_calculation.dart';
 
 class NewShippingWidget extends StatelessWidget {
   NewShippingWidget({Key? key}) : super(key: key);
@@ -13,7 +15,9 @@ class NewShippingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _weightController.text = context.read<EditShippingCubit>().state.shipping.remiterFullWeight ?? '';
+    _weightController.text =
+        context.read<EditShippingCubit>().state.shipping.remiterFullWeight ??
+            '';
     return BlocBuilder<EditShippingCubit, EditShippingState>(
       builder: (context, state) {
         return Column(
@@ -28,9 +32,10 @@ class NewShippingWidget extends StatelessWidget {
                 ),
               ),
               suggestionsCallback: (pattern) {
-                return context.read<LocalDataBase>().loteDB
-                .map((element) {
-                  if (element.lote.toLowerCase().contains(pattern.toLowerCase())){
+                return context.read<LocalDataBase>().loteDB.map((element) {
+                  if (element.lote
+                      .toLowerCase()
+                      .contains(pattern.toLowerCase())) {
                     return element.lote;
                   }
                 });
@@ -52,13 +57,15 @@ class NewShippingWidget extends StatelessWidget {
               },
               onSuggestionSelected: (String? suggestion) {
                 context.read<EditShippingCubit>().updateShippingParameter(
-                  Shipping(
-                    lote: suggestion,
-                    riceType: context.read<LocalDataBase>().loteDB
-                      .firstWhere((element) => element.lote == suggestion)
-                      .riceType,
-                  ),
-                );
+                      Shipping(
+                        lote: suggestion,
+                        riceType: context
+                            .read<LocalDataBase>()
+                            .loteDB
+                            .firstWhere((element) => element.lote == suggestion)
+                            .riceType,
+                      ),
+                    );
               },
             ),
             Divider(),
@@ -77,7 +84,8 @@ class NewShippingWidget extends StatelessWidget {
                 ..text = state.shipping.remiterTara.toString(),
               enabled: false,
               decoration: InputDecoration(
-                  labelText: 'Peso Tara - Procedencia', icon: Icon(Icons.filter_1)),
+                  labelText: 'Peso Tara - Procedencia',
+                  icon: Icon(Icons.filter_1)),
             ),
             Divider(),
             TextFormField(
@@ -87,11 +95,14 @@ class NewShippingWidget extends StatelessWidget {
                   icon: Icon(Icons.filter_2)),
               enabled: true,
               onChanged: (value) {
-                int weight = ((int.tryParse(_weightController.text) ?? 0) - ((int.tryParse(state.shipping.remiterTara!)) ?? 0));
-                context.read<EditShippingCubit>().updateShippingParameter(Shipping(
-                  remiterFullWeight: value,
-                  remiterWetWeight: weight.toString(),
-                ));
+                int weight = ((int.tryParse(_weightController.text) ?? 0) -
+                    ((int.tryParse(state.shipping.remiterTara!)) ?? 0));
+                context
+                    .read<EditShippingCubit>()
+                    .updateShippingParameter(Shipping(
+                      remiterFullWeight: value,
+                      remiterWetWeight: weight.toString(),
+                    ));
               },
             ),
           ],

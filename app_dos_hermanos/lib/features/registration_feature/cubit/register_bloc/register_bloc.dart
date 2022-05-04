@@ -1,8 +1,9 @@
 import 'dart:io';
-import 'package:app_dos_hermanos/repositories/authentication_repository.dart';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
+import 'package:app_dos_hermanos/repositories/authentication_repository.dart';
 import '../../../../utils/validations/login_validators.dart';
 
 part 'register_event.dart';

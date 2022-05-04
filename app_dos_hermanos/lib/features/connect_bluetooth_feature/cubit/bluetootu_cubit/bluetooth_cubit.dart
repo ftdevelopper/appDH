@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:typed_data';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
-import 'package:app_dos_hermanos/features/connect_bluetooth_feature/models/bluetooth_routines.dart';
 import 'package:intl/intl.dart';
+
+import 'package:app_dos_hermanos/features/connect_bluetooth_feature/models/bluetooth_routines.dart';
 
 part 'bluetooth_state.dart';
 

@@ -1,18 +1,20 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:app_dos_hermanos/classes/locations.dart';
-import 'package:app_dos_hermanos/classes/lote.dart';
-import 'package:app_dos_hermanos/repositories/local_data_base.dart';
-import 'package:app_dos_hermanos/repositories/drivers_provider.dart';
-import 'package:app_dos_hermanos/repositories/authentication_repository.dart';
-import 'package:app_dos_hermanos/repositories/drivers_repository.dart';
-import 'package:app_dos_hermanos/repositories/lote_repository.dart';
+
+import 'package:flutter/cupertino.dart';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 
+import 'package:app_dos_hermanos/repositories/authentication_repository.dart';
+import 'package:app_dos_hermanos/repositories/drivers_provider.dart';
+import 'package:app_dos_hermanos/repositories/drivers_repository.dart';
+import 'package:app_dos_hermanos/repositories/local_data_base.dart';
+import 'package:app_dos_hermanos/repositories/lote_repository.dart';
+import 'package:app_dos_hermanos/repositories/models/locations.dart';
+import 'package:app_dos_hermanos/repositories/models/lote.dart';
 import '../../../../repositories/location_repository.dart';
 import '../../../../utils/keys/apikeys.dart';
 

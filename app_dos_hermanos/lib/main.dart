@@ -1,22 +1,24 @@
-import 'package:app_dos_hermanos/features/add_new_shipping_feature/cubit/new_shipping_cubit/new_shipping_cubit.dart';
-import 'package:app_dos_hermanos/features/edit_shipping_feature/cubit/edit_shipping_cubit/edit_shipping_cubit.dart';
-import 'package:app_dos_hermanos/features/login_feature/cubit/authentication_bloc/authenticaiton_bloc.dart';
-import 'package:app_dos_hermanos/features/login_feature/cubit/login_bloc/login_bloc.dart';
-import 'package:app_dos_hermanos/utils/blocs/simple_bloc_observer.dart';
-import 'package:app_dos_hermanos/utils/internet_cubit/internet_cubit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
 import 'package:equatable/equatable.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:app_dos_hermanos/features/add_new_shipping_feature/cubit/new_shipping_cubit/new_shipping_cubit.dart';
+import 'package:app_dos_hermanos/features/edit_shipping_feature/cubit/edit_shipping_cubit/edit_shipping_cubit.dart';
+import 'package:app_dos_hermanos/features/get_shippings_feature/pages/shippings_page.dart';
+import 'package:app_dos_hermanos/features/login_feature/cubit/authentication_bloc/authenticaiton_bloc.dart';
+import 'package:app_dos_hermanos/features/login_feature/cubit/login_bloc/login_bloc.dart';
 import 'package:app_dos_hermanos/features/login_feature/models/user.dart';
-import 'package:app_dos_hermanos/repositories/local_data_base.dart';
 import 'package:app_dos_hermanos/features/login_feature/pages/login.dart';
 import 'package:app_dos_hermanos/features/login_feature/pages/splash.dart';
-import 'package:app_dos_hermanos/features/get_shippings_feature/pages/shippings_page.dart';
 import 'package:app_dos_hermanos/repositories/authentication_repository.dart';
+import 'package:app_dos_hermanos/repositories/local_data_base.dart';
 import 'package:app_dos_hermanos/repositories/shipping_repository.dart';
-import 'package:app_dos_hermanos/repositories/theme.dart';
+import 'package:app_dos_hermanos/utils/blocs/simple_bloc_observer.dart';
+import 'package:app_dos_hermanos/utils/internet_cubit/internet_cubit.dart';
+import 'package:app_dos_hermanos/utils/theme.dart';
 import 'features/connect_bluetooth_feature/cubit/bluetootu_cubit/bluetooth_cubit.dart';
 import 'features/get_shippings_feature/cubit/drawer_bloc/drawer_bloc.dart';
 import 'features/get_shippings_feature/cubit/filter_bloc/filter_bloc.dart';

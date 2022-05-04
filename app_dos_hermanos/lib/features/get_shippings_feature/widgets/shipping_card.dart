@@ -1,9 +1,11 @@
-import 'package:app_dos_hermanos/features/get_shippings_feature/models/shipping.dart';
+import 'package:flutter/material.dart';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:app_dos_hermanos/features/edit_shipping_feature/cubit/edit_shipping_cubit/edit_shipping_cubit.dart';
 import 'package:app_dos_hermanos/features/edit_shipping_feature/pages/edit_shipping.dart';
+import 'package:app_dos_hermanos/features/get_shippings_feature/models/shipping.dart';
 import 'package:app_dos_hermanos/features/get_shippings_feature/pages/resume_page.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ShippingCard extends StatelessWidget {
   ShippingCard({required this.shipping});

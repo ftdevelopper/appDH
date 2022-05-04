@@ -1,13 +1,15 @@
 import 'dart:io';
-import 'package:app_dos_hermanos/classes/drivers.dart';
-import 'package:app_dos_hermanos/classes/locations.dart';
-import 'package:app_dos_hermanos/classes/lote.dart';
-import 'package:app_dos_hermanos/features/login_feature/models/user.dart';
-import 'package:app_dos_hermanos/features/login_feature/cubit/authentication_bloc/authenticaiton_bloc.dart';
+
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'package:app_dos_hermanos/features/login_feature/cubit/authentication_bloc/authenticaiton_bloc.dart';
+import 'package:app_dos_hermanos/features/login_feature/models/user.dart';
+import 'package:app_dos_hermanos/repositories/models/drivers.dart';
+import 'package:app_dos_hermanos/repositories/models/locations.dart';
+import 'package:app_dos_hermanos/repositories/models/lote.dart';
 import '../cubit/drawer_bloc/drawer_bloc.dart';
 
 class LoadedDrawer extends StatelessWidget {

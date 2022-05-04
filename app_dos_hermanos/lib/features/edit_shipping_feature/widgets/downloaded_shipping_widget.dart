@@ -1,7 +1,9 @@
-import 'package:app_dos_hermanos/features/get_shippings_feature/models/shipping.dart';
-import 'package:app_dos_hermanos/features/edit_shipping_feature/cubit/edit_shipping_cubit/edit_shipping_cubit.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:app_dos_hermanos/features/edit_shipping_feature/cubit/edit_shipping_cubit/edit_shipping_cubit.dart';
+import 'package:app_dos_hermanos/features/get_shippings_feature/models/shipping.dart';
 
 class DownloadedShippingWidget extends StatelessWidget {
   DownloadedShippingWidget({Key? key}) : super(key: key);

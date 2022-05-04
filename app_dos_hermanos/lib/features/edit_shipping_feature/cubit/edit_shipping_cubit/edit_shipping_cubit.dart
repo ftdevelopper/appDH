@@ -1,11 +1,13 @@
 import 'dart:async';
-import 'package:app_dos_hermanos/classes/humidity_calculation.dart';
-import 'package:app_dos_hermanos/features/get_shippings_feature/models/shipping.dart';
-import 'package:app_dos_hermanos/features/connect_bluetooth_feature/cubit/bluetootu_cubit/bluetooth_cubit.dart';
-import 'package:app_dos_hermanos/repository/authentication_repository.dart';
-import 'package:app_dos_hermanos/repository/shipping_repository.dart';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+
+import 'package:app_dos_hermanos/features/connect_bluetooth_feature/cubit/bluetootu_cubit/bluetooth_cubit.dart';
+import 'package:app_dos_hermanos/features/get_shippings_feature/models/shipping.dart';
+import 'package:app_dos_hermanos/repositories/authentication_repository.dart';
+import 'package:app_dos_hermanos/repositories/models/humidity_calculation.dart';
+import 'package:app_dos_hermanos/repositories/shipping_repository.dart';
 
 part 'edit_shipping_state.dart';
 
@@ -69,7 +71,7 @@ class EditShippingCubit extends Cubit<EditShippingState> {
             double.parse(state.shipping.remiterTara!);
         _shipping.copyWith(Shipping(remiterWetWeight: realWeight.toString()));
       } else if (_shipping.shippingState == ShippingStatus.downloadedShipping) {
-         _shipping.addAction(
+        _shipping.addAction(
             action: 'Peso Bruto',
             user: authenticationRepository.user.id,
             date: DateTime.now().toString());
@@ -82,7 +84,7 @@ class EditShippingCubit extends Cubit<EditShippingState> {
           ),
         );
       } else if (_shipping.shippingState == ShippingStatus.completedShipping) {
-         _shipping.addAction(
+        _shipping.addAction(
             action: 'Peso Tara',
             user: authenticationRepository.user.id,
             date: DateTime.now().toString());
@@ -147,25 +149,25 @@ class EditShippingCubit extends Cubit<EditShippingState> {
     double? humidity = double.tryParse(state.shipping.humidity ?? '');
     double? reciverNet = double.tryParse(state.shipping.reciverWetWeight ?? '');
     double? remiterNet = double.tryParse(state.shipping.remiterWetWeight ?? '');
-    if(humidity != null && reciverNet != null && remiterNet != null){
-      if (isRemiter){
+    if (humidity != null && reciverNet != null && remiterNet != null) {
+      if (isRemiter) {
         emit(EditShippingUpdate(
           shipping: state.shipping.copyWith(
             Shipping(
-              remiterDryWeight: (remiterNet * HumidityCalculaiton.getMerme(humidity)).toString()
-            ),
+                remiterDryWeight:
+                    (remiterNet * HumidityCalculaiton.getMerme(humidity))
+                        .toString()),
           ),
+        ));
+      } else {
+        emit(EditShippingUpdate(
+          shipping: state.shipping.copyWith(Shipping(
+            reciverDryWeight:
+                (reciverNet * HumidityCalculaiton.getMerme(humidity))
+                    .toString(),
+          )),
         ));
       }
-      else {
-       emit(EditShippingUpdate(
-          shipping: state.shipping.copyWith(
-            Shipping(
-              reciverDryWeight: (reciverNet * HumidityCalculaiton.getMerme(humidity)).toString(),
-            )
-          ),
-        ));
-      } 
     }
   }
 

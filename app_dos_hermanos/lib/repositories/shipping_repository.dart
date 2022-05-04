@@ -1,7 +1,8 @@
 import 'dart:convert';
 
-import 'package:app_dos_hermanos/features/get_shippings_feature/models/shipping.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:app_dos_hermanos/features/get_shippings_feature/models/shipping.dart';
 
 class ShippingRepository {
   final databaseReference = FirebaseFirestore.instance.collection("shippingsTest");

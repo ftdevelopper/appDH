@@ -1,14 +1,16 @@
-import 'package:app_dos_hermanos/features/add_new_shipping_feature/cubit/new_shipping_cubit/new_shipping_cubit.dart';
-import 'package:app_dos_hermanos/features/get_shippings_feature/cubit/shippings_bloc/shippings_bloc.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:app_dos_hermanos/blocs/drawer_bloc/drawer_bloc.dart';
-import 'package:app_dos_hermanos/features/get_shippings_feature/models/shipping.dart';
-import 'package:app_dos_hermanos/local_repository/local_data_base.dart';
+
+import 'package:app_dos_hermanos/features/add_new_shipping_feature/cubit/new_shipping_cubit/new_shipping_cubit.dart';
 import 'package:app_dos_hermanos/features/add_new_shipping_feature/pages/new_shipping.dart';
-import 'package:app_dos_hermanos/repository/authentication_repository.dart';
-import 'package:app_dos_hermanos/widgets/drawer.dart';
+import 'package:app_dos_hermanos/features/get_shippings_feature/cubit/shippings_bloc/shippings_bloc.dart';
+import 'package:app_dos_hermanos/features/get_shippings_feature/models/shipping.dart';
+import '../../../repositories/authentication_repository.dart';
+import '../../../repositories/local_data_base.dart';
+import '../cubit/drawer_bloc/drawer_bloc.dart';
 import '../widgets/app_bar_widget.dart';
+import '../widgets/drawer.dart';
 import '../widgets/shipping_list_widget.dart';
 
 class ShippingsPage extends StatefulWidget {

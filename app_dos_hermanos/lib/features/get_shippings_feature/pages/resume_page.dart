@@ -1,9 +1,11 @@
+import 'package:flutter/material.dart';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+
 import 'package:app_dos_hermanos/features/get_shippings_feature/models/shipping.dart';
 import 'package:app_dos_hermanos/repositories/authentication_repository.dart';
 import 'package:app_dos_hermanos/repositories/shipping_repository.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 class ResumePage extends StatelessWidget {
   const ResumePage({Key? key, required this.shipping}) : super(key: key);

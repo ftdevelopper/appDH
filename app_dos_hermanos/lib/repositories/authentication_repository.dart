@@ -1,8 +1,10 @@
 import 'dart:async';
-import 'package:app_dos_hermanos/features/login_feature/models/user.dart';
-import 'package:app_dos_hermanos/repository/users_repository.dart';
+
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:google_sign_in/google_sign_in.dart';
+
+import 'package:app_dos_hermanos/features/login_feature/models/user.dart';
+import 'package:app_dos_hermanos/repositories/users_repository.dart';
 
 //Cuando ocurre error al registrarse
 class SignUpFailure implements Exception {}
@@ -17,29 +19,28 @@ class LogInWithGoogleFailure implements Exception {}
 class LogOutFailure implements Exception {}
 
 class AuthenticationRepository {
-  
   User user;
   UserRepository userRepository = UserRepository();
 
   final firebase_auth.FirebaseAuth _firebaseAuth;
   //final GoogleSignIn _googleSignIn;
 
-  AuthenticationRepository({
-    required this.user,
-    firebase_auth.FirebaseAuth? firebaseAuth,
-    GoogleSignIn? googleSignIn
-  }) : _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance;
-      //_googleSignIn = googleSignIn ?? GoogleSignIn.standard();
+  AuthenticationRepository(
+      {required this.user,
+      firebase_auth.FirebaseAuth? firebaseAuth,
+      GoogleSignIn? googleSignIn})
+      : _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance;
+  //_googleSignIn = googleSignIn ?? GoogleSignIn.standard();
 
-  bool isLoggedIn(){
-    if(_firebaseAuth.currentUser == null){
+  bool isLoggedIn() {
+    if (_firebaseAuth.currentUser == null) {
       return false;
     }
     return true;
   }
 
-  Future<String> get getUserID async{
-    if (isLoggedIn()){
+  Future<String> get getUserID async {
+    if (isLoggedIn()) {
       return _firebaseAuth.currentUser!.uid;
     }
     return _firebaseAuth.authStateChanges().map((firebaseUser) {
@@ -50,7 +51,7 @@ class AuthenticationRepository {
   Future<User> get getUser async {
     String _id = await getUserID;
     user = await userRepository.getUserData(_id);
-    if (user.id == ''){
+    if (user.id == '') {
       user.id = _firebaseAuth.currentUser!.uid;
       user.email = _firebaseAuth.currentUser!.email!;
       user.name = _firebaseAuth.currentUser!.uid;
@@ -106,7 +107,8 @@ class AuthenticationRepository {
     required String password,
   }) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(email: user.email, password: password);
+      await _firebaseAuth.signInWithEmailAndPassword(
+          email: user.email, password: password);
       user = await this.getUser;
     } on Exception {
       throw LogInWithEmailAndPasswordFailure();
@@ -121,8 +123,6 @@ class AuthenticationRepository {
         //_googleSignIn.signOut()
       ]);
       user = User.empty();
-    } on Exception {
-    }
+    } on Exception {}
   }
-
 }

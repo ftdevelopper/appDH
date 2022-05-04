@@ -1,4 +1,4 @@
-import 'package:app_dos_hermanos/repository/drivers_repository.dart';
+import 'package:app_dos_hermanos/repositories/drivers_repository.dart';
 
 class NewShippingValidator {
 

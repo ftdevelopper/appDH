@@ -1,7 +1,8 @@
-import 'package:app_dos_hermanos/features/get_shippings_feature/models/filter.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+
+import 'package:app_dos_hermanos/features/get_shippings_feature/models/filter.dart';
 
 part 'filter_event.dart';
 part 'filter_state.dart';

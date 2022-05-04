@@ -1,10 +1,12 @@
-import 'package:app_dos_hermanos/features/get_shippings_feature/models/shipping.dart';
-import 'package:app_dos_hermanos/features/edit_shipping_feature/cubit/edit_shipping_cubit/edit_shipping_cubit.dart';
-import 'package:app_dos_hermanos/repository/authentication_repository.dart';
-import 'package:app_dos_hermanos/features/add_new_shipping_feature/widgets/shipping_data.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+
+import 'package:app_dos_hermanos/features/add_new_shipping_feature/widgets/shipping_data.dart';
+import 'package:app_dos_hermanos/features/edit_shipping_feature/cubit/edit_shipping_cubit/edit_shipping_cubit.dart';
+import 'package:app_dos_hermanos/features/get_shippings_feature/models/shipping.dart';
+import 'package:app_dos_hermanos/repositories/authentication_repository.dart';
 
 class FinishShippingButtonWidget extends StatelessWidget {
   FinishShippingButtonWidget({Key? key}) : super(key: key);
@@ -38,7 +40,8 @@ class FinishShippingButtonWidget extends StatelessWidget {
     );
   }
 
-  Future<void> _showRecivedConfirmationAlert(Shipping shipping, BuildContext context) async {
+  Future<void> _showRecivedConfirmationAlert(
+      Shipping shipping, BuildContext context) async {
     return showDialog<void>(
       context: context,
       builder: (context) {
@@ -54,18 +57,22 @@ class FinishShippingButtonWidget extends StatelessWidget {
                 ShippingData(
                     title: 'Fecha',
                     data: DateFormat('dd-MM-yyyy').format(date)),
-                ShippingData(
-                    title: 'Hora', data: DateFormat.Hm().format(date)),
+                ShippingData(title: 'Hora', data: DateFormat.Hm().format(date)),
                 ShippingData(
                     title: 'Usuario',
                     data: context.read<AuthenticationRepository>().user.name),
                 ShippingData(
                     title: 'Ubicacion',
-                    data: context.read<AuthenticationRepository>().user.location.name),
+                    data: context
+                        .read<AuthenticationRepository>()
+                        .user
+                        .location
+                        .name),
                 ShippingData(title: 'Arroz', data: shipping.riceType ?? ''),
                 ShippingData(title: 'Chofer', data: shipping.driverName ?? ''),
                 ShippingData(title: 'Camion', data: shipping.truckPatent ?? ''),
-                ShippingData(title: 'Chasis', data: shipping.chasisPatent ?? ''),
+                ShippingData(
+                    title: 'Chasis', data: shipping.chasisPatent ?? ''),
                 ShippingData(
                     title: 'Peso Tara', data: shipping.remiterTara.toString()),
                 ShippingData(

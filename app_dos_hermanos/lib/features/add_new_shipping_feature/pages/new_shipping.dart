@@ -1,15 +1,18 @@
 import 'dart:async';
-import 'package:app_dos_hermanos/classes/drivers.dart';
-import 'package:app_dos_hermanos/features/add_new_shipping_feature/cubit/new_shipping_cubit/new_shipping_cubit.dart';
-import 'package:app_dos_hermanos/features/connect_bluetooth_feature/cubit/bluetootu_cubit/bluetooth_cubit.dart';
-import 'package:intl/intl.dart';
+
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:app_dos_hermanos/features/get_shippings_feature/models/shipping.dart';
+import 'package:intl/intl.dart';
+
+import 'package:app_dos_hermanos/features/add_new_shipping_feature/cubit/new_shipping_cubit/new_shipping_cubit.dart';
 import 'package:app_dos_hermanos/features/add_new_shipping_feature/widgets/shipping_data.dart';
-import 'package:app_dos_hermanos/repositories/location_repository.dart';
+import 'package:app_dos_hermanos/features/connect_bluetooth_feature/cubit/bluetootu_cubit/bluetooth_cubit.dart';
+import 'package:app_dos_hermanos/features/get_shippings_feature/models/shipping.dart';
 import 'package:app_dos_hermanos/repositories/local_data_base.dart';
+import 'package:app_dos_hermanos/repositories/location_repository.dart';
+import 'package:app_dos_hermanos/repositories/models/drivers.dart';
 import '../../../repositories/authentication_repository.dart';
 import '../../../utils/validations/new_shipping_validators.dart';
 

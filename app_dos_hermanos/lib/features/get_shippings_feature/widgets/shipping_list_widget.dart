@@ -1,6 +1,6 @@
-import 'package:app_dos_hermanos/features/get_shippings_feature/models/shipping.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_dos_hermanos/features/get_shippings_feature/models/shipping.dart';
 import 'shipping_card.dart';
 
 class ShippingsListWidget extends StatelessWidget {

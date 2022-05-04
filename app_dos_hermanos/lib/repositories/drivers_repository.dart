@@ -1,4 +1,4 @@
-import 'package:app_dos_hermanos/classes/drivers.dart';
+import 'package:app_dos_hermanos/repositories/models/drivers.dart';
 
 class DriverRepository {
   List<Driver> drivers;
