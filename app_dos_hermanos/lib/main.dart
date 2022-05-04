@@ -1,57 +1,47 @@
-import 'package:app_dos_hermanos/blocs/bluetootu_cubit/bluetooth_cubit.dart';
-import 'package:app_dos_hermanos/blocs/filter_bloc/filter_bloc.dart';
-import 'package:app_dos_hermanos/blocs/internet_cubit/internet_cubit.dart';
-import 'package:app_dos_hermanos/blocs/login_bloc/login_bloc.dart';
-import 'package:app_dos_hermanos/blocs/shippings_bloc/shippings_bloc.dart';
-import 'package:app_dos_hermanos/classes/user.dart';
-import 'package:app_dos_hermanos/local_repository/local_data_base.dart';
-import 'package:app_dos_hermanos/pages/login/login.dart';
-import 'package:app_dos_hermanos/pages/login/splash.dart';
-import 'package:app_dos_hermanos/pages/shippings/shippings_page.dart';
-import 'package:app_dos_hermanos/repository/authentication_repository.dart';
-import 'package:app_dos_hermanos/repository/shipping_repository.dart';
-import 'package:app_dos_hermanos/theme.dart';
+import 'package:app_dos_hermanos/features/add_new_shipping_feature/cubit/new_shipping_cubit/new_shipping_cubit.dart';
+import 'package:app_dos_hermanos/features/edit_shipping_feature/cubit/edit_shipping_cubit/edit_shipping_cubit.dart';
+import 'package:app_dos_hermanos/features/login_feature/cubit/authentication_bloc/authenticaiton_bloc.dart';
+import 'package:app_dos_hermanos/features/login_feature/cubit/login_bloc/login_bloc.dart';
+import 'package:app_dos_hermanos/utils/blocs/simple_bloc_observer.dart';
+import 'package:app_dos_hermanos/utils/internet_cubit/internet_cubit.dart';
+import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'blocs/authentication_bloc/authenticaiton_bloc.dart';
-import 'blocs/drawer_bloc/drawer_bloc.dart';
-import 'blocs/simple_bloc_observer.dart';
+import 'package:app_dos_hermanos/features/login_feature/models/user.dart';
+import 'package:app_dos_hermanos/repositories/local_data_base.dart';
+import 'package:app_dos_hermanos/features/login_feature/pages/login.dart';
+import 'package:app_dos_hermanos/features/login_feature/pages/splash.dart';
+import 'package:app_dos_hermanos/features/get_shippings_feature/pages/shippings_page.dart';
+import 'package:app_dos_hermanos/repositories/authentication_repository.dart';
+import 'package:app_dos_hermanos/repositories/shipping_repository.dart';
+import 'package:app_dos_hermanos/repositories/theme.dart';
+import 'features/connect_bluetooth_feature/cubit/bluetootu_cubit/bluetooth_cubit.dart';
+import 'features/get_shippings_feature/cubit/drawer_bloc/drawer_bloc.dart';
+import 'features/get_shippings_feature/cubit/filter_bloc/filter_bloc.dart';
+import 'features/get_shippings_feature/cubit/shippings_bloc/shippings_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   EquatableConfig.stringify = kDebugMode;
   BlocOverrides.runZoned(() async {
-    LocalDataBase localDataBase = LocalDataBase.empty();
-    await localDataBase.loadDB();
-    runApp(MyApp(authenticationRepository: AuthenticationRepository(user: User.empty()), localDataBase: localDataBase,));
+    runApp(MyApp());
   }, blocObserver: SimpleBlocObserver());
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({Key? key, required this.authenticationRepository, required this.localDataBase}) : super(key: key);
-
-  final AuthenticationRepository authenticationRepository;
-  final ShippingRepository shippingsRepository = ShippingRepository();
-  final LocalDataBase localDataBase;
+  MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider.value(
-      value: authenticationRepository,
-      child:AppView(authenticationRepository: authenticationRepository, shippingRepository: shippingsRepository, localDataBase: localDataBase,),
-    );
+    return AppView();
   }
 }
 
 class AppView extends StatefulWidget {
-  final AuthenticationRepository authenticationRepository;
-  final ShippingRepository shippingRepository;
-  final LocalDataBase localDataBase;
-  AppView({Key? key, required this.authenticationRepository, required this.shippingRepository, required this.localDataBase}) : super(key: key);
+  AppView({Key? key}) : super(key: key);
 
   @override
   _AppViewState createState() => _AppViewState();
@@ -62,46 +52,120 @@ class _AppViewState extends State<AppView> {
 
   NavigatorState? get _navigator => _navigatorKey.currentState;
 
-  InternetCubit internetCubit = InternetCubit();
-
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
+    return MultiRepositoryProvider(
       providers: [
-        BlocProvider(create: (context) => AuthenticationBloc(authenticationRepository: widget.authenticationRepository)),
-        BlocProvider(create: (context) => LoginBloc(authenticationRepository: widget.authenticationRepository)),
-        //BlocProvider(create: (context) => RegisterBloc(authenticationRepository: widget.authenticationRepository)),
-        BlocProvider(create: (context) => internetCubit),
-        BlocProvider(create: (context) => ShippingsBloc(shippingRepository: widget.shippingRepository, localDataBase: widget.localDataBase,internetCubit: this.internetCubit)),
-        BlocProvider(create: (context) => FilterBloc()),
-        BlocProvider(create: (context) => DrawerBloc(authenticationRepository: widget.authenticationRepository, localDataBase: widget.localDataBase)),
-        BlocProvider(create: (context) => BluetoothCubit())
+        RepositoryProvider(
+          create: (_) => AuthenticationRepository(user: User.empty()),
+        ),
+        RepositoryProvider(create: (_) => ShippingRepository()),
+        RepositoryProvider(
+          create: (_) => LocalDataBase.empty()..loadDB(),
+          lazy: false,
+        )
       ],
-      child: MaterialApp(
-          theme: theme,
-          navigatorKey: _navigatorKey,
-          debugShowCheckedModeBanner: false,
-          builder: (context, child) {
-            return BlocListener<AuthenticationBloc, AuthenticationState>(
-              listener: (context, state) {
-                switch (state.status) {
-                  case AuthenticationStatus.authenticated:
-                    context.read<ShippingsBloc>().add(LoadShippings());
-                    _navigator!.pushAndRemoveUntil<void>(MaterialPageRoute(builder: (_) => ShippingsPage(authenticationRepository: widget.authenticationRepository, localDataBase: widget.localDataBase,)), (route) => false);
-                  break;
-                  case AuthenticationStatus.unknown:
-                    _navigator!.pushAndRemoveUntil<void>(MaterialPageRoute(builder: (_) => LoginPage(authenticationRepository: widget.authenticationRepository,)), (route) => false);
-                  break;
-                  case AuthenticationStatus.unaunthenticated:
-                    _navigator!.pushAndRemoveUntil<void>(MaterialPageRoute(builder: (_) => LoginPage(authenticationRepository: widget.authenticationRepository)), (route) => false);
-                    break;
-                  default: break;
-                }
+      child: MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => AuthenticationBloc(
+                authenticationRepository:
+                    context.read<AuthenticationRepository>(),
+              ),
+            ),
+            BlocProvider(
+              create: (context) => LoginBloc(
+                authenticationRepository:
+                    context.read<AuthenticationRepository>(),
+              ),
+            ),
+            BlocProvider(
+              create: (_) => InternetCubit()..initInternetCheck(),
+              lazy: false,
+            ),
+            BlocProvider(
+              create: (context) => ShippingsBloc(
+                shippingRepository: context.read<ShippingRepository>(),
+                localDataBase: context.read<LocalDataBase>(),
+                internetCubit: context.read<InternetCubit>(),
+              ),
+            ),
+            BlocProvider(create: (_) => FilterBloc()),
+            BlocProvider(
+              create: (context) => DrawerBloc(
+                authenticationRepository:
+                    context.read<AuthenticationRepository>(),
+                localDataBase: context.read<LocalDataBase>(),
+              ),
+            ),
+            BlocProvider(
+              create: (_) => BluetoothCubit()..initBlutetooth(),
+              lazy: false,
+            ),
+            BlocProvider(
+              create: (context) => EditShippingCubit(
+                bluetoothCubit: context.read<BluetoothCubit>(),
+                authenticationRepository:
+                    context.read<AuthenticationRepository>(),
+              ),
+            ),
+            BlocProvider(
+              create: (context) => NewShippingCubit(
+                bluetoothCubit: context.read<BluetoothCubit>(),
+                authenticationRepository:
+                    context.read<AuthenticationRepository>(),
+              ),
+            )
+          ],
+          child: MaterialApp(
+              theme: theme,
+              navigatorKey: _navigatorKey,
+              debugShowCheckedModeBanner: false,
+              //showPerformanceOverlay: true,
+              builder: (context, child) {
+                return BlocListener<AuthenticationBloc, AuthenticationState>(
+                  listener: (context, state) {
+                    switch (state.status) {
+                      case AuthenticationStatus.authenticated:
+                        context.read<ShippingsBloc>().add(LoadShippings());
+                        _navigator!.pushAndRemoveUntil<void>(
+                            MaterialPageRoute(
+                                builder: (_) => ShippingsPage(
+                                      authenticationRepository: context
+                                          .read<AuthenticationRepository>(),
+                                      localDataBase:
+                                          context.read<LocalDataBase>(),
+                                    )),
+                            (route) => false);
+                        break;
+                      case AuthenticationStatus.unknown:
+                        _navigator!.pushAndRemoveUntil<void>(
+                            MaterialPageRoute(
+                                builder: (_) => LoginPage(
+                                      authenticationRepository: context
+                                          .read<AuthenticationRepository>(),
+                                    )),
+                            (route) => false);
+                        break;
+                      case AuthenticationStatus.unaunthenticated:
+                        _navigator!.pushAndRemoveUntil<void>(
+                            MaterialPageRoute(
+                                builder: (_) => LoginPage(
+                                    authenticationRepository: context
+                                        .read<AuthenticationRepository>())),
+                            (route) => false);
+                        break;
+                      default:
+                        break;
+                    }
+                  },
+                  child: child,
+                );
               },
-              child: child,
-            );
-          },
-          onGenerateRoute: (_) => MaterialPageRoute(builder: (_) => SplashPage(authenticationRepository: widget.authenticationRepository))
-    ));
+              onGenerateRoute: (_) => MaterialPageRoute(
+                  builder: (context) => SplashPage(
+                      authenticationRepository:
+                          context.read<AuthenticationRepository>())))),
+    );
   }
 }
